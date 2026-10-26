@@ -46,8 +46,6 @@ main{position:relative}
 .sinema h1{margin:min(2.6vw,38px) 0 0;font-size:min(4.7vw,68px);font-weight:650;line-height:1.1;letter-spacing:-0.025em}
 .giris-p__alt{margin-top:min(1.6vw,22px);max-width:25em;font-size:min(1.3vw,19px);line-height:1.6;color:var(--kursun)}
 .giris-p__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:min(1.6vw,22px) min(2.4vw,34px);margin-top:min(2.8vw,40px)}
-.giris-p__not{margin-top:min(1.8vw,24px);font-size:min(1vw,14.5px);color:var(--kursun)}
-.giris-p__not b{font-weight:600;color:var(--mavi)}
 .metin-link{padding-bottom:4px;border-bottom:1.5px solid currentColor;font:500 min(1.1vw,16px)/1 var(--f);transition:color .2s}
 .metin-link:hover{color:var(--mavi)}
 .sinema__cep{position:absolute;left:50%;top:50%;z-index:1;width:min(23vw,330px);transform:translate(-50%,-50%) translate3d(22vw,4vh,0) rotateX(14deg) rotateY(-32deg) rotateZ(6deg);transform-style:preserve-3d;will-change:transform}
@@ -177,7 +175,6 @@ MOBIL = r'''
   .sinema h1{margin-top:16px;font-size:clamp(2rem,8.6vw,3.2rem)}
   .giris-p__alt{font-size:1rem}
   .giris-p__eylem{gap:14px 22px;margin-top:22px}
-  .giris-p__not{font-size:13.5px}
   .metin-link{font-size:1rem}
   .sinema__cep{width:min(46vw,220px)}
   .sinema__etiket{font-size:12.5px;padding:7px 10px}
@@ -244,7 +241,6 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
             {magaza()}
             <a class="metin-link" href="#nasil">Nasıl çalışır</a>
           </div>
-          <p class="giris-p__not"><b>Şimdilik ücretsiz.</b> Mağazalara çıktığında indirip hemen kullanmaya başlayın.</p>
         </div>
       </div>
       <div class="sinema__cep">
@@ -359,7 +355,6 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
       <details><summary>Ölçüler nerede saklanır?</summary><p>Her plan, müşterinin dosyasında durur ve buluta kaydedilir. Telefon değişse de planlar kaybolmaz.</p></details>
       <details><summary>Çizim ölçekli mi?</summary><p>Evet. Bir kare 50 cm olan ızgara üzerinde çizersiniz; duvar boyları, ara ölçüler, toplamlar ve alan bu ölçeğe göre yazılır.</p></details>
       <details><summary>Kiriş, kapı ve pencere de ölçülüyor mu?</summary><p>Kiriş aracıyla kirişin yerini ve yüksekliğini, Ekle ile kapı ve pencereleri ölçüleriyle birlikte plana koyarsınız.</p></details>
-      <details><summary>pafta. ücretli mi?</summary><p>Şimdilik ücretsiz. Uygulama mağazalara çıktığında indirip hemen kullanmaya başlayabilirsiniz; çıktığında haber almak için bize yazın.</p></details>
     </div>
   </section>
 
@@ -375,8 +370,8 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
     <div class="izgara" aria-hidden="true"></div>
     <div class="kap">
       <div>
-        <h2 id="indir-baslik">pafta. şimdilik ücretsiz.</h2>
-        <p>Mağazalara çıktığında hemen indirin. Çıkınca haber vermemizi isterseniz bize yazın.</p>
+        <h2 id="indir-baslik">pafta.’yı indirin.</h2>
+        <p>Uygulama mağazalara çıktığında haber vermemizi isterseniz bize yazın.</p>
         <div class="kapanis__eylem">
           {magaza(' magaza--acik')}
           <a class="metin-link" href="kroki-web.html?urun=pafta.#iletisim">Çıkınca haber ver</a>
