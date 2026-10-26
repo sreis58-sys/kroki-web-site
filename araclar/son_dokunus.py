@@ -6,7 +6,7 @@ SITE = ''          # ör. 'https://kroki.com.tr/' — boşken göreli adres kull
 SAYFALAR = {
     'kroki-web.html': ('Kroki — Mimari yazılımlar', 'Mimarların ihtiyaçları için tasarlanmış, birbirine bağlı yazılımlar: kroki crm ve pafta.', 'og-kroki.jpg'),
     'kroki-crm.html': ('kroki crm — Dağınık işler, tek planda', 'İç mimarlık stüdyoları için müşteri, şantiye, takvim, sözleşme ve tahsilat yönetimi.', 'og-crm.jpg'),
-    'pafta.html': ('pafta. — Ölçü sahada, plan elinde', 'Röleveyi telefonla alın: duvarlar, kirişler, kapılar ve ölçüler plana kendiliğinden yazılsın.', 'og-pafta.jpg'),
+    'pafta.html': ('pafta. — Ölçü sahada, plan elinde', 'Röleveyi telefonla alın: duvarlar, kirişler, kapılar ve ölçüler plana kendiliğinden yazılsın. Şimdilik ücretsiz.', 'og-pafta.jpg'),
     'hakkimizda.html': ('Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir.', 'og-kroki.jpg'),
     'kvkk.html': ('KVKK ve gizlilik — Kroki', 'Kroki web sitesinde kişisel verilerin işlenmesine ilişkin aydınlatma metni.', 'og-kroki.jpg'),
     '404.html': ('Sayfa bulunamadı — Kroki', 'Aradığınız sayfa bulunamadı.', 'og-kroki.jpg'),
