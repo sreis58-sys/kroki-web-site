@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kroki crm — Kroki</title>
+<meta name="description" content="İç mimarlık stüdyoları için müşteri, satış hattı, şantiye, takvim ve tahsilat yönetimi.">
+<link rel="icon" href="assets/kroki-crm-ikon.svg">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortaktır. */
+:root{
+  --kagit:#F8F5EE;      /* taslaktaki zemin */
+  --murekkep:#131313;
+  --kursun:#555552;
+  --mavi:#1C86EE;       /* logolardaki mavi */
+  --f:"Sora", system-ui, sans-serif;
+  --el:"Patrick Hand", "Sora", cursive;
+  --kenar:min(6.6vw, 95px);
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--kagit);color:var(--murekkep);font:400 1rem/1.5 var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+p,h1{margin:0}
+:focus-visible{outline:2px solid var(--mavi);outline-offset:3px;border-radius:6px}
+.kap{max-width:1440px;margin:0 auto;padding:0 var(--kenar)}
+
+/* ---------- üst bar ---------- */
+.ust{position:relative;z-index:3;display:flex;align-items:center;height:min(9.8vw,141px);padding-top:min(.6vw,8px);padding-right:min(3.75vw,54px)}
+.ust__logo img{height:min(7.15vw,103px);width:auto}
+.ust__nav{display:flex;gap:min(3.5vw,50px);margin-left:min(7.85vw,113px)}
+.ust__nav a,.ust__giris{font-size:min(1.1vw,15.5px);font-weight:400;color:#222}
+.ust__nav a:hover,.ust__giris:hover{color:var(--mavi)}
+.ust__sag{margin-left:auto;display:flex;align-items:center;gap:min(3vw,43px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7em;background:#111;color:#fff;font:500 min(1.12vw,16px)/1 var(--f);border-radius:min(.8vw,11px);transition:background-color .2s}
+.btn:hover{background:#000}
+.btn svg{width:1.05em;height:1.05em;transition:transform .2s}
+.btn:hover svg{transform:translateX(3px)}
+.ust__sag .btn{width:min(12.6vw,181px);height:min(3.7vw,53px)}
+.menu-btn{display:none;margin-left:auto;background:none;border:0;padding:8px;cursor:pointer;color:inherit}
+.menu-btn svg{width:26px;height:26px}
+main{position:relative}
+
+/* ---------- giriş: ana sayfadaki gibi karakalem eskiz; mavi düzlemler paftalarda, telefon masanın üstünde ---------- */
+.giris-c{position:relative;min-height:min(52vw,750px)}
+.giris-c__eskiz{position:absolute;right:0;top:max(-2vw,-29px);width:min(79.9vw,1150px)}
+.giris-c__eskiz img{width:100%;height:auto}
+.giris-c__eskiz svg{position:absolute;inset:0;width:100%;height:100%}
+.giris-c__eskiz .duzlem{fill:var(--mavi);mix-blend-mode:multiply;opacity:.88}
+.giris-c__yer{position:absolute;left:38.5%;top:47%;width:15.5%;aspect-ratio:.47}  /* telefonun masadaki yeri: sahne buradan başlar */
+
+/* ---------- giriş sahnesi: kaydırdıkça telefon masadan kalkar, karşıya döner, ekranları sırayla gösterir ---------- */
+.sinema-c{position:relative;height:850vh}           /* her ekran yaklaşık iki ekran boyu kaydırma ister */
+.sinema-c__sahne{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.sinema-c__cep{position:absolute;left:0;top:0;z-index:3;width:calc(min(78vh,760px) * .47);will-change:transform}
+.js .sinema-c__cep{visibility:hidden}
+.sinema-c__ekran{position:absolute;inset:0}
+.sinema-c__ekran + .sinema-c__ekran{opacity:0}
+.sinema-c__ekran .ekran{display:block;width:100%;height:100%}
+.sinema-c__yazilar{position:absolute;left:var(--kenar);top:50%;z-index:2;width:min(36vw,500px);height:20em;margin-top:-10em;pointer-events:none}
+.sinema-c__yazi{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;opacity:0}
+.sinema-c__yazi i{margin-bottom:16px;font:500 min(1.05vw,15px)/1 var(--f);font-style:normal;color:var(--mavi)}
+.sinema-c__yazi b{font:600 min(3.6vw,52px)/1.08 var(--f);letter-spacing:-0.028em}
+.sinema-c__yazi > span{max-width:24em;margin-top:18px;font-size:min(1.3vw,19px);line-height:1.6;color:var(--kursun)}
+.sinema-c__yazi .not{position:relative;left:auto;top:auto;margin-top:34px;font-size:min(1.15vw,16.5px)}
+@media (prefers-reduced-motion:reduce){.sinema-c{height:auto}.sinema-c__sahne{position:relative;height:auto}.sinema-c__yazilar{display:none}}
+.giris-c__eskiz .not{left:15%;top:7%}
+.giris-c__metin{position:relative;z-index:2;padding-top:min(6vw,86px)}
+.giris-c__metin > div{max-width:min(36vw,520px)}
+.giris-c__logo{height:min(3.6vw,52px);width:auto}
+.giris-c h1{margin:min(2.6vw,38px) 0 0;font-size:min(4.9vw,70px);font-weight:650;line-height:1.08;letter-spacing:-0.028em}
+.giris-c__alt{margin-top:min(1.6vw,22px);max-width:25em;font-size:min(1.3vw,19px);line-height:1.6;color:var(--kursun)}
+.giris-c__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;margin-top:min(2.8vw,40px)}
+.giris-c__not{margin-top:min(1.8vw,24px);font-size:min(.95vw,13.5px);color:#86837b}
+
+/* ---------- özellikler: bilgisayar ekranı, önünde telefon; görsel sütunu daha geniş ---------- */
+.ozellik--genis{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:min(5vw,72px)}
+.ozellik--genis.ozellik--ters{grid-template-columns:minmax(0,7fr) minmax(0,4fr)}
+.cift{position:relative;width:100%;padding:0 0 min(3vw,40px)}
+.cift--dar{width:82%}
+.ekran-pc{overflow:hidden;border:1px solid #2A2E31;border-radius:min(1.2vw,16px);background:#0B0C0D;box-shadow:0 40px 80px -36px rgba(20,24,30,.5)}
+.ekran-pc img{display:block;width:100%;height:auto}
+.ozellik__gorsel .cift .cep{position:absolute;right:-3%;bottom:0;width:15%;padding:min(.5vw,7px);border-radius:min(2.2vw,30px)}
+.cift .cep__ekran{border-radius:min(1.7vw,24px)}
+.ozellik--ters .ozellik__gorsel .cift .cep{right:auto;left:-3%}
+.ozellik__gorsel .not:has(+ .cift){left:0;top:auto;bottom:calc(100% + 18px)}
+.ozellik--ters .ozellik__gorsel .not:has(+ .cift){left:auto;right:0}
+.adim .hap{background:#111;font-family:var(--f)}
+.adim .hap--cizgi{background:none;border:1.5px solid #111;color:#111}
+.adim__ui{gap:10px;flex-wrap:wrap}
+
+/* el yazısı kenar notları: telefonların yanında, mimarın paftaya düştüğü notlar gibi */
+/* telefon sütunun dış kenarına yaslanır, not iç taraftaki boşlukta durur */
+.ozellik__gorsel:has(> .not){justify-content:flex-end}
+.ozellik--ters .ozellik__gorsel:has(> .not){justify-content:flex-start}
+.ozellik__gorsel .not{left:6%;top:10%;font-size:min(1.15vw,16.5px)}
+.ozellik--ters .ozellik__gorsel .not{left:auto;right:6%}
+.ozellik__gorsel .not:has(+ .kirpik){left:0;top:auto;bottom:calc(100% + 18px)}
+
+.metin-link{padding-bottom:4px;border-bottom:1.5px solid currentColor;font:500 min(1.1vw,16px)/1 var(--f);transition:color .2s}
+.metin-link:hover{color:var(--mavi)}
+
+/* ---------- uygulama ekranından kırpılmış parçalar ---------- */
+.pencere{width:100%;overflow:hidden;border:1px solid #dcd7cc;border-radius:18px;background:#EDEEEA;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
+.pencere img{display:block;width:100%;height:auto}
+.kirpik{width:100%;border-radius:18px;background:#EDEEEA url(assets/urun-crm-panel.webp) no-repeat;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
+.kirpik--sayilar{aspect-ratio:1412/364;background-size:136% auto;background-position:86.6% 25.8%}
+.kirpik--hat{aspect-ratio:808/588;background-size:237.6% auto;background-position:39.6% 100%}
+.kirpik--isler{aspect-ratio:576/588;background-size:333.3% auto;background-position:95.3% 100%}
+
+/* ---------- paketler ---------- */
+.paketler__izgara{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(1.4vw,20px);margin-top:min(4vw,56px)}
+.paket{position:relative;display:flex;flex-direction:column;padding:min(2.4vw,34px);border:1px solid #d6d0c3;border-radius:18px;background:rgba(255,255,255,.4)}
+.paket[data-onerilen]{border-color:var(--mavi);box-shadow:inset 0 0 0 1px var(--mavi)}
+.paket h3{margin:0;font:600 min(1.6vw,23px)/1.2 var(--f)}
+.paket__kim{margin-top:6px;font:400 min(1vw,14.5px)/1.5 var(--f);color:#77746c}
+.paket__fiyat{margin-top:min(2vw,28px);font:600 min(2.6vw,38px)/1 var(--f);letter-spacing:-0.02em}
+.paket__fiyat small{font-size:.4em;font-weight:400;letter-spacing:0;color:#77746c}
+.paket ul{list-style:none;margin:min(2vw,28px) 0;padding:0;display:grid;gap:12px;font:400 min(1.02vw,14.5px)/1.45 var(--f);color:#2a2a2a}
+.paket li{display:flex;gap:10px}
+.paket li::before{content:"";flex:none;width:7px;height:7px;margin-top:.5em;background:#151515;opacity:.55}
+.paket[data-onerilen] li::before{background:var(--mavi);opacity:1}
+.paket__btn{display:inline-flex;align-items:center;justify-content:center;margin-top:auto;height:min(3.3vw,48px);border:1.5px solid #bdb7aa;border-radius:10px;font:500 min(1.05vw,15px)/1 var(--f);transition:border-color .2s,background-color .2s}
+.paket__btn:hover{border-color:#151515}
+.paket[data-onerilen] .paket__btn{background:#0B6FE8;border-color:#0B6FE8;color:#fff}
+.paket[data-onerilen] .paket__btn:hover{background:#095BC0;border-color:#095BC0}
+.paket__etiket{position:absolute;top:-11px;left:min(2.4vw,34px);padding:6px 10px;border-radius:6px;background:#0B6FE8;font:600 11px/1 var(--f);letter-spacing:.04em;color:#fff}
+.paketler__not{margin-top:22px;font-size:min(.98vw,14px);color:#86837b}
+
+.kapanis .metin-link{color:#fff}
+.kapanis__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+.izgara{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#dde8f4 1px,transparent 1px),linear-gradient(90deg,#dde8f4 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%)}
+/* ---------- telefon çerçevesi ---------- */
+.cep{padding:min(.75vw,10px);border-radius:min(3.6vw,52px);background:#121315;box-shadow:0 0 0 1.5px #2b2d31 inset,0 30px 60px -20px rgba(20,24,30,.35),0 12px 24px -12px rgba(20,24,30,.25)}
+.cep__ekran{position:relative;overflow:hidden;border-radius:min(2.9vw,42px);aspect-ratio:924/2000;background:#0B0C0E}
+.cep__ekran .ekran{display:block;width:100%;height:100%}
+.cep__ada{position:absolute;top:2.2%;left:50%;width:31%;height:3.6%;border-radius:99px;background:#000;transform:translateX(-50%)}
+.sayi-yeni,.kayit-suruyor,.yeni-satir{opacity:0}
+
+/* ---------- mağaza düğmeleri ---------- */
+.magaza{display:flex;flex-wrap:wrap;gap:12px}
+.magaza a{display:inline-flex;align-items:center;gap:10px;height:min(4vw,58px);min-height:50px;padding:0 20px 0 15px;border-radius:12px;background:#111;color:#fff;transition:background-color .2s}
+.magaza a:hover{background:#000}
+.magaza svg{width:26px;height:26px;flex:none}
+.magaza span{display:flex;flex-direction:column;gap:3px}
+.magaza small{font:400 11px/1 var(--f);color:#c9c9c9}
+.magaza b{font:600 17px/1 var(--f)}
+.magaza--acik a{background:#fff;color:#111}
+.magaza--acik a:hover{background:#e9e9e9}
+.magaza--acik small{color:#6a6a6a}
+
+/* ---------- kısa bilgiler: mavi kare pafta.'nın noktası ---------- */
+.bilgiler{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(2.6vw,38px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
+.bilgiler h3{display:flex;align-items:center;gap:10px;margin:0;font:600 min(1.15vw,16.5px)/1.3 var(--f)}
+.bilgiler h3::before{content:"";flex:none;width:9px;height:9px;background:var(--mavi)}
+.bilgiler p{margin-top:8px;padding-left:19px;font-size:min(1vw,14.5px);line-height:1.55;color:var(--kursun)}
+
+/* ---------- özellikler: bir yazı, bir görsel; sıra bir sağa bir sola ---------- */
+.bolum{padding-top:min(8vw,116px);padding-bottom:min(8vw,116px)}
+.bolum__bas h2{margin:0;max-width:17em;font:600 min(3.05vw,44px)/1.15 var(--f);letter-spacing:-0.02em}
+.bolum__bas p{margin-top:16px;max-width:34em;font-size:min(1.25vw,18px);line-height:1.6;color:var(--kursun)}
+.ozellik{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:min(6vw,86px);margin-top:min(7vw,100px)}
+.ozellik--ters .ozellik__gorsel{order:-1}
+.ozellik__ad{margin-bottom:14px;font:500 min(1.05vw,15px)/1 var(--f);color:var(--mavi)}
+.ozellik h3{margin:0;font:600 min(2.5vw,36px)/1.15 var(--f);letter-spacing:-0.02em}
+.ozellik p{margin-top:16px;max-width:27em;font-size:min(1.25vw,18px);line-height:1.6;color:var(--kursun)}
+.ozellik ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px;font-size:min(1.1vw,16px);color:#2a2a2a}
+.ozellik li{display:flex;gap:12px}
+.ozellik li::before{content:"";flex:none;width:7px;height:7px;margin-top:.55em;background:var(--mavi)}
+.ozellik__gorsel{position:relative;display:flex;justify-content:center}
+.ozellik__gorsel .cep{width:min(21vw,300px)}
+.ikili{display:flex;gap:min(2vw,28px);align-items:flex-start}
+.ikili .cep{width:min(17vw,246px)}
+.ikili .cep:last-child{margin-top:min(5vw,72px)}
+/* plan yakın çekim: kiriş ve kapı etiketleriyle */
+.yakin{position:relative;width:min(36vw,520px);overflow:hidden;border-radius:24px;background:#0B0C0E;box-shadow:0 30px 60px -24px rgba(20,24,30,.4)}
+.yakin .ekran{display:block;width:100%;height:auto}
+.etiket{position:absolute;white-space:nowrap;padding:8px 12px;border-radius:10px;background:#fff;font:500 min(1vw,14px)/1.3 var(--f);color:#151515;box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
+.etiket b{font-weight:600}
+.etiket::before{content:"";position:absolute;width:10px;height:10px;background:#fff;transform:rotate(45deg)}
+.etiket--kiris{left:50%;top:44%;white-space:nowrap}
+.etiket--kiris::before{left:22px;top:-4px}
+.etiket--kapi{left:35%;top:60%}
+.etiket--kapi::before{left:-4px;top:12px}
+
+/* ---------- nasıl çalışır: gerçek sıra, uygulamadaki düğmelerle ---------- */
+.adimlar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:min(1.6vw,22px);margin-top:min(4vw,56px);padding:0;list-style:none;counter-reset:adim}
+.adim{position:relative;display:flex;flex-direction:column;padding:min(2.4vw,34px);border:1px solid #d9d4c8;border-radius:20px;background:rgba(255,255,255,.45)}
+.adim__sira{font:600 min(1vw,14px)/1 var(--f);color:#86837b}
+.adim h3{margin:14px 0 0;font:600 min(1.6vw,23px)/1.25 var(--f);letter-spacing:-0.01em}
+.adim p{margin-top:10px;font-size:min(1.05vw,15px);line-height:1.55;color:var(--kursun)}
+.adim__ui{display:flex;align-items:center;min-height:86px;margin-top:auto;padding-top:26px}
+.hap{display:inline-flex;align-items:center;height:48px;padding:0 24px;border-radius:99px;background:var(--mavi);font:700 17px/1 Inter,var(--f);letter-spacing:-.02em;color:#fff}
+.mini-arac{display:flex;gap:4px;padding:6px;border-radius:99px;background:#15181B}
+.mini-arac span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:58px;height:58px;border-radius:99px;font:500 11px/1 Inter,var(--f);color:#C5C9CE}
+.mini-arac span:first-child{background:var(--mavi);color:#fff}
+.mini-arac svg{width:20px;height:20px}
+
+/* ---------- ekosistem bandı ---------- */
+.ekosistem{display:flex;align-items:center;gap:min(3vw,44px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
+.ekosistem img{height:min(2.8vw,40px);width:auto;flex:none}
+.ekosistem p{flex:1;font-size:min(1.3vw,19px);line-height:1.5;color:#2a2a2a}
+.ekosistem .metin-link{flex:none}
+
+/* ---------- kapanış: uygulamanın koyu teması ---------- */
+.kapanis{position:relative;overflow:hidden;margin-top:min(8vw,116px);background:#0B0C0E;color:#fff}
+.kapanis .izgara{background-image:linear-gradient(#1a1d22 1px,transparent 1px),linear-gradient(90deg,#1a1d22 1px,transparent 1px);-webkit-mask-image:none;mask-image:none}
+.kapanis .kap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:min(30vw,430px)}
+.kapanis h2{margin:0;font:600 min(3.6vw,52px)/1.1 var(--f);letter-spacing:-0.025em}
+.kapanis p{margin:14px 0 30px;font-size:min(1.25vw,18px);color:#a9adb3}
+.kapanis .cep{align-self:flex-end;width:min(18vw,260px);margin-bottom:max(-24vw,-340px);transform:rotate(6deg)}
+.not{position:absolute;z-index:2;left:35.6%;top:10%;font:400 min(1.32vw,19px)/1.3 var(--el);letter-spacing:.18em;text-transform:uppercase;color:#4a4a48;padding-left:min(1.7vw,24px)}
+.not::before{content:"";position:absolute;left:0;top:-.5em;bottom:.3em;border-left:1px dashed #8a8984}
+.not span{display:block}.not span:last-child::before{content:"";position:absolute;left:-.4em;width:1.1em;margin-top:.62em;border-top:1px solid #6a6964}
+.bant{position:relative;overflow:hidden;height:min(18.3vw,263px);background-color:rgba(229,224,216,.88);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.32 0 0 0 0 0.28 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.bant__ic{position:relative;max-width:1440px;height:100%;margin:0 auto}
+.bant__metin{position:absolute;z-index:1;left:min(7.7vw,111px);top:50%;transform:translateY(-50%);font:400 min(1.3vw,18.5px)/2.2 var(--f);letter-spacing:.3em;text-transform:uppercase;color:#262624}
+.bant__eskiz{position:absolute;left:17.7%;width:77.9%;top:0}
+.bant__eskiz img{width:100%;height:auto}
+.bant__eskiz svg{position:absolute;inset:0;width:100%;height:100%}
+.bant__eskiz .mavi{fill:var(--mavi);mix-blend-mode:multiply;opacity:.92}
+
+.alt{background:#121212;color:#fff}
+.alt__ic{display:flex;align-items:center;gap:min(3.3vw,48px);height:min(8.6vw,124px)}
+.alt__ic > img{height:min(3.2vw,46px);width:auto}
+.alt nav{display:flex;gap:min(3.2vw,46px);margin-left:min(1.6vw,23px)}
+.alt nav a,.alt__telif{font:400 min(.98vw,14px)/1 var(--f);color:#bdbdbd}
+.alt nav a:hover,.alt__sosyal a:hover{color:#fff}
+.alt__sosyal{display:flex;gap:min(1.5vw,22px);margin-left:auto}
+.alt__sosyal a{color:#bdbdbd}
+.alt__sosyal svg{width:min(1.3vw,18px);height:min(1.3vw,18px)}
+.alt__telif{color:#8d8d8d;margin-left:min(4.5vw,65px)}
+
+@media (max-width:900px){
+  .ust{height:76px;padding-top:0}
+  .ust__logo img{height:54px}
+  .ust__nav,.ust__sag{display:none}
+  .menu-btn{display:block}
+  .ust.acik .ust__nav{display:flex;position:absolute;top:100%;left:calc(var(--kenar) * -1);right:calc(var(--kenar) * -1);flex-direction:column;gap:0;margin:0;background:var(--kagit);border-bottom:1px solid #dcd8cf;padding:8px var(--kenar) 20px}
+  .ust.acik .ust__nav a{padding:14px 0;font-size:1.05rem;border-bottom:1px solid #dcd8cf}
+  .sinema-c{height:750vh}
+  .sinema-c__cep{width:calc(min(60vh,540px) * .47)}
+  .sinema-c__yazilar{left:20px;right:20px;top:auto;bottom:20px;width:auto;height:8em;margin-top:0}
+  .sinema-c__yazi{justify-content:flex-end;align-items:center;text-align:center}
+  .sinema-c__yazi i{margin-bottom:8px;font-size:13px}
+  .sinema-c__yazi b{font-size:1.45rem}
+  .sinema-c__yazi > span{margin-top:8px;font-size:.95rem}
+  .sinema-c__yazi .not{display:none}
+  .giris-c{min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:48px}
+  .giris-c__eskiz{position:relative;order:-1;top:0;width:150%;margin-left:-38%}
+  .giris-c__eskiz .not{left:30%;top:4%;font-size:12px}
+  .giris-c__metin{padding-top:8px}
+  .giris-c__metin > div{max-width:none}
+  .giris-c__logo{height:38px}
+  .giris-c h1{margin-top:22px;font-size:clamp(2.3rem,9.5vw,3.4rem)}
+  .giris-c__alt{font-size:1.05rem}
+  .giris-c__not{font-size:13.5px}
+  .not{font-size:12px}
+  .ozellik__gorsel:has(> .not){justify-content:center}
+  .ozellik__gorsel .not,.ozellik--ters .ozellik__gorsel .not{position:relative;left:auto;right:auto;top:auto;bottom:auto;align-self:flex-start;margin:0 0 18px;font-size:12px}
+  .ozellik__gorsel:has(> .not){flex-direction:column;align-items:center}
+  .ozellik--genis,.ozellik--genis.ozellik--ters{grid-template-columns:1fr}
+  .cift,.cift--dar{width:100%;padding-bottom:34px}
+  .ozellik__gorsel .cift .cep{right:0;width:22%;padding:4px;border-radius:18px}
+  .cift .cep__ekran{border-radius:14px}
+  .ozellik--ters .ozellik__gorsel .cift .cep{left:0}
+  .metin-link{font-size:1rem}
+  .paketler__izgara{grid-template-columns:1fr;gap:28px;margin-top:36px}
+  .paket{padding:30px 26px}
+  .paket h3{font-size:1.35rem}
+  .paket__kim{font-size:14px}
+  .paket__fiyat{font-size:2.2rem;margin-top:22px}
+  .paket ul{font-size:15px;margin:22px 0}
+  .paket__btn{height:48px;font-size:15px}
+  .paket__etiket{left:26px}
+  .paketler__not{font-size:14px}
+  .cep{padding:7px;border-radius:34px}
+  .cep__ekran{border-radius:28px}
+  .magaza a{height:52px}
+  .bilgiler{grid-template-columns:1fr 1fr;gap:24px 20px;padding:32px 0}
+  .bilgiler h3{font-size:15px}
+  .bilgiler p{font-size:14px}
+  .bolum{padding-top:64px;padding-bottom:64px}
+  .bolum__bas h2{font-size:1.9rem}
+  .bolum__bas p{font-size:1rem}
+  .ozellik{grid-template-columns:1fr;gap:32px;margin-top:64px}
+  .ozellik--ters .ozellik__gorsel{order:0}
+  .ozellik__ad{font-size:14px}
+  .ozellik h3{font-size:1.6rem}
+  .ozellik p,.ozellik ul{font-size:1rem}
+  .ozellik__gorsel .cep{width:min(62vw,280px)}
+  .ikili .cep{width:min(42vw,200px)}
+  .yakin{width:100%}
+  .etiket{font-size:12.5px;padding:6px 10px}
+  .adimlar{grid-template-columns:1fr;margin-top:32px}
+  .adim{padding:26px}
+  .adim__sira{font-size:13px}
+  .adim h3{font-size:1.25rem}
+  .adim p{font-size:1rem}
+  .ekosistem{flex-direction:column;align-items:flex-start;gap:16px;padding:36px 0}
+  .ekosistem img{height:32px}
+  .ekosistem p{font-size:1.05rem}
+  .kapanis{margin-top:64px}
+  .kapanis .kap{flex-direction:column;align-items:flex-start;padding-top:56px;min-height:0}
+  .kapanis h2{font-size:2rem}
+  .kapanis p{font-size:1rem}
+  .kapanis .cep{align-self:center;width:62vw;margin-bottom:-60vw}
+  .bant{height:auto}
+  .bant__metin{position:relative;left:auto;top:auto;transform:none;padding:40px var(--kenar) 0;font-size:15px;line-height:2}  .bant__eskiz{position:relative;left:-28%;width:135%;top:auto;margin-top:-20px}
+  .alt__ic{flex-wrap:wrap;height:auto;padding-top:36px;padding-bottom:36px;gap:22px 28px}
+  .alt__ic > img{height:40px}
+  .alt nav{flex-wrap:wrap;gap:14px 24px;margin:0;width:100%}
+  .alt nav a,.alt__telif{font-size:14px}
+  .alt__sosyal{margin-left:0}
+  .alt__sosyal svg{width:20px;height:20px}
+  .alt__telif{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<header class="kap ust" id="ust">
+  <a class="ust__logo" href="kroki-web.html" aria-label="Kroki ana sayfa"><img src="assets/kroki-firma.png" alt="Kroki — mimari yazılımlar" width="768" height="353"></a>
+  <nav class="ust__nav" id="menu" aria-label="Ana menü">
+    <a href="kroki-web.html#urunler">Ürünler</a>
+    <a href="#">Çözümler</a>
+    <a href="kroki-web.html#paketler">Fiyatlandırma</a>
+    <a href="#">Kaynaklar</a>
+  </nav>
+  <div class="ust__sag">
+    <a class="btn" href="kroki-web.html#urunler">Hemen Başla
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+  </div>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menüyü aç">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="sinema-c" aria-labelledby="giris-baslik">
+  <div class="sinema-c__sahne">
+  <div class="giris-c">
+    <div class="giris-c__eskiz">
+      <img src="assets/crm-eskiz.webp" width="1536" height="1024" alt="Kalemle çizilmiş bir iç mimarlık stüdyosu: çizim masası, malzeme örnekleri, raf ve duvarda iki pafta">
+      <!-- mavi düzlemler görselin piksel koordinatlarında: duvardaki iki paftada ve masadaki planda birer oda -->
+      <svg viewBox="0 0 1536 1024" aria-hidden="true">
+          <polygon class="duzlem" points="1232,310 1264,310 1264,372 1232,372"/>
+          <polygon class="duzlem" points="1384,230 1414,230 1414,282 1384,282"/>
+          <polygon class="duzlem" points="1128,602 1185,592 1195,610 1135,620"/>
+      </svg>
+      <p class="not" aria-hidden="true"><span>Paftalar</span><span>duvarda,</span><span>işler cebinde.</span></p>
+      <span class="giris-c__yer" aria-hidden="true"></span>
+    </div>
+    <div class="kap giris-c__metin">
+      <div>
+        <img class="giris-c__logo" src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278">
+        <h1 id="giris-baslik">Dağınık işler, tek planda.</h1>
+        <p class="giris-c__alt">Müşteri, şantiye, takvim ve tahsilat. İç mimarlık stüdyoları için tek uygulamada.</p>
+        <div class="giris-c__eylem">
+          <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+        <div class="magaza">
+          <a href="#" data-bag="crmAppStore" aria-label="kroki crm uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
+          <a href="#" data-bag="crmGooglePlay" aria-label="kroki crm uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>
+        </div>
+          <a class="metin-link" href="#paketler">Paketleri gör</a>
+        </div>
+        <p class="giris-c__not">14 gün boyunca Stüdyo paketinin tamamı ücretsiz.</p>
+      </div>
+    </div>
+  </div>
+    <div class="sinema-c__cep"><div class="cep"><div class="cep__ekran"><div class="sinema-c__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Panel: İşlerin yolunda, sıradaki iş ve bugünkü işler">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <defs><radialGradient id="s1-isik" cx="369" cy="1106" r="1" gradientTransform="translate(369 1106) scale(330 110) translate(-369 -1106)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1D4F86" stop-opacity=".55"/><stop offset="1" stop-color="#1D4F86" stop-opacity="0"/></radialGradient></defs>
+  <text x="30" y="292" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">İşlerin yolunda.</text>
+  <text x="30" y="352" font-size="26" fill="#A0A6AB">21 Ekim Çarşamba</text>
+  <text x="30" y="405" font-size="21" fill="#A0A6AB">3 iş seni bekliyor. Önce sıradakiyle başlayalım.</text>
+  <rect x="31" y="460" width="199" height="72" rx="36" fill="#111314" stroke="#3A3E41" stroke-width="2"/>
+  <text x="130.5" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">+ Yeni Müşteri</text>
+  <rect x="246" y="460" width="208" height="72" rx="36" fill="#F2F2F0"/>
+  <text x="350" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#111">+ Randevu Ekle</text>
+  <text x="30" y="614" font-size="27" font-weight="700" fill="#F2F2F0">Sıradaki işin</text>
+  <rect x="585" y="581" width="123" height="48" rx="24" fill="#101615" stroke="#24302A" stroke-width="2"/>
+  <circle cx="613" cy="605" r="6" fill="#37C770"/><text x="631" y="612" font-size="19" fill="#7BA4F7">Bugün</text>
+  <rect x="31" y="662" width="677" height="444" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="900" width="677" height="206" rx="40" fill="url(#s1-isik)"/>
+  <text x="75" y="736" font-size="22" font-weight="600" fill="#7BA4F7">13:30  ·  Şantiye</text>
+  <text x="75" y="806" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">Seramik ustasıyla</text>
+  <text x="75" y="860" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">buluşma</text>
+  <text x="75" y="908" font-size="22" fill="#A0A6AB">Kadıköy ofis, Ece Yıldız projesi</text>
+  <rect x="75" y="958" width="589" height="80" rx="40" fill="none" stroke="#3A3E41" stroke-width="2.5"/>
+  <text x="114" y="1007" font-size="27" font-weight="700" fill="#F2F2F0">İşi tamamla</text>
+  <text x="30" y="1188" font-size="28" font-weight="700" fill="#F2F2F0">Bugünkü İşler</text>
+  <g font-size="22">
+    <rect x="31" y="1222" width="677" height="160" rx="30" fill="#141617" stroke="#25292C" stroke-width="2"/>
+    <circle cx="80" cy="1268" r="15" fill="#37C770"/><path d="M73 1268l5 5 9-10" fill="none" stroke="#0B0C0D" stroke-width="3" stroke-linecap="round"/>
+    <text x="110" y="1276" fill="#6E7479" text-decoration="line-through">09:30  Ön görüşme, Deniz Arslan</text>
+    <circle cx="80" cy="1336" r="14" fill="none" stroke="#5C6166" stroke-width="2.5"/>
+    <text x="110" y="1344" fill="#E8E8E6">15:00  Hakediş tahsilatı, Bora Demir</text>
+  </g>
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg></div><div class="sinema-c__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Müşteriler: aşamalarıyla müşteri listesi, arama ve WhatsApp düğmeleri">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <text x="30" y="295" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">Müşteriler</text>
+  <rect x="437" y="237" width="271" height="79" rx="39.5" fill="#F2F2F0"/>
+  <text x="572.5" y="287" text-anchor="middle" font-size="25" font-weight="700" fill="#111">+ Yeni Müşteri</text>
+  <text x="30" y="353" font-size="26" fill="#A0A6AB">24 kayıtlı müşteri</text>
+  <rect x="31" y="415" width="677" height="76" rx="38" fill="#111314" stroke="#2A2E31" stroke-width="2"/>
+  <rect x="40" y="425" width="170" height="57" rx="28.5" fill="#F2F2F0"/>
+  <text x="125" y="461" text-anchor="middle" font-size="22" font-weight="700" fill="#111">Müşteriler</text>
+  <text x="241" y="461" font-size="22" fill="#8B9196">Ustalar</text>
+  <rect x="31" y="516" width="677" height="83" rx="41.5" fill="#0E1011" stroke="#2A2E31" stroke-width="2"/>
+  <text x="63" y="567" font-size="27" fill="#8F959A">İsim veya proje tipi ara...</text>
+  <rect x="31" y="617" width="315" height="83" rx="41.5" fill="#0E1011" stroke="#2A2E31" stroke-width="2"/>
+  <text x="63" y="668" font-size="27" fill="#E8E8E6">Tüm aşamalar</text>
+  <rect x="31" y="729" width="677" height="900" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="63" y="786" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="825" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">EY</text>
+  <text x="146" y="787" font-size="28" font-weight="700" fill="#F7F6F2">Ece Yıldız</text>
+  <text x="146" y="826" font-size="20" fill="#7BA4F7">Randevu Takip</text>
+  <text x="146" y="866" font-size="22" fill="#A0A6AB">Salon yenileme</text>
+  <circle cx="574" cy="816" r="31" fill="#173021"/><path d="M563 806c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="816" r="31" fill="#173021"/><path d="M634 830l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 903H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="960" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="999" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">DA</text>
+  <text x="146" y="961" font-size="28" font-weight="700" fill="#F7F6F2">Deniz Arslan</text>
+  <text x="146" y="1000" font-size="20" fill="#7BA4F7">Keşif Ölçüm</text>
+  <text x="146" y="1040" font-size="22" fill="#A0A6AB">Mutfak</text>
+  <circle cx="574" cy="990" r="31" fill="#173021"/><path d="M563 980c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="990" r="31" fill="#173021"/><path d="M634 1004l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1077H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1134" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1173" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">SK</text>
+  <text x="146" y="1135" font-size="28" font-weight="700" fill="#F7F6F2">Selin Kaya</text>
+  <text x="146" y="1174" font-size="20" fill="#7BA4F7">Teklif Görüşmesi</text>
+  <text x="146" y="1214" font-size="22" fill="#A0A6AB">Ofis</text>
+  <circle cx="574" cy="1164" r="31" fill="#173021"/><path d="M563 1154c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1164" r="31" fill="#173021"/><path d="M634 1178l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1251H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1308" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1347" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">BD</text>
+  <text x="146" y="1309" font-size="28" font-weight="700" fill="#F7F6F2">Bora Demir</text>
+  <text x="146" y="1348" font-size="20" fill="#7BA4F7">Anlaşma Sağlandı</text>
+  <text x="146" y="1388" font-size="22" fill="#A0A6AB">Müstakil villa</text>
+  <circle cx="574" cy="1338" r="31" fill="#173021"/><path d="M563 1328c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1338" r="31" fill="#173021"/><path d="M634 1352l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1425H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1482" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1521" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">MA</text>
+  <text x="146" y="1483" font-size="28" font-weight="700" fill="#F7F6F2">Merve Aksoy</text>
+  <text x="146" y="1522" font-size="20" fill="#7BA4F7">Teklif Takip</text>
+  <text x="146" y="1562" font-size="22" fill="#A0A6AB">Müstakil konut</text>
+  <circle cx="574" cy="1512" r="31" fill="#173021"/><path d="M563 1502c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1512" r="31" fill="#173021"/><path d="M634 1526l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg></div><div class="sinema-c__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Takvim: ekim ayı görünümü; randevu, teklif, ölçü, ödeme ve şantiye işleri">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <text x="30" y="290" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">Takvim</text>
+  <text x="30" y="352" font-size="26" fill="#A0A6AB">Randevu ve şantiye ziyaretleri</text>
+  <rect x="31" y="408" width="287" height="79" rx="39.5" fill="#F2F2F0"/>
+  <text x="174.5" y="458" text-anchor="middle" font-size="27" font-weight="700" fill="#111">+ Randevu Ekle</text>
+  <rect x="31" y="536" width="383" height="83" rx="41.5" fill="#111314" stroke="#2A2E31" stroke-width="2"/>
+  <text x="99" y="586" text-anchor="middle" font-size="23" fill="#8B9196">Gün</text><text x="222" y="586" text-anchor="middle" font-size="23" fill="#8B9196">Hafta</text>
+  <rect x="286" y="545" width="119" height="65" rx="32.5" fill="#F2F2F0"/><text x="345.5" y="586" text-anchor="middle" font-size="23" font-weight="700" fill="#111">Ay</text>
+  <text x="708" y="557" text-anchor="end" font-size="19" fill="#A0A6AB">Seçili gün: 21.10.2026</text>
+  <circle cx="67" cy="686" r="36" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M71 676l-9 10 9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="294" y="695" text-anchor="middle" font-size="27" font-weight="700" fill="#F2F2F0">Ekim 2026</text>
+  <circle cx="519" cy="686" r="36" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M515 676l9 10-9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <rect x="568" y="646" width="144" height="80" rx="40" fill="#0E1011" stroke="#3A3E41" stroke-width="3"/>
+  <text x="640" y="696" text-anchor="middle" font-size="25" font-weight="700" fill="#F2F2F0">Bugün</text>
+  <rect x="31" y="757" width="677" height="900" rx="34" fill="#111314" stroke="#25292C" stroke-width="2"/>
+  <text x="80.0" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pt</text><text x="176.7" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Sa</text><text x="273.4" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Ça</text><text x="370.1" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pe</text><text x="466.8" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Cu</text><text x="563.5" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Ct</text><text x="660.2" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pz</text><path d="M31 820H708" stroke="#25292C" stroke-width="2"/><path d="M31 1025H708" stroke="#25292C" stroke-width="2"/><path d="M31 1197H708" stroke="#25292C" stroke-width="2"/><path d="M31 1369H708" stroke="#25292C" stroke-width="2"/><path d="M31 1541H708" stroke="#25292C" stroke-width="2"/><path d="M127.7 820V1600" stroke="#25292C" stroke-width="2"/><path d="M224.4 820V1600" stroke="#25292C" stroke-width="2"/><path d="M321.1 820V1600" stroke="#25292C" stroke-width="2"/><path d="M417.8 820V1600" stroke="#25292C" stroke-width="2"/><path d="M514.5 820V1600" stroke="#25292C" stroke-width="2"/><path d="M611.2 820V1600" stroke="#25292C" stroke-width="2"/><text x="41.0" y="853" font-size="22" font-weight="600" fill="#4A4F53">28</text><text x="137.7" y="853" font-size="22" font-weight="600" fill="#4A4F53">29</text><text x="234.4" y="853" font-size="22" font-weight="600" fill="#4A4F53">30</text><text x="331.1" y="853" font-size="22" font-weight="600" fill="#F2F2F0">1</text><rect x="326.1" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="887" r="4" fill="#3E7BEA"/><text x="345.1" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Satış</text><rect x="326.1" y="912" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="927" r="4" fill="#3E7BEA"/><text x="345.1" y="933" font-size="17" fill="#6F8FC8" text-decoration="line-through">Sunum</text><text x="427.8" y="853" font-size="22" font-weight="600" fill="#F2F2F0">2</text><rect x="422.8" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="887" r="4" fill="#3E7BEA"/><text x="441.8" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><rect x="422.8" y="912" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="927" r="4" fill="#3E7BEA"/><text x="441.8" y="933" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><rect x="422.8" y="952" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="967" r="4" fill="#3E7BEA"/><text x="441.8" y="973" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><text x="524.5" y="853" font-size="22" font-weight="600" fill="#F2F2F0">3</text><rect x="519.5" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="529.5" cy="887" r="4" fill="#3E7BEA"/><text x="538.5" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><text x="621.2" y="853" font-size="22" font-weight="600" fill="#F2F2F0">4</text><text x="41.0" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">5</text><rect x="36.0" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1092" r="4" fill="#3E7BEA"/><text x="55.0" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Satış</text><rect x="36.0" y="1117" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1132" r="4" fill="#3E7BEA"/><text x="55.0" y="1138" font-size="17" fill="#6F8FC8" text-decoration="line-through">Revize</text><rect x="36.0" y="1157" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1172" r="4" fill="#3E7BEA"/><text x="55.0" y="1178" font-size="17" fill="#6F8FC8" text-decoration="line-through">Revize</text><text x="137.7" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">6</text><text x="234.4" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">7</text><text x="331.1" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">8</text><rect x="326.1" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="1092" r="4" fill="#3E7BEA"/><text x="345.1" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Randevu</text><text x="427.8" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">9</text><rect x="422.8" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1092" r="4" fill="#3E7BEA"/><text x="441.8" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><text x="524.5" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">10</text><rect x="519.5" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="529.5" cy="1092" r="4" fill="#3E7BEA"/><text x="538.5" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Randevu</text><text x="621.2" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">11</text><text x="41.0" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">12</text><text x="137.7" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">13</text><text x="234.4" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">14</text><text x="331.1" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">15</text><rect x="326.1" y="1249" width="86" height="30" rx="8" fill="#251C35"/><circle cx="336.1" cy="1264" r="4" fill="#8E6BD8"/><text x="345.1" y="1270" font-size="17" fill="#9B86C9" text-decoration="line-through">Ödeme</text><text x="427.8" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">16</text><rect x="422.8" y="1249" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="432.8" cy="1264" r="4" fill="#37B36A"/><text x="441.8" y="1270" font-size="17" fill="#5FAE7C" text-decoration="line-through">Şantiye</text><rect x="422.8" y="1289" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1304" r="4" fill="#3E7BEA"/><text x="441.8" y="1310" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><rect x="422.8" y="1329" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1344" r="4" fill="#3E7BEA"/><text x="441.8" y="1350" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><text x="524.5" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">17</text><rect x="519.5" y="1249" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="529.5" cy="1264" r="4" fill="#37B36A"/><text x="538.5" y="1270" font-size="17" fill="#5FAE7C" text-decoration="line-through">Görüşme</text><rect x="519.5" y="1289" width="86" height="30" rx="8" fill="#251C35"/><circle cx="529.5" cy="1304" r="4" fill="#8E6BD8"/><text x="538.5" y="1310" font-size="17" fill="#9B86C9" text-decoration="line-through">Ödeme</text><text x="621.2" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">18</text><text x="41.0" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">19</text><rect x="36.0" y="1421" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="46.0" cy="1436" r="4" fill="#37B36A"/><text x="55.0" y="1442" font-size="17" fill="#5FAE7C" text-decoration="line-through">Elektrik</text><text x="137.7" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">20</text><rect x="225.4" y="1370" width="94.7" height="170" fill="#1A2943" stroke="#E8E8E6" stroke-width="3"/><text x="234.4" y="1402" font-size="22" font-weight="600" fill="#4C8DF6">21</text><rect x="229.4" y="1421" width="86" height="30" rx="8" fill="#17243B"/><circle cx="239.4" cy="1436" r="4" fill="#3E7BEA"/><text x="248.4" y="1442" font-size="17" fill="#6F8FC8">Ölçü</text><text x="331.1" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">22</text><text x="427.8" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">23</text><rect x="422.8" y="1421" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1436" r="4" fill="#3E7BEA"/><text x="441.8" y="1442" font-size="17" fill="#6F8FC8">Sunum</text><text x="524.5" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">24</text><text x="621.2" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">25</text><text x="41.0" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">26</text><text x="137.7" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">27</text><text x="234.4" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">28</text><text x="331.1" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">29</text><text x="427.8" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">30</text><text x="524.5" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">31</text><text x="621.2" y="1574" font-size="22" font-weight="600" fill="#4A4F53">1</text>
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg></div><div class="sinema-c__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Muhasebe: ekim ayında gelen 185.000 TL, giden 42.500 TL, net 142.500 TL ve hareketler">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <circle cx="210" cy="246" r="41" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M214 236l-9 10 9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="369" y="258" text-anchor="middle" font-size="28" font-weight="700" fill="#F2F2F0">Ekim 2026</text>
+  <circle cx="528" cy="246" r="41" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M524 236l9 10-9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <defs><radialGradient id="s4-g" cx="194.5" cy="565" r="1" gradientTransform="translate(194.5 565) scale(179.85000000000002 90) translate(-194.5 -565)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1F7A4A" stop-opacity=".55"/><stop offset="1" stop-color="#1F7A4A" stop-opacity="0"/></radialGradient></defs>
+  <rect x="31" y="318" width="327" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="438" width="327" height="127" rx="38" fill="url(#s4-g)"/>
+  <rect x="66" y="350" width="57" height="57" rx="14" fill="#17352A"/><g transform="translate(94.5 378.5)"><path d="M-9 0l6 6 12-12" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="66" y="450" font-size="23" fill="#A0A6AB">Gelen</text>
+  <text x="66" y="525" font-size="44" font-weight="800" letter-spacing="-2" fill="#F7F6F2">185.000 TL</text>
+  <defs><radialGradient id="s4-c" cx="544.0" cy="565" r="1" gradientTransform="translate(544.0 565) scale(180.4 90) translate(-544.0 -565)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7A2626" stop-opacity=".55"/><stop offset="1" stop-color="#7A2626" stop-opacity="0"/></radialGradient></defs>
+  <rect x="380" y="318" width="328" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="380" y="438" width="328" height="127" rx="38" fill="url(#s4-c)"/>
+  <rect x="415" y="350" width="57" height="57" rx="14" fill="#3A1C1F"/><g transform="translate(443.5 378.5)"><rect x="-11" y="-8" width="22" height="16" rx="3" fill="none" stroke="#E06A6A" stroke-width="2.6"/><path d="M-11-2h22" stroke="#E06A6A" stroke-width="2.6"/></g>
+  <text x="415" y="450" font-size="23" fill="#A0A6AB">Giden</text>
+  <text x="415" y="525" font-size="44" font-weight="800" letter-spacing="-2" fill="#F7F6F2">42.500 TL</text>
+  <defs><radialGradient id="s4-n" cx="369.5" cy="832" r="1" gradientTransform="translate(369.5 832) scale(372.35 90) translate(-369.5 -832)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1E4F99" stop-opacity=".55"/><stop offset="1" stop-color="#1E4F99" stop-opacity="0"/></radialGradient></defs>
+  <rect x="31" y="585" width="677" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="705" width="677" height="127" rx="38" fill="url(#s4-n)"/>
+  <rect x="66" y="617" width="57" height="57" rx="14" fill="#1A2A45"/><g transform="translate(94.5 645.5)"><path d="M-10-10h8v8h-8zM2-10h8v8H2zM-10 2h8v8h-8z" fill="none" stroke="#4C8DF6" stroke-width="2.6"/></g>
+  <text x="66" y="717" font-size="23" fill="#A0A6AB">Net</text>
+  <text x="66" y="792" font-size="50" font-weight="800" letter-spacing="-2" fill="#F7F6F2">+142.500 TL</text>
+  <rect x="31" y="872" width="677" height="520" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <text x="75" y="955" font-size="33" font-weight="800" fill="#F7F6F2">Hareketler</text>
+  <rect x="82" y="1010" width="71" height="70" rx="16" fill="#17352A"/><path d="M0-11v20M-8 2l8 8 8-8" transform="translate(117.5 1045)" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1040" font-size="24" font-weight="700" fill="#F7F6F2">Ece Yıldız</text>
+  <text x="176" y="1073" font-size="18" fill="#A0A6AB">17.10.2026 · 2. hakediş</text>
+  <text x="657" y="1055" text-anchor="end" font-size="25" font-weight="700" fill="#3CCB7F">+60.000 TL</text>
+  <path d="M75 1110H665" stroke="#25292C" stroke-width="2"/>
+  <rect x="82" y="1132" width="71" height="70" rx="16" fill="#3A1C1F"/><path d="M0 11v-20M-8-2l8-8 8 8" transform="translate(117.5 1167)" fill="none" stroke="#E06A6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1162" font-size="24" font-weight="700" fill="#F7F6F2">Seramik tedarikçisi</text>
+  <text x="176" y="1195" font-size="18" fill="#A0A6AB">12.10.2026 · Malzeme</text>
+  <text x="657" y="1177" text-anchor="end" font-size="25" font-weight="700" fill="#E06A6A">−42.500 TL</text>
+  <path d="M75 1232H665" stroke="#25292C" stroke-width="2"/>
+  <rect x="82" y="1254" width="71" height="70" rx="16" fill="#17352A"/><path d="M0-11v20M-8 2l8 8 8-8" transform="translate(117.5 1289)" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1284" font-size="24" font-weight="700" fill="#F7F6F2">Bora Demir</text>
+  <text x="176" y="1317" font-size="18" fill="#A0A6AB">03.10.2026 · Tahsilat</text>
+  <text x="657" y="1299" text-anchor="end" font-size="25" font-weight="700" fill="#3CCB7F">+125.000 TL</text>
+  
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Muhasebe</text>
+</svg></div><span class="cep__ada" aria-hidden="true"></span></div></div></div>
+    <div class="sinema-c__yazilar" aria-hidden="true">
+        <div class="sinema-c__yazi"><i>Panel</i><b>Güne sıradaki işle başlayın.</b><span>Panel, sıradaki işi ve günün listesini öne çıkarır. Yeni müşteri ya da randevu tek dokunuşta.</span><p class="not"><span>Sıradaki iş</span><span>hep</span><span>önde.</span></p></div>
+        <div class="sinema-c__yazi"><i>Müşteriler</i><b>Her müşteri tek kartta.</b><span>Aşamasına göre süzün, adıyla arayın; tek dokunuşla arayın ya da WhatsApp’tan yazın.</span><p class="not"><span>Tek dokunuşla</span><span>WhatsApp.</span></p></div>
+        <div class="sinema-c__yazi"><i>Takvim</i><b>Randevular tek takvimde.</b><span>Ölçü, sunum ve şantiye ziyaretleri gün, hafta ve ay görünümünde. Biten işlerin üstü çizilir.</span><p class="not"><span>Biten işin</span><span>üstü</span><span>çizilir.</span></p></div>
+        <div class="sinema-c__yazi"><i>Muhasebe</i><b>Gelen, giden, kalan.</b><span>Ayın tahsilatları, ödemeleri ve kalan net tek ekranda.</span><p class="not"><span>Ay sonu</span><span>sürpriz</span><span>yok.</span></p></div>
+    </div>
+  </div>
+  </section>
+
+  <section class="kap" aria-label="Kısaca kroki crm">
+    <div class="bilgiler">
+      <div><h3>Müşteri kartı</h3><p>İletişim, projeler, teklifler ve notlar tek yerde.</p></div>
+      <div><h3>Satış hattı</h3><p>Randevudan anlaşmaya, her müşteri hangi aşamada.</p></div>
+      <div><h3>Şantiye ve takvim</h3><p>Aşamalar, ustalar ve randevular aynı planda.</p></div>
+      <div><h3>Teklif ve tahsilat</h3><p>Teklif ve sözleşme PDF, ödemeler ve makbuz.</p></div>
+    </div>
+  </section>
+
+  <section class="kap bolum" aria-labelledby="ozellik-baslik">
+    <div class="bolum__bas">
+      <h2 id="ozellik-baslik">Stüdyonun bütün işi, tek ekranda.</h2>
+      <p>Ofiste bilgisayarda, şantiyede telefonda: aynı müşteriler, aynı takvim, aynı hesap.</p>
+    </div>
+
+    <div class="ozellik ozellik--genis">
+      <div>
+        <p class="ozellik__ad">Panel</p>
+        <h3>Güne sıradaki işle başlayın.</h3>
+        <p>Sıradaki iş, günün listesi, müşteri ve şantiye sayıları, satış hattı; ofiste bilgisayarda, şantiyede telefonda aynı panel.</p>
+        <ul><li>Sıradaki iş ve bugünkü işler</li><li>Bir bakışta müşteri, satış ve şantiye</li><li>Tek tıkla yeni müşteri ve randevu</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Sıradaki iş</span><span>hep önde.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-panel.webp" alt="kroki crm Panel ekranı bilgisayarda: sıradaki iş, bugünkü işler, bir bakışta sayılar ve satış hattı" width="1919" height="868" loading="lazy"></div><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Panel: İşlerin yolunda, sıradaki iş ve bugünkü işler">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <defs><radialGradient id="o1-isik" cx="369" cy="1106" r="1" gradientTransform="translate(369 1106) scale(330 110) translate(-369 -1106)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1D4F86" stop-opacity=".55"/><stop offset="1" stop-color="#1D4F86" stop-opacity="0"/></radialGradient></defs>
+  <text x="30" y="292" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">İşlerin yolunda.</text>
+  <text x="30" y="352" font-size="26" fill="#A0A6AB">21 Ekim Çarşamba</text>
+  <text x="30" y="405" font-size="21" fill="#A0A6AB">3 iş seni bekliyor. Önce sıradakiyle başlayalım.</text>
+  <rect x="31" y="460" width="199" height="72" rx="36" fill="#111314" stroke="#3A3E41" stroke-width="2"/>
+  <text x="130.5" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">+ Yeni Müşteri</text>
+  <rect x="246" y="460" width="208" height="72" rx="36" fill="#F2F2F0"/>
+  <text x="350" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#111">+ Randevu Ekle</text>
+  <text x="30" y="614" font-size="27" font-weight="700" fill="#F2F2F0">Sıradaki işin</text>
+  <rect x="585" y="581" width="123" height="48" rx="24" fill="#101615" stroke="#24302A" stroke-width="2"/>
+  <circle cx="613" cy="605" r="6" fill="#37C770"/><text x="631" y="612" font-size="19" fill="#7BA4F7">Bugün</text>
+  <rect x="31" y="662" width="677" height="444" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="900" width="677" height="206" rx="40" fill="url(#o1-isik)"/>
+  <text x="75" y="736" font-size="22" font-weight="600" fill="#7BA4F7">13:30  ·  Şantiye</text>
+  <text x="75" y="806" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">Seramik ustasıyla</text>
+  <text x="75" y="860" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">buluşma</text>
+  <text x="75" y="908" font-size="22" fill="#A0A6AB">Kadıköy ofis, Ece Yıldız projesi</text>
+  <rect x="75" y="958" width="589" height="80" rx="40" fill="none" stroke="#3A3E41" stroke-width="2.5"/>
+  <text x="114" y="1007" font-size="27" font-weight="700" fill="#F2F2F0">İşi tamamla</text>
+  <text x="30" y="1188" font-size="28" font-weight="700" fill="#F2F2F0">Bugünkü İşler</text>
+  <g font-size="22">
+    <rect x="31" y="1222" width="677" height="160" rx="30" fill="#141617" stroke="#25292C" stroke-width="2"/>
+    <circle cx="80" cy="1268" r="15" fill="#37C770"/><path d="M73 1268l5 5 9-10" fill="none" stroke="#0B0C0D" stroke-width="3" stroke-linecap="round"/>
+    <text x="110" y="1276" fill="#6E7479" text-decoration="line-through">09:30  Ön görüşme, Deniz Arslan</text>
+    <circle cx="80" cy="1336" r="14" fill="none" stroke="#5C6166" stroke-width="2.5"/>
+    <text x="110" y="1344" fill="#E8E8E6">15:00  Hakediş tahsilatı, Bora Demir</text>
+  </g>
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div></div>
+    </div>
+    <div class="ozellik ozellik--genis ozellik--ters">
+      <div>
+        <p class="ozellik__ad">Müşteriler</p>
+        <h3>Her müşteri tek kartta.</h3>
+        <p>Müşterileri aşamasına göre süzün, adına ya da proje tipine göre arayın; telefonla veya WhatsApp’tan tek dokunuşla ulaşın. Ustalarınız da ayrı bir listede.</p>
+        <ul><li>Aşamaya göre süzme ve arama</li><li>Arama ve WhatsApp kısayolu</li><li>Ustalar listesi</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek dokunuşla</span><span>WhatsApp.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-musteriler.webp" alt="kroki crm Müşteriler ekranı bilgisayarda: aşamalarıyla müşteri listesi, arama ve WhatsApp düğmeleri" width="1919" height="743" loading="lazy"></div><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Müşteriler: aşamalarıyla müşteri listesi, arama ve WhatsApp düğmeleri">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <text x="30" y="295" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">Müşteriler</text>
+  <rect x="437" y="237" width="271" height="79" rx="39.5" fill="#F2F2F0"/>
+  <text x="572.5" y="287" text-anchor="middle" font-size="25" font-weight="700" fill="#111">+ Yeni Müşteri</text>
+  <text x="30" y="353" font-size="26" fill="#A0A6AB">24 kayıtlı müşteri</text>
+  <rect x="31" y="415" width="677" height="76" rx="38" fill="#111314" stroke="#2A2E31" stroke-width="2"/>
+  <rect x="40" y="425" width="170" height="57" rx="28.5" fill="#F2F2F0"/>
+  <text x="125" y="461" text-anchor="middle" font-size="22" font-weight="700" fill="#111">Müşteriler</text>
+  <text x="241" y="461" font-size="22" fill="#8B9196">Ustalar</text>
+  <rect x="31" y="516" width="677" height="83" rx="41.5" fill="#0E1011" stroke="#2A2E31" stroke-width="2"/>
+  <text x="63" y="567" font-size="27" fill="#8F959A">İsim veya proje tipi ara...</text>
+  <rect x="31" y="617" width="315" height="83" rx="41.5" fill="#0E1011" stroke="#2A2E31" stroke-width="2"/>
+  <text x="63" y="668" font-size="27" fill="#E8E8E6">Tüm aşamalar</text>
+  <rect x="31" y="729" width="677" height="900" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="63" y="786" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="825" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">EY</text>
+  <text x="146" y="787" font-size="28" font-weight="700" fill="#F7F6F2">Ece Yıldız</text>
+  <text x="146" y="826" font-size="20" fill="#7BA4F7">Randevu Takip</text>
+  <text x="146" y="866" font-size="22" fill="#A0A6AB">Salon yenileme</text>
+  <circle cx="574" cy="816" r="31" fill="#173021"/><path d="M563 806c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="816" r="31" fill="#173021"/><path d="M634 830l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 903H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="960" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="999" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">DA</text>
+  <text x="146" y="961" font-size="28" font-weight="700" fill="#F7F6F2">Deniz Arslan</text>
+  <text x="146" y="1000" font-size="20" fill="#7BA4F7">Keşif Ölçüm</text>
+  <text x="146" y="1040" font-size="22" fill="#A0A6AB">Mutfak</text>
+  <circle cx="574" cy="990" r="31" fill="#173021"/><path d="M563 980c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="990" r="31" fill="#173021"/><path d="M634 1004l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1077H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1134" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1173" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">SK</text>
+  <text x="146" y="1135" font-size="28" font-weight="700" fill="#F7F6F2">Selin Kaya</text>
+  <text x="146" y="1174" font-size="20" fill="#7BA4F7">Teklif Görüşmesi</text>
+  <text x="146" y="1214" font-size="22" fill="#A0A6AB">Ofis</text>
+  <circle cx="574" cy="1164" r="31" fill="#173021"/><path d="M563 1154c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1164" r="31" fill="#173021"/><path d="M634 1178l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1251H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1308" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1347" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">BD</text>
+  <text x="146" y="1309" font-size="28" font-weight="700" fill="#F7F6F2">Bora Demir</text>
+  <text x="146" y="1348" font-size="20" fill="#7BA4F7">Anlaşma Sağlandı</text>
+  <text x="146" y="1388" font-size="22" fill="#A0A6AB">Müstakil villa</text>
+  <circle cx="574" cy="1338" r="31" fill="#173021"/><path d="M563 1328c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1338" r="31" fill="#173021"/><path d="M634 1352l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  <path d="M31 1425H708" stroke="#25292C" stroke-width="2"/><rect x="63" y="1482" width="63" height="63" rx="14" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <text x="94.5" y="1521" text-anchor="middle" font-size="22" font-weight="600" fill="#C8CCCF">MA</text>
+  <text x="146" y="1483" font-size="28" font-weight="700" fill="#F7F6F2">Merve Aksoy</text>
+  <text x="146" y="1522" font-size="20" fill="#7BA4F7">Teklif Takip</text>
+  <text x="146" y="1562" font-size="22" fill="#A0A6AB">Müstakil konut</text>
+  <circle cx="574" cy="1512" r="31" fill="#173021"/><path d="M563 1502c0 12 9 21 21 21l4-5-6-4-3 3c-4-1-7-4-8-8l3-3-4-6z" fill="none" stroke="#3CC27A" stroke-width="2.6" stroke-linejoin="round"/>
+  <circle cx="646" cy="1512" r="31" fill="#173021"/><path d="M634 1526l3-9a13 13 0 1 1 5 5z" fill="none" stroke="#3CC27A" stroke-width="2.8" stroke-linejoin="round"/>
+  
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div></div>
+    </div>
+    <div class="ozellik ozellik--genis">
+      <div>
+        <p class="ozellik__ad">Şantiye</p>
+        <h3>Şantiyeler aşama aşama.</h3>
+        <p>Tasarımdan uygulamaya, son rötuşlardan teslime; her şantiyenin süreci, kontrol listesi, notları ve parası kendi kartında.</p>
+        <ul><li>Tasarım & Proje, Uygulama, Son Rötuşlar, Teslim</li><li>Kontrol listesi ve şantiye notları</li><li>Tahsil edilen, ustalara ödenen, kalan</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Kontrol listesi</span><span>hep elinde.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/crm-pc-santiye.webp" alt="kroki crm şantiye kartı: şantiye süreci, kontrol listesi, tahsil edilen ve ustalara ödenen tutarlar, şantiye notları" width="918" height="1028" loading="lazy"></div></div></div>
+    </div>
+    <div class="ozellik ozellik--genis ozellik--ters">
+      <div>
+        <p class="ozellik__ad">Takvim</p>
+        <h3>Randevular tek takvimde.</h3>
+        <p>Ölçü, sunum, teklif ve şantiye ziyaretleri gün, hafta ve ay görünümünde. Biten işlerin üstü çizilir; randevu, şantiye ve ödeme kendi renginde.</p>
+        <ul><li>Gün, hafta ve ay görünümü</li><li>Randevu, şantiye ve ödeme renkleri</li><li>Seçili günün işleri yanda</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Biten işin</span><span>üstü çizilir.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-takvim.webp" alt="kroki crm Takvim ekranı bilgisayarda: ekim ayı, renkli işler ve seçili günün listesi" width="1919" height="978" loading="lazy"></div><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Takvim: ekim ayı görünümü; randevu, teklif, ölçü, ödeme ve şantiye işleri">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <text x="30" y="290" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">Takvim</text>
+  <text x="30" y="352" font-size="26" fill="#A0A6AB">Randevu ve şantiye ziyaretleri</text>
+  <rect x="31" y="408" width="287" height="79" rx="39.5" fill="#F2F2F0"/>
+  <text x="174.5" y="458" text-anchor="middle" font-size="27" font-weight="700" fill="#111">+ Randevu Ekle</text>
+  <rect x="31" y="536" width="383" height="83" rx="41.5" fill="#111314" stroke="#2A2E31" stroke-width="2"/>
+  <text x="99" y="586" text-anchor="middle" font-size="23" fill="#8B9196">Gün</text><text x="222" y="586" text-anchor="middle" font-size="23" fill="#8B9196">Hafta</text>
+  <rect x="286" y="545" width="119" height="65" rx="32.5" fill="#F2F2F0"/><text x="345.5" y="586" text-anchor="middle" font-size="23" font-weight="700" fill="#111">Ay</text>
+  <text x="708" y="557" text-anchor="end" font-size="19" fill="#A0A6AB">Seçili gün: 21.10.2026</text>
+  <circle cx="67" cy="686" r="36" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M71 676l-9 10 9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="294" y="695" text-anchor="middle" font-size="27" font-weight="700" fill="#F2F2F0">Ekim 2026</text>
+  <circle cx="519" cy="686" r="36" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M515 676l9 10-9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <rect x="568" y="646" width="144" height="80" rx="40" fill="#0E1011" stroke="#3A3E41" stroke-width="3"/>
+  <text x="640" y="696" text-anchor="middle" font-size="25" font-weight="700" fill="#F2F2F0">Bugün</text>
+  <rect x="31" y="757" width="677" height="900" rx="34" fill="#111314" stroke="#25292C" stroke-width="2"/>
+  <text x="80.0" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pt</text><text x="176.7" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Sa</text><text x="273.4" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Ça</text><text x="370.1" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pe</text><text x="466.8" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Cu</text><text x="563.5" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Ct</text><text x="660.2" y="797" text-anchor="middle" font-size="22" fill="#A0A6AB">Pz</text><path d="M31 820H708" stroke="#25292C" stroke-width="2"/><path d="M31 1025H708" stroke="#25292C" stroke-width="2"/><path d="M31 1197H708" stroke="#25292C" stroke-width="2"/><path d="M31 1369H708" stroke="#25292C" stroke-width="2"/><path d="M31 1541H708" stroke="#25292C" stroke-width="2"/><path d="M127.7 820V1600" stroke="#25292C" stroke-width="2"/><path d="M224.4 820V1600" stroke="#25292C" stroke-width="2"/><path d="M321.1 820V1600" stroke="#25292C" stroke-width="2"/><path d="M417.8 820V1600" stroke="#25292C" stroke-width="2"/><path d="M514.5 820V1600" stroke="#25292C" stroke-width="2"/><path d="M611.2 820V1600" stroke="#25292C" stroke-width="2"/><text x="41.0" y="853" font-size="22" font-weight="600" fill="#4A4F53">28</text><text x="137.7" y="853" font-size="22" font-weight="600" fill="#4A4F53">29</text><text x="234.4" y="853" font-size="22" font-weight="600" fill="#4A4F53">30</text><text x="331.1" y="853" font-size="22" font-weight="600" fill="#F2F2F0">1</text><rect x="326.1" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="887" r="4" fill="#3E7BEA"/><text x="345.1" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Satış</text><rect x="326.1" y="912" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="927" r="4" fill="#3E7BEA"/><text x="345.1" y="933" font-size="17" fill="#6F8FC8" text-decoration="line-through">Sunum</text><text x="427.8" y="853" font-size="22" font-weight="600" fill="#F2F2F0">2</text><rect x="422.8" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="887" r="4" fill="#3E7BEA"/><text x="441.8" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><rect x="422.8" y="912" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="927" r="4" fill="#3E7BEA"/><text x="441.8" y="933" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><rect x="422.8" y="952" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="967" r="4" fill="#3E7BEA"/><text x="441.8" y="973" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><text x="524.5" y="853" font-size="22" font-weight="600" fill="#F2F2F0">3</text><rect x="519.5" y="872" width="86" height="30" rx="8" fill="#17243B"/><circle cx="529.5" cy="887" r="4" fill="#3E7BEA"/><text x="538.5" y="893" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><text x="621.2" y="853" font-size="22" font-weight="600" fill="#F2F2F0">4</text><text x="41.0" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">5</text><rect x="36.0" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1092" r="4" fill="#3E7BEA"/><text x="55.0" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Satış</text><rect x="36.0" y="1117" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1132" r="4" fill="#3E7BEA"/><text x="55.0" y="1138" font-size="17" fill="#6F8FC8" text-decoration="line-through">Revize</text><rect x="36.0" y="1157" width="86" height="30" rx="8" fill="#17243B"/><circle cx="46.0" cy="1172" r="4" fill="#3E7BEA"/><text x="55.0" y="1178" font-size="17" fill="#6F8FC8" text-decoration="line-through">Revize</text><text x="137.7" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">6</text><text x="234.4" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">7</text><text x="331.1" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">8</text><rect x="326.1" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="336.1" cy="1092" r="4" fill="#3E7BEA"/><text x="345.1" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Randevu</text><text x="427.8" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">9</text><rect x="422.8" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1092" r="4" fill="#3E7BEA"/><text x="441.8" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><text x="524.5" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">10</text><rect x="519.5" y="1077" width="86" height="30" rx="8" fill="#17243B"/><circle cx="529.5" cy="1092" r="4" fill="#3E7BEA"/><text x="538.5" y="1098" font-size="17" fill="#6F8FC8" text-decoration="line-through">Randevu</text><text x="621.2" y="1058" font-size="22" font-weight="600" fill="#F2F2F0">11</text><text x="41.0" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">12</text><text x="137.7" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">13</text><text x="234.4" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">14</text><text x="331.1" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">15</text><rect x="326.1" y="1249" width="86" height="30" rx="8" fill="#251C35"/><circle cx="336.1" cy="1264" r="4" fill="#8E6BD8"/><text x="345.1" y="1270" font-size="17" fill="#9B86C9" text-decoration="line-through">Ödeme</text><text x="427.8" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">16</text><rect x="422.8" y="1249" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="432.8" cy="1264" r="4" fill="#37B36A"/><text x="441.8" y="1270" font-size="17" fill="#5FAE7C" text-decoration="line-through">Şantiye</text><rect x="422.8" y="1289" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1304" r="4" fill="#3E7BEA"/><text x="441.8" y="1310" font-size="17" fill="#6F8FC8" text-decoration="line-through">Ölçü</text><rect x="422.8" y="1329" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1344" r="4" fill="#3E7BEA"/><text x="441.8" y="1350" font-size="17" fill="#6F8FC8" text-decoration="line-through">Teklif</text><text x="524.5" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">17</text><rect x="519.5" y="1249" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="529.5" cy="1264" r="4" fill="#37B36A"/><text x="538.5" y="1270" font-size="17" fill="#5FAE7C" text-decoration="line-through">Görüşme</text><rect x="519.5" y="1289" width="86" height="30" rx="8" fill="#251C35"/><circle cx="529.5" cy="1304" r="4" fill="#8E6BD8"/><text x="538.5" y="1310" font-size="17" fill="#9B86C9" text-decoration="line-through">Ödeme</text><text x="621.2" y="1230" font-size="22" font-weight="600" fill="#F2F2F0">18</text><text x="41.0" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">19</text><rect x="36.0" y="1421" width="86" height="30" rx="8" fill="#152A1C"/><circle cx="46.0" cy="1436" r="4" fill="#37B36A"/><text x="55.0" y="1442" font-size="17" fill="#5FAE7C" text-decoration="line-through">Elektrik</text><text x="137.7" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">20</text><rect x="225.4" y="1370" width="94.7" height="170" fill="#1A2943" stroke="#E8E8E6" stroke-width="3"/><text x="234.4" y="1402" font-size="22" font-weight="600" fill="#4C8DF6">21</text><rect x="229.4" y="1421" width="86" height="30" rx="8" fill="#17243B"/><circle cx="239.4" cy="1436" r="4" fill="#3E7BEA"/><text x="248.4" y="1442" font-size="17" fill="#6F8FC8">Ölçü</text><text x="331.1" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">22</text><text x="427.8" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">23</text><rect x="422.8" y="1421" width="86" height="30" rx="8" fill="#17243B"/><circle cx="432.8" cy="1436" r="4" fill="#3E7BEA"/><text x="441.8" y="1442" font-size="17" fill="#6F8FC8">Sunum</text><text x="524.5" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">24</text><text x="621.2" y="1402" font-size="22" font-weight="600" fill="#F2F2F0">25</text><text x="41.0" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">26</text><text x="137.7" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">27</text><text x="234.4" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">28</text><text x="331.1" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">29</text><text x="427.8" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">30</text><text x="524.5" y="1574" font-size="22" font-weight="600" fill="#F2F2F0">31</text><text x="621.2" y="1574" font-size="22" font-weight="600" fill="#4A4F53">1</text>
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div></div>
+    </div>
+    <div class="ozellik ozellik--genis">
+      <div>
+        <p class="ozellik__ad">Sözleşme</p>
+        <h3>Teklif ve sözleşme tek formda.</h3>
+        <p>Anahtar teslim ya da tasarım teklifi seçin, iş kalemlerini ve ödeme planını girin. Belge özeti siz yazdıkça hazırlanır, sözleşme metni tek tuşla oluşur.</p>
+        <ul><li>Anahtar teslim ve tasarım teklifi</li><li>İş kalemleri ve ödeme planı</li><li>Sözleşme metni tek tuşla</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek tuşla</span><span>sözleşme.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/crm-pc-sozlesme.webp" alt="kroki crm sözleşme formu: anahtar teslim teklif, ödeme planı, iç mimar ve belge özeti" width="918" height="1028" loading="lazy"></div></div></div>
+    </div>
+    <div class="ozellik ozellik--genis ozellik--ters">
+      <div>
+        <p class="ozellik__ad">Muhasebe</p>
+        <h3>Gelen, giden, kalan.</h3>
+        <p>Müşterilerden beklenen ve ustalara kalan borç en üstte; ay ay gelen, giden ve net. Bütün hareketler tek listede, tek tıkla Excel’e.</p>
+        <ul><li>Müşterilerden beklenen, ustalara kalan borç</li><li>Aylık gelen, giden ve net</li><li>Excel’e aktarma</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Ay sonu</span><span>sürpriz yok.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-muhasebe.webp" alt="kroki crm Muhasebe ekranı bilgisayarda: genel durum, aylık gelen, giden ve net, hareketler" width="1919" height="888" loading="lazy"></div><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Muhasebe: ekim ayında gelen 185.000 TL, giden 42.500 TL, net 142.500 TL ve hareketler">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <circle cx="210" cy="246" r="41" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M214 236l-9 10 9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="369" y="258" text-anchor="middle" font-size="28" font-weight="700" fill="#F2F2F0">Ekim 2026</text>
+  <circle cx="528" cy="246" r="41" fill="none" stroke="#2E3235" stroke-width="2"/><path d="M524 236l9 10-9 10" fill="none" stroke="#F2F2F0" stroke-width="2.6" stroke-linecap="round"/>
+  <defs><radialGradient id="o4-g" cx="194.5" cy="565" r="1" gradientTransform="translate(194.5 565) scale(179.85000000000002 90) translate(-194.5 -565)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1F7A4A" stop-opacity=".55"/><stop offset="1" stop-color="#1F7A4A" stop-opacity="0"/></radialGradient></defs>
+  <rect x="31" y="318" width="327" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="438" width="327" height="127" rx="38" fill="url(#o4-g)"/>
+  <rect x="66" y="350" width="57" height="57" rx="14" fill="#17352A"/><g transform="translate(94.5 378.5)"><path d="M-9 0l6 6 12-12" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <text x="66" y="450" font-size="23" fill="#A0A6AB">Gelen</text>
+  <text x="66" y="525" font-size="44" font-weight="800" letter-spacing="-2" fill="#F7F6F2">185.000 TL</text>
+  <defs><radialGradient id="o4-c" cx="544.0" cy="565" r="1" gradientTransform="translate(544.0 565) scale(180.4 90) translate(-544.0 -565)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7A2626" stop-opacity=".55"/><stop offset="1" stop-color="#7A2626" stop-opacity="0"/></radialGradient></defs>
+  <rect x="380" y="318" width="328" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="380" y="438" width="328" height="127" rx="38" fill="url(#o4-c)"/>
+  <rect x="415" y="350" width="57" height="57" rx="14" fill="#3A1C1F"/><g transform="translate(443.5 378.5)"><rect x="-11" y="-8" width="22" height="16" rx="3" fill="none" stroke="#E06A6A" stroke-width="2.6"/><path d="M-11-2h22" stroke="#E06A6A" stroke-width="2.6"/></g>
+  <text x="415" y="450" font-size="23" fill="#A0A6AB">Giden</text>
+  <text x="415" y="525" font-size="44" font-weight="800" letter-spacing="-2" fill="#F7F6F2">42.500 TL</text>
+  <defs><radialGradient id="o4-n" cx="369.5" cy="832" r="1" gradientTransform="translate(369.5 832) scale(372.35 90) translate(-369.5 -832)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1E4F99" stop-opacity=".55"/><stop offset="1" stop-color="#1E4F99" stop-opacity="0"/></radialGradient></defs>
+  <rect x="31" y="585" width="677" height="247" rx="38" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="705" width="677" height="127" rx="38" fill="url(#o4-n)"/>
+  <rect x="66" y="617" width="57" height="57" rx="14" fill="#1A2A45"/><g transform="translate(94.5 645.5)"><path d="M-10-10h8v8h-8zM2-10h8v8H2zM-10 2h8v8h-8z" fill="none" stroke="#4C8DF6" stroke-width="2.6"/></g>
+  <text x="66" y="717" font-size="23" fill="#A0A6AB">Net</text>
+  <text x="66" y="792" font-size="50" font-weight="800" letter-spacing="-2" fill="#F7F6F2">+142.500 TL</text>
+  <rect x="31" y="872" width="677" height="520" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <text x="75" y="955" font-size="33" font-weight="800" fill="#F7F6F2">Hareketler</text>
+  <rect x="82" y="1010" width="71" height="70" rx="16" fill="#17352A"/><path d="M0-11v20M-8 2l8 8 8-8" transform="translate(117.5 1045)" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1040" font-size="24" font-weight="700" fill="#F7F6F2">Ece Yıldız</text>
+  <text x="176" y="1073" font-size="18" fill="#A0A6AB">17.10.2026 · 2. hakediş</text>
+  <text x="657" y="1055" text-anchor="end" font-size="25" font-weight="700" fill="#3CCB7F">+60.000 TL</text>
+  <path d="M75 1110H665" stroke="#25292C" stroke-width="2"/>
+  <rect x="82" y="1132" width="71" height="70" rx="16" fill="#3A1C1F"/><path d="M0 11v-20M-8-2l8-8 8 8" transform="translate(117.5 1167)" fill="none" stroke="#E06A6A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1162" font-size="24" font-weight="700" fill="#F7F6F2">Seramik tedarikçisi</text>
+  <text x="176" y="1195" font-size="18" fill="#A0A6AB">12.10.2026 · Malzeme</text>
+  <text x="657" y="1177" text-anchor="end" font-size="25" font-weight="700" fill="#E06A6A">−42.500 TL</text>
+  <path d="M75 1232H665" stroke="#25292C" stroke-width="2"/>
+  <rect x="82" y="1254" width="71" height="70" rx="16" fill="#17352A"/><path d="M0-11v20M-8 2l8 8 8-8" transform="translate(117.5 1289)" fill="none" stroke="#3CCB7F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="176" y="1284" font-size="24" font-weight="700" fill="#F7F6F2">Bora Demir</text>
+  <text x="176" y="1317" font-size="18" fill="#A0A6AB">03.10.2026 · Tahsilat</text>
+  <text x="657" y="1299" text-anchor="end" font-size="25" font-weight="700" fill="#3CCB7F">+125.000 TL</text>
+  
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Muhasebe</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div></div>
+    </div>
+  </section>
+
+  <section class="kap bolum" id="nasil" aria-labelledby="nasil-baslik">
+    <div class="bolum__bas">
+      <h2 id="nasil-baslik">Üç adımda düzen.</h2>
+      <p>Müşteri geldiği andan tahsilata kadar her iş aynı yerde ilerler.</p>
+    </div>
+    <ol class="adimlar">
+      <li class="adim">
+        <span class="adim__sira">1. adım</span>
+        <h3>Müşteriyi ekleyin.</h3>
+        <p>Adı, telefonu ve proje tipi yeter; müşteri satış hattına girer.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="hap">+ Yeni Müşteri</span></div>
+      </li>
+      <li class="adim">
+        <span class="adim__sira">2. adım</span>
+        <h3>Randevuyu takvime koyun.</h3>
+        <p>Ölçü, sunum ya da şantiye ziyareti; günü gelince Panel’de sıradaki iş olur.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="hap">+ Randevu Ekle</span></div>
+      </li>
+      <li class="adim">
+        <span class="adim__sira">3. adım</span>
+        <h3>Sözleşmeyi yapın, tahsil edin.</h3>
+        <p>Sözleşme metni tek tuşla oluşur; ödemeler geldikçe muhasebeye işlenir.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="hap hap--cizgi">Sözleşme Metnini Oluştur</span><span class="hap">+ Ödeme</span></div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="bant" aria-label="kroki crm'in yaklaşımı">
+    <div class="bant__ic">
+      <p class="bant__metin">Her iş<br>yerli<br>yerinde.</p>
+      <div class="bant__eskiz" aria-hidden="true">
+        <img src="assets/crm-bant.webp" alt="" width="1536" height="350" loading="lazy">
+        <svg viewBox="0 0 1536 350"><polygon class="mavi" points="1237,78 1287,68 1287,263 1237,255"/><polygon class="mavi" points="1296,66 1354,54 1354,274 1296,264"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="kap bolum" id="paketler" aria-labelledby="paketler-baslik">
+    <div class="bolum__bas">
+      <h2 id="paketler-baslik">Stüdyonuza uygun paketi seçin.</h2>
+      <p>Paket değiştirdiğinizde verileriniz silinmez; yalnızca açık bölümler değişir.</p>
+    </div>
+    <!-- paketler: Desktop/crm app/PRODUCT-DECISIONS.md (22 Ekim 2026) -->
+    <div class="paketler__izgara" data-paketler data-hedef="#indir">
+      <article class="paket">
+        <h3>Solo</h3>
+        <p class="paket__kim">Tek başına çalışanlar için</p>
+        <p class="paket__fiyat">499 TL <small>/ ay</small></p>
+        <ul><li>1 kullanıcı</li><li>Müşteriler ve ustalar</li><li>Şantiye takibi</li><li>Takvim</li></ul>
+        <a class="paket__btn" href="#indir">Ücretsiz dene</a>
+      </article>
+      <article class="paket">
+        <h3>Solo Pro</h3>
+        <p class="paket__kim">Teklif ve tahsilatı da yönetenler için</p>
+        <p class="paket__fiyat">749 TL <small>/ ay</small></p>
+        <ul><li>1 kullanıcı</li><li>Solo’daki her şey</li><li>Teklif ve sözleşme</li><li>Tahsilat, makbuz ve muhasebe</li></ul>
+        <a class="paket__btn" href="#indir">Ücretsiz dene</a>
+      </article>
+      <article class="paket" data-onerilen>
+        <span class="paket__etiket">Önerilen</span><h3>Stüdyo</h3>
+        <p class="paket__kim">Küçük ekipler için</p>
+        <p class="paket__fiyat">999 TL <small>/ ay</small></p>
+        <ul><li>4 kullanıcı: siz ve 3 çalışan</li><li>Solo Pro’daki her şey</li><li>Ekip erişimi ve yetkiler</li></ul>
+        <a class="paket__btn" href="#indir">Ücretsiz dene</a>
+      </article>
+      <article class="paket">
+        <h3>Ofis</h3>
+        <p class="paket__kim">Büyüyen ofisler için</p>
+        <p class="paket__fiyat">1.999 TL <small>/ ay</small></p>
+        <ul><li>11 kullanıcı: siz ve 10 çalışan</li><li>Stüdyo’daki her şey</li><li>Öncelikli destek</li><li>Yeni özelliklere ilk erişim</li></ul>
+        <a class="paket__btn" href="#indir">Ücretsiz dene</a>
+      </article>
+    </div>
+    <p class="paketler__not">Fiyatlar aylıktır. 14 gün boyunca Stüdyo paketi ücretsiz. Abonelik App Store ve Google Play üzerinden.</p>
+  </section>
+
+  <section class="kap">
+    <div class="ekosistem">
+      <img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206" loading="lazy">
+      <p>Sahadaki ölçü ve röleve için pafta. Aynı ekosistemin öteki parçası.</p>
+      <a class="metin-link" href="pafta.html">pafta.’yı tanıyın</a>
+    </div>
+  </section>
+
+  <section class="kapanis" id="indir" aria-labelledby="indir-baslik">
+    <div class="izgara" aria-hidden="true"></div>
+    <div class="kap">
+      <div>
+        <h2 id="indir-baslik">kroki crm’i indirin.</h2>
+        <p>14 gün boyunca Stüdyo paketinin tamamı ücretsiz.</p>
+        <div class="kapanis__eylem">
+          <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+        <div class="magaza magaza--acik">
+          <a href="#" data-bag="crmAppStore" aria-label="kroki crm uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
+          <a href="#" data-bag="crmGooglePlay" aria-label="kroki crm uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>
+        </div>
+          <a class="metin-link" data-bag="crmWeb" href="https://studyo-crm.web.app/">Web’den giriş yap</a>
+        </div>
+      </div>
+      <div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 739 1600" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="kroki crm telefonda, Panel: İşlerin yolunda, sıradaki iş ve bugünkü işler">
+  <rect width="739" height="1600" fill="#0B0C0D"/>
+  <rect width="739" height="89" fill="#0B0C0D"/>
+  <text x="120" y="58" text-anchor="middle" font-size="28" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="541" y="48" width="6" height="11" rx="1.5"/><rect x="551" y="43" width="6" height="16" rx="1.5"/><rect x="561" y="38" width="6" height="21" rx="1.5"/><rect x="571" y="33" width="6" height="26" rx="1.5"/></g>
+  <path d="M592 43a21 21 0 0 1 29 0M598 50a12 12 0 0 1 17 0" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="606.5" cy="57" r="3.2" fill="#fff"/>
+  <rect x="637" y="36" width="46" height="25" rx="7" fill="none" stroke="#fff" stroke-width="2.5" opacity=".5"/><rect x="640.5" y="39.5" width="33" height="18" rx="4.5" fill="#fff"/>
+  <image href="assets/kroki-crm-acik.png" x="30" y="114" width="173" height="56"/>
+  <circle cx="356" cy="142" r="33" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(356 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6" stroke-linecap="round"><circle r="7"/><path d="M0-15v-4M0 15v4M-15 0h-4M15 0h4M-10.6-10.6l-2.8-2.8M10.6 10.6l2.8 2.8M-10.6 10.6l-2.8 2.8M10.6-10.6l2.8-2.8"/></g>
+  <rect x="410" y="110" width="179" height="65" rx="32.5" fill="#111314" stroke="#2E3235" stroke-width="2"/>
+  <g transform="translate(451 142)" fill="none" stroke="#E8E8E6" stroke-width="2.6"><circle r="6"/><circle r="12.5" stroke-dasharray="5 3.2"/></g>
+  <text x="475" y="151" font-size="24" fill="#F2F2F0">Ayarlar</text>
+  <text x="617" y="150" font-size="20" fill="#8B9196" text-decoration="underline">çıkış yap</text>
+  <path d="M0 196H739" stroke="#1F2225" stroke-width="2"/>
+  <defs><radialGradient id="k1-isik" cx="369" cy="1106" r="1" gradientTransform="translate(369 1106) scale(330 110) translate(-369 -1106)" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#1D4F86" stop-opacity=".55"/><stop offset="1" stop-color="#1D4F86" stop-opacity="0"/></radialGradient></defs>
+  <text x="30" y="292" font-size="62" font-weight="800" letter-spacing="-3" fill="#F7F6F2">İşlerin yolunda.</text>
+  <text x="30" y="352" font-size="26" fill="#A0A6AB">21 Ekim Çarşamba</text>
+  <text x="30" y="405" font-size="21" fill="#A0A6AB">3 iş seni bekliyor. Önce sıradakiyle başlayalım.</text>
+  <rect x="31" y="460" width="199" height="72" rx="36" fill="#111314" stroke="#3A3E41" stroke-width="2"/>
+  <text x="130.5" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">+ Yeni Müşteri</text>
+  <rect x="246" y="460" width="208" height="72" rx="36" fill="#F2F2F0"/>
+  <text x="350" y="504" text-anchor="middle" font-size="20" font-weight="700" fill="#111">+ Randevu Ekle</text>
+  <text x="30" y="614" font-size="27" font-weight="700" fill="#F2F2F0">Sıradaki işin</text>
+  <rect x="585" y="581" width="123" height="48" rx="24" fill="#101615" stroke="#24302A" stroke-width="2"/>
+  <circle cx="613" cy="605" r="6" fill="#37C770"/><text x="631" y="612" font-size="19" fill="#7BA4F7">Bugün</text>
+  <rect x="31" y="662" width="677" height="444" rx="40" fill="#141617" stroke="#25292C" stroke-width="2"/>
+  <rect x="31" y="900" width="677" height="206" rx="40" fill="url(#k1-isik)"/>
+  <text x="75" y="736" font-size="22" font-weight="600" fill="#7BA4F7">13:30  ·  Şantiye</text>
+  <text x="75" y="806" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">Seramik ustasıyla</text>
+  <text x="75" y="860" font-size="46" font-weight="800" letter-spacing="-2" fill="#F7F6F2">buluşma</text>
+  <text x="75" y="908" font-size="22" fill="#A0A6AB">Kadıköy ofis, Ece Yıldız projesi</text>
+  <rect x="75" y="958" width="589" height="80" rx="40" fill="none" stroke="#3A3E41" stroke-width="2.5"/>
+  <text x="114" y="1007" font-size="27" font-weight="700" fill="#F2F2F0">İşi tamamla</text>
+  <text x="30" y="1188" font-size="28" font-weight="700" fill="#F2F2F0">Bugünkü İşler</text>
+  <g font-size="22">
+    <rect x="31" y="1222" width="677" height="160" rx="30" fill="#141617" stroke="#25292C" stroke-width="2"/>
+    <circle cx="80" cy="1268" r="15" fill="#37C770"/><path d="M73 1268l5 5 9-10" fill="none" stroke="#0B0C0D" stroke-width="3" stroke-linecap="round"/>
+    <text x="110" y="1276" fill="#6E7479" text-decoration="line-through">09:30  Ön görüşme, Deniz Arslan</text>
+    <circle cx="80" cy="1336" r="14" fill="none" stroke="#5C6166" stroke-width="2.5"/>
+    <text x="110" y="1344" fill="#E8E8E6">15:00  Hakediş tahsilatı, Bora Demir</text>
+  </g>
+  <rect x="31" y="1413" width="676" height="90" rx="45" fill="#141617" stroke="#2A2E31" stroke-width="2"/>
+  <g transform="translate(108 1443)"><path fill="none" stroke="#4C8DF6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-12h10v10h-10zM2-12h10v10H2zM-12 2h10v10h-10z"/></g>
+  <text x="108" y="1482" text-anchor="middle" font-size="20" font-weight="700" fill="#F2F2F0">Panel</text><g transform="translate(238 1443)"><circle fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" cx="0" cy="-6" r="6"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12 13a12 12 0 0 1 24 0"/></g>
+  <text x="238" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Müşteriler</text><g transform="translate(368 1443)"><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-11 13V-2l8-6v21M-3 13V-12l14 6v19M-14 13h28"/></g>
+  <text x="368" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Şantiyeler</text><g transform="translate(499 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-12" y="-10" width="24" height="22" rx="3"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-12-3h24M-6-14v6M6-14v6"/></g>
+  <text x="499" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Takvim</text><g transform="translate(629 1443)"><rect fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" x="-13" y="-10" width="26" height="20" rx="4"/><path fill="none" stroke="#7E848A" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" d="M-13-3h26M5 4h4"/></g>
+  <text x="629" y="1482" text-anchor="middle" font-size="20" font-weight="400" fill="#8B9196">Muhasebe</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="alt">
+  <div class="kap alt__ic">
+    <img src="assets/kroki-firma-acik.png" alt="Kroki" width="768" height="353" loading="lazy">
+    <nav aria-label="Alt menü">
+      <a href="kroki-crm.html">kroki crm</a>
+      <a href="pafta.html">pafta.</a>
+      <a href="kroki-web.html#paketler">Fiyatlandırma</a>
+      <a href="#">Hakkımızda</a>
+      <a href="kroki-web.html#iletisim">İletişim</a>
+    </nav>
+    <div class="alt__sosyal">
+      <a href="#" data-bag="instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+      <a href="#" data-bag="linkedin" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+      <a href="#" data-bag="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+    </div>
+    <p class="alt__telif">© 2026 Kroki. Tüm hakları saklıdır.</p>
+  </div>
+</footer>
+
+<script src="assets/firebase-ayar.js"></script>
+<script src="assets/site-icerik.js"></script>
+<script src="assets/site-veri.js"></script>
+<script>
+
+  // giriş sahnesi: kaydırma ilerlemesine göre telefonun yeri, duruşu ve ekranı
+  (function () {
+    const bolum = document.querySelector('.sinema-c'), sahne = bolum.querySelector('.sinema-c__sahne');
+    const eskiz = bolum.querySelector('.giris-c__eskiz'), metin = bolum.querySelector('.giris-c__metin'), yer = bolum.querySelector('.giris-c__yer');
+    const cep = bolum.querySelector('.sinema-c__cep'), ekranlar = [...cep.querySelectorAll('.sinema-c__ekran')];
+    const yazilar = [...bolum.querySelectorAll('.sinema-c__yazi')];
+    const hareket = matchMedia('(prefers-reduced-motion: reduce)');
+    const sinir = v => Math.max(0, Math.min(1, v));
+    const yumusak = t => t * t * (3 - 2 * t);
+    const ara = (a, b, p) => yumusak(sinir((p - a) / (b - a)));
+    const kar = (a, b, t) => a + (b - a) * t;
+    const EKRAN_BAS = .24, EKRAN_UZ = .19;                        // telefon yerine oturunca dört ekran sırayla, her biri uzun süre kalır
+    let raf = 0, gorunen = -1;
+
+    function ciz() {
+      raf = 0;
+      const W = sahne.clientWidth, H = sahne.clientHeight, dar = W < 900;
+      const r = bolum.getBoundingClientRect();
+      const hedef = hareket.matches ? 0 : sinir(-r.top / (r.height - H));
+      // ilerleme yumuşatılır: tekerlek sıçrasa da telefon ağır ağır yürür
+      gorunen = gorunen < 0 || hareket.matches ? hedef : gorunen + (hedef - gorunen) * .14;
+      const p = gorunen;
+      const sr = sahne.getBoundingClientRect(), yr = yer.getBoundingClientRect();
+      const cw = cep.offsetWidth, ch = cep.offsetHeight;
+      // masadaki yerden ekranın sağ yarısının ortasına (telefonda: ortaya, yazıların üstüne)
+      const x0 = yr.left - sr.left + yr.width / 2, y0 = yr.top - sr.top + yr.height / 2, o0 = yr.width / cw;
+      const x1 = dar ? W / 2 : W * .66, y1 = dar ? H * .42 : H / 2;
+      const k = ara(.05, .22, p), egim = Math.sin(k * Math.PI);    // yolun ortasında öne eğilip döner
+      // ekran geçişlerinde telefon hafifçe bir sağa bir sola döner
+      let don = 0;
+      for (let i = 1; i < 4; i++) don += (i % 2 ? 1 : -1) * 16 * Math.exp(-(((p - (EKRAN_BAS + i * EKRAN_UZ)) / .035) ** 2));
+      cep.style.transform = `translate(${kar(x0, x1, k) - cw / 2}px,${kar(y0, y1, k) - ch / 2}px) perspective(1500px) ` +
+        `rotateX(${egim * 16}deg) rotateY(${-egim * 24 + don}deg) rotateZ(${kar(-8, 0, k)}deg) scale(${kar(o0, 1, k)})`;
+      cep.style.visibility = 'visible';
+      // yazılar tamamen çekilir, eskiz soluk bir zemin olarak kalır
+      const c = ara(.04, .13, p);
+      metin.style.opacity = 1 - c; metin.style.visibility = c > .99 ? 'hidden' : '';
+      eskiz.style.opacity = 1 - .84 * c;
+      ekranlar.forEach((e, i) => { if (i) e.style.opacity = ara(EKRAN_BAS + i * EKRAN_UZ - .035, EKRAN_BAS + i * EKRAN_UZ + .025, p); });
+      yazilar.forEach((e, i) => {
+        const bas = EKRAN_BAS + i * EKRAN_UZ, son = bas + EKRAN_UZ;
+        const g = Math.min(ara(bas - .01, bas + .035, p), i < 3 ? 1 - ara(son - .045, son - .012, p) : 1);
+        e.style.opacity = g; e.style.transform = `translateY(${(1 - g) * 18}px)`;
+      });
+      if (Math.abs(hedef - gorunen) > .0004) iste();
+    }
+    const iste = () => { if (!raf) raf = requestAnimationFrame(ciz); };
+    addEventListener('scroll', iste, { passive: true });
+    addEventListener('resize', iste);
+    hareket.addEventListener('change', iste);
+    addEventListener('load', iste);
+    ciz();
+  })();
+
+  // mobil menü
+  const ust = document.getElementById('ust'), menuBtn = ust.querySelector('.menu-btn');
+  menuBtn.addEventListener('click', () => {
+    const acik = ust.classList.toggle('acik');
+    menuBtn.setAttribute('aria-expanded', acik);
+    menuBtn.setAttribute('aria-label', acik ? 'Menüyü kapat' : 'Menüyü aç');
+  });
+</script>
+</body>
+</html>

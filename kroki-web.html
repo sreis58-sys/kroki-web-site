@@ -22,6 +22,7 @@
   --kenar:min(6.6vw, 95px);
 }
 *,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
 body{margin:0;background:var(--kagit);color:var(--murekkep);font:400 1rem/1.5 var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
@@ -172,6 +173,31 @@ main{position:relative;z-index:1}
 .paket[data-onerilen] .paket__btn:hover{background:#095BC0;border-color:#095BC0}
 .paket__etiket{position:absolute;top:-11px;left:min(2.4vw,34px);padding:6px 10px;border-radius:6px;background:#0B6FE8;font:600 11px/1 var(--f);letter-spacing:.18em;text-transform:uppercase;color:#fff}
 
+/* ---------- iletişim: form gelen başvurular olarak admin paneline düşer ---------- */
+.iletisim{position:relative;z-index:3;padding:min(8vw,116px) 0;background:var(--kagit)}
+.iletisim .kap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:min(6vw,86px);align-items:start}
+.iletisim h2{margin:0;font:600 min(3.05vw,44px)/1.15 var(--f);letter-spacing:-0.02em}
+.iletisim__alt{margin-top:16px;max-width:24em;font-size:min(1.25vw,18px);line-height:1.6;color:var(--kursun)}
+.iletisim__dogrudan{display:grid;gap:12px;margin-top:min(3vw,40px)}
+.iletisim__dogrudan a{display:inline-flex;align-items:center;gap:12px;font:500 min(1.15vw,16.5px)/1.3 var(--f)}
+.iletisim__dogrudan a:hover{color:var(--mavi)}
+.iletisim__dogrudan svg{width:22px;height:22px;flex:none}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form label{display:grid;gap:8px;font:500 14px/1.3 var(--f);color:#2a2a2a}
+.form__genis{grid-column:1 / -1}
+.form input,.form select,.form textarea{width:100%;padding:14px 16px;border:1px solid #d3cdc0;border-radius:12px;background:#fff;font:400 16px/1.4 var(--f);color:var(--murekkep)}
+.form textarea{min-height:130px;resize:vertical}
+.form input:focus,.form select:focus,.form textarea:focus{outline:2px solid var(--mavi);outline-offset:1px;border-color:transparent}
+.form__onay{display:flex !important;grid-template-columns:none;align-items:flex-start;gap:10px !important;font-weight:400 !important;color:var(--kursun) !important}
+.form__onay input{width:18px;height:18px;margin-top:1px;flex:none;accent-color:var(--mavi)}
+.form__gizli{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form__alt{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+.form .btn{height:56px;padding:0 30px;border:0;cursor:pointer;font-size:16px}
+.form .btn:disabled{opacity:.6;cursor:default}
+.form__durum{font-size:15px;line-height:1.5}
+.form__durum[data-tur=tamam]{color:#1f7a4a}
+.form__durum[data-tur=hata]{color:#b3261e}
+
 .alt{background:#121212;color:#fff}
 .alt__ic{display:flex;align-items:center;gap:min(3.3vw,48px);height:min(8.6vw,124px)}
 .alt__ic > img{height:min(3.2vw,46px);width:auto}
@@ -241,6 +267,12 @@ main{position:relative;z-index:1}
   .paket ul{font-size:15px;margin:22px 0}
   .paket__btn{height:48px;font-size:15px}
   .paket__etiket{left:26px}
+  .iletisim{padding:64px 0}
+  .iletisim .kap{grid-template-columns:1fr;gap:36px}
+  .iletisim h2{font-size:2rem}
+  .iletisim__alt{font-size:1rem}
+  .iletisim__dogrudan a{font-size:16px}
+  .form{grid-template-columns:1fr}
   .alt__ic{flex-wrap:wrap;height:auto;padding-top:36px;padding-bottom:36px;gap:22px 28px}
   .alt__ic > img{height:40px}
   .alt nav{flex-wrap:wrap;gap:14px 24px;margin:0;width:100%}
@@ -258,16 +290,15 @@ main{position:relative;z-index:1}
 <canvas class="on-tuval" aria-hidden="true"></canvas>
 
 <header class="kap ust" id="ust">
-  <a class="ust__logo" href="#" aria-label="Kroki ana sayfa"><img src="assets/kroki-firma.png" alt="Kroki — mimari yazılımlar" width="768" height="353"></a>
+  <a class="ust__logo" href="kroki-web.html" aria-label="Kroki ana sayfa"><img src="assets/kroki-firma.png" alt="Kroki — mimari yazılımlar" width="768" height="353"></a>
   <nav class="ust__nav" id="menu" aria-label="Ana menü">
-    <a href="#">Ürünler</a>
+    <a href="kroki-web.html#urunler">Ürünler</a>
     <a href="#">Çözümler</a>
-    <a href="#">Fiyatlandırma</a>
+    <a href="kroki-web.html#paketler">Fiyatlandırma</a>
     <a href="#">Kaynaklar</a>
   </nav>
   <div class="ust__sag">
-    <a class="ust__giris" href="#">Giriş yap</a>
-    <a class="btn" href="#">Hemen Başla
+    <a class="btn" href="kroki-web.html#urunler">Hemen Başla
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
   </div>
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menüyü aç">
@@ -291,7 +322,7 @@ main{position:relative;z-index:1}
       <p class="ust-yazi">Mimarlık için geliştirilen yazılım çözümleri</p>
       <h1>Aynı plan.<br>Farklı araçlar.</h1>
       <p class="giris__alt"><span>Mimarların ihtiyaçları için tasarlanmış,</span><span>birbirine entegre yazılım çözümleri.</span><span>Daha net süreçler. Daha güçlü tasarımlar.</span><span>Daha iyi mekânlar.</span></p>
-      <a class="btn" href="#">Ürünlerimizi Keşfet
+      <a class="btn" href="#urunler">Ürünlerimizi Keşfet
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
     </div>
   </section>
@@ -302,7 +333,7 @@ main{position:relative;z-index:1}
       <article class="kart">
         <img class="kart__logo" src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278">
         <p>Stüdyo, müşteri ve proje yönetimi için geliştirilmiş CRM çözümü.</p>
-        <a class="kart__git" href="#" aria-label="kroki crm hakkında daha fazla"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+        <a class="kart__git" href="kroki-crm.html" aria-label="kroki crm hakkında daha fazla"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
         <div class="cihaz cihaz--laptop" aria-hidden="true">
           <div class="cerceve"><img src="assets/urun-crm-panel.webp" alt="" width="1920" height="1200" loading="lazy"></div>
         </div>
@@ -311,7 +342,7 @@ main{position:relative;z-index:1}
       <article class="kart">
         <img class="kart__logo" src="assets/pafta-logo.svg" alt="pafta." width="640" height="206">
         <p>Röleve ve ölçü alma süreçlerini kolaylaştıran mobil uygulama.</p>
-        <a class="kart__git" href="#" aria-label="pafta. hakkında daha fazla"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+        <a class="kart__git" href="pafta.html" aria-label="pafta. hakkında daha fazla"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
         <div class="cihaz cihaz--telefon" aria-hidden="true">
           <div class="telefon"><div class="telefon__ekran">
             <!-- pafta. ölçüm ekranı: kareli kâğıt üstünde plan, seçili duvar ve ölçüsü -->
@@ -405,7 +436,7 @@ main{position:relative;z-index:1}
     <img src="assets/cagri-beton.webp" alt="" width="1536" height="320" loading="lazy">
     <div class="kap cagri__ic">
       <h2 id="cagri-baslik">Mimarlık için<br>daha iyi araçlar.<br>Daha iyi mekânlar.</h2>
-      <a class="btn btn--mavi" href="#">Hemen Başla <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+      <a class="btn btn--mavi" href="#paketler">Hemen Başla <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
     </div>
   </section>
 
@@ -416,39 +447,66 @@ main{position:relative;z-index:1}
           <img src="assets/kroki-crm-acik.png" alt="kroki crm" width="900" height="278" loading="lazy">
           <h2 id="paketler-baslik">Stüdyonuza uygun paketi seçin.</h2>
         </div>
-        <p class="paketler__alt">kroki crm, stüdyonuzun büyüklüğüne göre dört paketle sunulur.</p>
+        <p class="paketler__alt">kroki crm dört paketle sunulur. 14 gün boyunca Stüdyo paketi ücretsiz.</p>
       </div>
-      <!-- ÖRNEK PAKETLER: paket adları, fiyatlar ve içerikler yer tutucudur; gerçek bilgilerle değiştir -->
-      <div class="paketler__izgara">
+      <!-- paketler admin panelinden yönetilir (site-veri.js); bu hâl başlangıç içeriğidir: assets/site-icerik.js -->
+      <div class="paketler__izgara" data-paketler data-hedef="kroki-crm.html#indir">
       <article class="paket">
-        <h3>Başlangıç</h3>
-        <p class="paket__kim">Tek kişilik stüdyolar için</p>
-        <p class="paket__fiyat">— TL <small>/ ay</small></p>
-        <ul><li>Müşteri ve satış takibi</li><li>Takvim ve randevular</li><li>Teklif ve sözleşme PDF</li></ul>
-        <a class="paket__btn" href="#">Paketi seç</a>
+        <h3>Solo</h3>
+        <p class="paket__kim">Tek başına çalışanlar için</p>
+        <p class="paket__fiyat">499 TL <small>/ ay</small></p>
+        <ul><li>1 kullanıcı</li><li>Müşteriler ve ustalar</li><li>Şantiye takibi</li><li>Takvim</li></ul>
+        <a class="paket__btn" href="kroki-crm.html#indir">Ücretsiz dene</a>
+      </article>
+      <article class="paket">
+        <h3>Solo Pro</h3>
+        <p class="paket__kim">Teklif ve tahsilatı da yönetenler için</p>
+        <p class="paket__fiyat">749 TL <small>/ ay</small></p>
+        <ul><li>1 kullanıcı</li><li>Solo’daki her şey</li><li>Teklif ve sözleşme</li><li>Tahsilat, makbuz ve muhasebe</li></ul>
+        <a class="paket__btn" href="kroki-crm.html#indir">Ücretsiz dene</a>
       </article>
       <article class="paket" data-onerilen>
         <span class="paket__etiket">Önerilen</span><h3>Stüdyo</h3>
         <p class="paket__kim">Küçük ekipler için</p>
-        <p class="paket__fiyat">— TL <small>/ ay</small></p>
-        <ul><li>Başlangıç paketindeki her şey</li><li>Şantiye aşamaları</li><li>Gelen ve giden ödemeler</li></ul>
-        <a class="paket__btn" href="#">Paketi seç</a>
+        <p class="paket__fiyat">999 TL <small>/ ay</small></p>
+        <ul><li>4 kullanıcı: siz ve 3 çalışan</li><li>Solo Pro’daki her şey</li><li>Ekip erişimi ve yetkiler</li></ul>
+        <a class="paket__btn" href="kroki-crm.html#indir">Ücretsiz dene</a>
       </article>
       <article class="paket">
-        <h3>Profesyonel</h3>
+        <h3>Ofis</h3>
         <p class="paket__kim">Büyüyen ofisler için</p>
-        <p class="paket__fiyat">— TL <small>/ ay</small></p>
-        <ul><li>Stüdyo paketindeki her şey</li><li>Ekip ve yetki yönetimi</li><li>Ustalar ve tedarikçiler</li></ul>
-        <a class="paket__btn" href="#">Paketi seç</a>
-      </article>
-      <article class="paket">
-        <h3>Kurumsal</h3>
-        <p class="paket__kim">Birden çok stüdyo için</p>
-        <p class="paket__fiyat">Görüşelim</p>
-        <ul><li>Profesyonel paketteki her şey</li><li>Birden çok stüdyo</li><li>Öncelikli destek</li></ul>
-        <a class="paket__btn" href="#">Görüşelim</a>
+        <p class="paket__fiyat">1.999 TL <small>/ ay</small></p>
+        <ul><li>11 kullanıcı: siz ve 10 çalışan</li><li>Stüdyo’daki her şey</li><li>Öncelikli destek</li><li>Yeni özelliklere ilk erişim</li></ul>
+        <a class="paket__btn" href="kroki-crm.html#indir">Ücretsiz dene</a>
       </article>
       </div>
+    </div>
+  </section>
+
+  <section class="iletisim" id="iletisim" aria-labelledby="iletisim-baslik">
+    <div class="kap">
+      <div>
+        <h2 id="iletisim-baslik">Bize yazın.</h2>
+        <p class="iletisim__alt">Demo, paketler ya da stüdyonuza uygun kurulum için yazın; en kısa sürede dönüş yapalım.</p>
+        <div class="iletisim__dogrudan">
+          <a data-bag="whatsapp" data-bos-gizle hidden href="#"><svg viewBox="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.8 14.1c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.6 2.1 1.1 1 2 1.3 2.3 1.4.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg><span>WhatsApp’tan yazın</span></a>
+          <a data-bag="eposta" data-bos-gizle hidden href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg><span data-bag-metin="eposta"></span></a>
+        </div>
+      </div>
+      <form class="form" data-basvuru novalidate>
+        <label>Ad soyad<input name="ad" required minlength="2" maxlength="80" autocomplete="name"></label>
+        <label>Telefon ya da e-posta<input name="iletisim" required minlength="5" maxlength="120" autocomplete="email"></label>
+        <label>Stüdyo adı<input name="studyo" maxlength="120" autocomplete="organization"></label>
+        <label>İlgilendiğiniz ürün
+          <select name="urun"><option>kroki crm</option><option>pafta.</option><option value="ikisi">İkisi de</option></select></label>
+        <label class="form__genis">Mesajınız<textarea name="mesaj" maxlength="2000"></textarea></label>
+        <label class="form__gizli" aria-hidden="true">Web sitesi<input name="web" tabindex="-1" autocomplete="off"></label>
+        <label class="form__genis form__onay"><input type="checkbox" name="kvkk" required><span>Bilgilerimin bu başvuru için işlenmesine ve benimle iletişime geçilmesine onay veriyorum.</span></label>
+        <div class="form__genis form__alt">
+          <button class="btn" type="submit">Gönder</button>
+          <p class="form__durum" role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </div>
   </section>
 </main>
@@ -457,22 +515,24 @@ main{position:relative;z-index:1}
   <div class="kap alt__ic">
     <img src="assets/kroki-firma-acik.png" alt="Kroki" width="768" height="353" loading="lazy">
     <nav aria-label="Alt menü">
-      <a href="#urunler">Ürünler</a>
-      <a href="#">Çözümler</a>
-      <a href="#">Kaynaklar</a>
+      <a href="kroki-crm.html">kroki crm</a>
+      <a href="pafta.html">pafta.</a>
+      <a href="kroki-web.html#paketler">Fiyatlandırma</a>
       <a href="#">Hakkımızda</a>
-      <a href="#">İletişim</a>
+      <a href="kroki-web.html#iletisim">İletişim</a>
     </nav>
     <div class="alt__sosyal">
-      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
-      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
-      <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+      <a href="#" data-bag="instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+      <a href="#" data-bag="linkedin" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+      <a href="#" data-bag="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
     </div>
     <p class="alt__telif">© 2026 Kroki. Tüm hakları saklıdır.</p>
   </div>
 </footer>
 
 
+<script src="assets/firebase-ayar.js"></script>
+<script src="assets/site-icerik.js"></script>
 <script>
   /* ---------- arka plan nokta sistemi ----------
      Sayfanın arkasında sabit tek bir tuval var. Aynı noktalar kaydırdıkça bir çizimden
@@ -838,6 +898,7 @@ main{position:relative;z-index:1}
     });
     // yazı tipleri ya da görseller yüklenince bölüm boyları değişebilir
     new ResizeObserver(() => { if (N) { konumlariOlc(); uyandir(); } }).observe(document.querySelector('main'));
+    addEventListener('site-verisi', () => { if (N) { hazirla(); uyandir(); } });
 
     const basla = () => {
       hazirla();
@@ -853,28 +914,29 @@ main{position:relative;z-index:1}
   })();
 
   /* ---------- yorumlar: oklarla geçiş ---------- */
-  // ÖRNEK YORUMLAR — yayına almadan önce gerçek kullanıcı yorumlarıyla değiştir
-  const YORUMLAR = [
-    { metin: 'Kroki, ofis ile şantiye arasındaki iletişimi ciddi şekilde kolaylaştırdı.', ad: 'M. A.', unvan: 'İç Mimar' },
-    { metin: 'Sahada aldığım ölçüler ofise döndüğümde planda hazır bekliyor.', ad: 'S. K.', unvan: 'Mimar' },
-    { metin: 'Müşteri, teklif ve ödeme takibi artık tek ekranda; kimse bir şey kaçırmıyor.', ad: 'E. D.', unvan: 'Stüdyo Sahibi' },
-  ];
+  /* ---------- yorumlar: oklarla geçiş; liste admin panelinden gelir (site-veri.js), başlangıçta site-icerik.js ---------- */
   (() => {
     const kutu = document.querySelector('.alinti');
     if (!kutu) return;
     const metin = kutu.querySelector('blockquote'), ad = kutu.querySelector('.kisi b'),
-          unvan = kutu.querySelector('.kisi span'), harf = kutu.querySelector('.kisi__harf');
-    let sira = 0, zaman = 0;
+          unvan = kutu.querySelector('.kisi span'), harf = kutu.querySelector('.kisi__harf'), oklar = kutu.querySelector('.alinti__oklar');
+    let yorumlar = window.SITE_VARSAYILAN.yorumlar, sira = 0, zaman = 0;
+    const goster = y => {
+      metin.textContent = '“' + y.metin + '”'; ad.textContent = y.ad; unvan.textContent = y.unvan;
+      harf.textContent = y.ad.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2);
+    };
+    window.yorumlariYukle = liste => {
+      yorumlar = liste.filter(y => y && y.metin && y.ad);
+      kutu.hidden = !yorumlar.length;                          // yorum yoksa alıntı kutusu gizlenir
+      oklar.hidden = yorumlar.length < 2;
+      sira = 0; if (yorumlar.length) goster(yorumlar[0]);
+    };
     kutu.querySelectorAll('[data-yon]').forEach(d => d.addEventListener('click', () => {
-      sira = (sira + Number(d.dataset.yon) + YORUMLAR.length) % YORUMLAR.length;
-      const y = YORUMLAR[sira];
+      sira = (sira + Number(d.dataset.yon) + yorumlar.length) % yorumlar.length;
+      const y = yorumlar[sira];
       kutu.classList.add('degisiyor');
       clearTimeout(zaman);                       // art arda basışlarda yalnızca son geçiş uygulanır
-      zaman = setTimeout(() => {
-        metin.textContent = '“' + y.metin + '”'; ad.textContent = y.ad; unvan.textContent = y.unvan;
-        harf.textContent = y.ad.replace(/[^A-ZÇĞİÖŞÜ]/g, '');
-        kutu.classList.remove('degisiyor');
-      }, 300);
+      zaman = setTimeout(() => { goster(y); kutu.classList.remove('degisiyor'); }, 300);
     }));
   })();
 
@@ -886,5 +948,6 @@ main{position:relative;z-index:1}
     menuBtn.setAttribute('aria-label', acik ? 'Menüyü kapat' : 'Menüyü aç');
   });
 </script>
+<script src="assets/site-veri.js"></script>
 </body>
 </html>

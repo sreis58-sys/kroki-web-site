@@ -1,0 +1,42 @@
+rules_version = '2';
+// Kroki sitesi: içerik herkese açık okunur, yalnızca yöneticiler yazar. Başvuruyu herkes bir kez oluşturabilir
+// (alanlar ve boyları denetlenir); başvuruları yalnızca yöneticiler okur, günceller ve siler.
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function yonetici() {
+      return request.auth != null && exists(/databases/$(db)/documents/yoneticiler/$(request.auth.uid));
+    }
+    function yazi(v, en, cok) { return v is string && v.size() >= en && v.size() <= cok; }
+
+    match /site/icerik {
+      allow read: if true;
+      allow write: if yonetici();
+    }
+
+    match /basvurular/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['ad', 'iletisim', 'studyo', 'urun', 'mesaj', 'kvkk', 'durum', 'tarih'])
+        && request.resource.data.keys().hasAll(['ad', 'iletisim', 'studyo', 'urun', 'mesaj', 'kvkk', 'durum', 'tarih'])
+        && yazi(request.resource.data.ad, 2, 80)
+        && yazi(request.resource.data.iletisim, 5, 120)
+        && yazi(request.resource.data.studyo, 0, 120)
+        && request.resource.data.urun in ['kroki crm', 'pafta.', 'ikisi']
+        && yazi(request.resource.data.mesaj, 0, 2000)
+        && request.resource.data.kvkk == true
+        && request.resource.data.durum == 'yeni'
+        && request.resource.data.tarih == request.time;
+      allow read, delete: if yonetici();
+      allow update: if yonetici() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['durum'])
+        && request.resource.data.durum in ['yeni', 'arandi', 'tamam'];
+    }
+
+    // yönetici listesi konsoldan düzenlenir; hesap yalnızca kendi kaydını görebilir
+    match /yoneticiler/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /{belge=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pafta. — Kroki</title>
+<meta name="description" content="Röleveyi telefonda çizin: duvarlar, kirişler, kapılar, pencereler ve ölçüler kendiliğinden plana yazılır.">
+<link rel="icon" href="assets/pafta-ikon.svg">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortaktır. Uygulama ekranları Inter ile yazılır. */
+:root{
+  --kagit:#F8F5EE;      /* taslaktaki zemin */
+  --murekkep:#131313;
+  --kursun:#555552;
+  --mavi:#1C86EE;       /* logolardaki mavi */
+  --f:"Sora", system-ui, sans-serif;
+  --el:"Patrick Hand", "Sora", cursive;
+  --kenar:min(6.6vw, 95px);
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--kagit);color:var(--murekkep);font:400 1rem/1.5 var(--f);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+p,h1{margin:0}
+:focus-visible{outline:2px solid var(--mavi);outline-offset:3px;border-radius:6px}
+.kap{max-width:1440px;margin:0 auto;padding:0 var(--kenar)}
+
+/* ---------- üst bar ---------- */
+.ust{position:relative;z-index:3;display:flex;align-items:center;height:min(9.8vw,141px);padding-top:min(.6vw,8px);padding-right:min(3.75vw,54px)}
+.ust__logo img{height:min(7.15vw,103px);width:auto}
+.ust__nav{display:flex;gap:min(3.5vw,50px);margin-left:min(7.85vw,113px)}
+.ust__nav a,.ust__giris{font-size:min(1.1vw,15.5px);font-weight:400;color:#222}
+.ust__nav a:hover,.ust__giris:hover{color:var(--mavi)}
+.ust__sag{margin-left:auto;display:flex;align-items:center;gap:min(3vw,43px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.7em;background:#111;color:#fff;font:500 min(1.12vw,16px)/1 var(--f);border-radius:min(.8vw,11px);transition:background-color .2s}
+.btn:hover{background:#000}
+.btn svg{width:1.05em;height:1.05em;transition:transform .2s}
+.btn:hover svg{transform:translateX(3px)}
+.ust__sag .btn{width:min(12.6vw,181px);height:min(3.7vw,53px)}
+.menu-btn{display:none;margin-left:auto;background:none;border:0;padding:8px;cursor:pointer;color:inherit}
+.menu-btn svg{width:26px;height:26px}
+main{position:relative}
+/* uygulamanın kareli zemini: girişte ve kapanışta, kenarlara doğru söner */
+.izgara{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#dde8f4 1px,transparent 1px),linear-gradient(90deg,#dde8f4 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%)}
+
+/* ---------- giriş: kaydırdıkça büyük telefon döner, karşıya gelir, ekranın içine girilir ---------- */
+.sinema{position:relative;height:430vh;margin-top:calc(min(9.8vw,141px) * -1)}
+.sinema__sahne{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;perspective:1500px;background:var(--kagit)}
+.sinema__karanlik{position:absolute;inset:0;background:#0B0C0E;opacity:0}
+.sinema__metin{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding-top:min(9.8vw,141px);pointer-events:none}
+.sinema__metin > div{max-width:min(40vw,560px);pointer-events:auto}
+.urun-logo{height:min(3.9vw,56px);width:auto}
+.sinema h1{margin:min(2.6vw,38px) 0 0;font-size:min(4.7vw,68px);font-weight:650;line-height:1.1;letter-spacing:-0.025em}
+.giris-p__alt{margin-top:min(1.6vw,22px);max-width:25em;font-size:min(1.3vw,19px);line-height:1.6;color:var(--kursun)}
+.giris-p__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:min(1.6vw,22px) min(2.4vw,34px);margin-top:min(2.8vw,40px)}
+.metin-link{padding-bottom:4px;border-bottom:1.5px solid currentColor;font:500 min(1.1vw,16px)/1 var(--f);transition:color .2s}
+.metin-link:hover{color:var(--mavi)}
+.sinema__cep{position:absolute;left:50%;top:50%;z-index:1;width:min(23vw,330px);transform:translate(-50%,-50%) translate3d(22vw,4vh,0) rotateX(14deg) rotateY(-32deg) rotateZ(6deg);transform-style:preserve-3d;will-change:transform}
+.sinema__ekran{position:absolute;inset:0}
+.sinema__ekran + .sinema__ekran{opacity:0}
+.sinema__ekran .ekran{display:block;width:100%;height:100%}
+.cep__parilti{position:absolute;inset:0;z-index:2;background:linear-gradient(115deg,rgba(255,255,255,.4),rgba(255,255,255,0) 42%);opacity:var(--parilti,.6);pointer-events:none}
+.sinema__etiket{position:absolute;left:0;top:0;z-index:3;padding:9px 13px;border-radius:10px;background:#fff;font:500 min(1.05vw,15px)/1.3 var(--f);color:#151515;white-space:nowrap;box-shadow:0 10px 24px -10px rgba(0,0,0,.5);opacity:0;pointer-events:none}
+.sinema__etiket b{font-weight:600}
+/* son hâlde başlık planın solundaki boş koyu alanda */
+.sinema__alt{position:absolute;left:var(--kenar);top:50%;z-index:3;max-width:min(30vw,430px);color:#fff;opacity:0;transform:translateY(-50%);pointer-events:none}
+.sinema__alt p{font:600 min(3vw,42px)/1.2 var(--f);letter-spacing:-0.02em}
+.sinema__alt span{display:block;margin-top:10px;font:400 min(1.25vw,18px)/1.5 var(--f);color:#a9adb3}
+@media (prefers-reduced-motion:reduce){.sinema{height:auto}.sinema__sahne{position:relative}}
+
+/* ---------- telefon çerçevesi ---------- */
+.cep{padding:min(.75vw,10px);border-radius:min(3.6vw,52px);background:#121315;box-shadow:0 0 0 1.5px #2b2d31 inset,0 30px 60px -20px rgba(20,24,30,.35),0 12px 24px -12px rgba(20,24,30,.25)}
+.cep__ekran{position:relative;overflow:hidden;border-radius:min(2.9vw,42px);aspect-ratio:924/2000;background:#0B0C0E}
+.cep__ekran .ekran{display:block;width:100%;height:100%}
+.cep__ada{position:absolute;top:2.2%;left:50%;width:31%;height:3.6%;border-radius:99px;background:#000;transform:translateX(-50%)}
+.sayi-yeni,.kayit-suruyor,.yeni-satir{opacity:0}
+
+/* ---------- mağaza düğmeleri ---------- */
+.magaza{display:flex;flex-wrap:wrap;gap:12px}
+.magaza a{display:inline-flex;align-items:center;gap:10px;height:min(4vw,58px);min-height:50px;padding:0 20px 0 15px;border-radius:12px;background:#111;color:#fff;transition:background-color .2s}
+.magaza a:hover{background:#000}
+.magaza svg{width:26px;height:26px;flex:none}
+.magaza span{display:flex;flex-direction:column;gap:3px}
+.magaza small{font:400 11px/1 var(--f);color:#c9c9c9}
+.magaza b{font:600 17px/1 var(--f)}
+.magaza--acik a{background:#fff;color:#111}
+.magaza--acik a:hover{background:#e9e9e9}
+.magaza--acik small{color:#6a6a6a}
+
+/* ---------- kısa bilgiler: mavi kare pafta.'nın noktası ---------- */
+.bilgiler{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(2.6vw,38px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
+.bilgiler h3{display:flex;align-items:center;gap:10px;margin:0;font:600 min(1.15vw,16.5px)/1.3 var(--f)}
+.bilgiler h3::before{content:"";flex:none;width:9px;height:9px;background:var(--mavi)}
+.bilgiler p{margin-top:8px;padding-left:19px;font-size:min(1vw,14.5px);line-height:1.55;color:var(--kursun)}
+
+/* ---------- özellikler: bir yazı, bir görsel; sıra bir sağa bir sola ---------- */
+.bolum{padding-top:min(8vw,116px);padding-bottom:min(8vw,116px)}
+.bolum__bas h2{margin:0;max-width:17em;font:600 min(3.05vw,44px)/1.15 var(--f);letter-spacing:-0.02em}
+.bolum__bas p{margin-top:16px;max-width:34em;font-size:min(1.25vw,18px);line-height:1.6;color:var(--kursun)}
+.ozellik{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:min(6vw,86px);margin-top:min(7vw,100px)}
+.ozellik--ters .ozellik__gorsel{order:-1}
+.ozellik__ad{margin-bottom:14px;font:500 min(1.05vw,15px)/1 var(--f);color:var(--mavi)}
+.ozellik h3{margin:0;font:600 min(2.5vw,36px)/1.15 var(--f);letter-spacing:-0.02em}
+.ozellik p{margin-top:16px;max-width:27em;font-size:min(1.25vw,18px);line-height:1.6;color:var(--kursun)}
+.ozellik ul{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:10px;font-size:min(1.1vw,16px);color:#2a2a2a}
+.ozellik li{display:flex;gap:12px}
+.ozellik li::before{content:"";flex:none;width:7px;height:7px;margin-top:.55em;background:var(--mavi)}
+.ozellik__gorsel{position:relative;display:flex;justify-content:center}
+.ozellik__gorsel .cep{width:min(21vw,300px)}
+.ikili{display:flex;gap:min(2vw,28px);align-items:flex-start}
+.ikili .cep{width:min(17vw,246px)}
+.ikili .cep:last-child{margin-top:min(5vw,72px)}
+/* plan yakın çekim: kiriş ve kapı etiketleriyle */
+.yakin{position:relative;width:min(36vw,520px);overflow:hidden;border-radius:24px;background:#0B0C0E;box-shadow:0 30px 60px -24px rgba(20,24,30,.4)}
+.yakin .ekran{display:block;width:100%;height:auto}
+.etiket{position:absolute;white-space:nowrap;padding:8px 12px;border-radius:10px;background:#fff;font:500 min(1vw,14px)/1.3 var(--f);color:#151515;box-shadow:0 8px 20px -8px rgba(0,0,0,.4)}
+.etiket b{font-weight:600}
+.etiket::before{content:"";position:absolute;width:10px;height:10px;background:#fff;transform:rotate(45deg)}
+.etiket--kiris{left:50%;top:44%;white-space:nowrap}
+.etiket--kiris::before{left:22px;top:-4px}
+.etiket--kapi{left:35%;top:60%}
+.etiket--kapi::before{left:-4px;top:12px}
+
+/* ---------- nasıl çalışır: gerçek sıra, uygulamadaki düğmelerle ---------- */
+.adimlar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:min(1.6vw,22px);margin-top:min(4vw,56px);padding:0;list-style:none;counter-reset:adim}
+.adim{position:relative;display:flex;flex-direction:column;padding:min(2.4vw,34px);border:1px solid #d9d4c8;border-radius:20px;background:rgba(255,255,255,.45)}
+.adim__sira{font:600 min(1vw,14px)/1 var(--f);color:#86837b}
+.adim h3{margin:14px 0 0;font:600 min(1.6vw,23px)/1.25 var(--f);letter-spacing:-0.01em}
+.adim p{margin-top:10px;font-size:min(1.05vw,15px);line-height:1.55;color:var(--kursun)}
+.adim__ui{display:flex;align-items:center;min-height:86px;margin-top:auto;padding-top:26px}
+.hap{display:inline-flex;align-items:center;height:48px;padding:0 24px;border-radius:99px;background:var(--mavi);font:700 17px/1 Inter,var(--f);letter-spacing:-.02em;color:#fff}
+.mini-arac{display:flex;gap:4px;padding:6px;border-radius:99px;background:#15181B}
+.mini-arac span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:58px;height:58px;border-radius:99px;font:500 11px/1 Inter,var(--f);color:#C5C9CE}
+.mini-arac span:first-child{background:var(--mavi);color:#fff}
+.mini-arac svg{width:20px;height:20px}
+
+/* ---------- ekosistem bandı ---------- */
+.ekosistem{display:flex;align-items:center;gap:min(3vw,44px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
+.ekosistem img{height:min(2.8vw,40px);width:auto;flex:none}
+.ekosistem p{flex:1;font-size:min(1.3vw,19px);line-height:1.5;color:#2a2a2a}
+.ekosistem .metin-link{flex:none}
+
+/* ---------- kapanış: uygulamanın koyu teması ---------- */
+.kapanis{position:relative;overflow:hidden;margin-top:min(8vw,116px);background:#0B0C0E;color:#fff}
+.kapanis .izgara{background-image:linear-gradient(#1a1d22 1px,transparent 1px),linear-gradient(90deg,#1a1d22 1px,transparent 1px);-webkit-mask-image:none;mask-image:none}
+.kapanis .kap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:min(30vw,430px)}
+.kapanis h2{margin:0;font:600 min(3.6vw,52px)/1.1 var(--f);letter-spacing:-0.025em}
+.kapanis p{margin:14px 0 30px;font-size:min(1.25vw,18px);color:#a9adb3}
+.kapanis .cep{align-self:flex-end;width:min(18vw,260px);margin-bottom:max(-24vw,-340px);transform:rotate(6deg)}
+
+.alt{background:#121212;color:#fff}
+.alt__ic{display:flex;align-items:center;gap:min(3.3vw,48px);height:min(8.6vw,124px)}
+.alt__ic > img{height:min(3.2vw,46px);width:auto}
+.alt nav{display:flex;gap:min(3.2vw,46px);margin-left:min(1.6vw,23px)}
+.alt nav a,.alt__telif{font:400 min(.98vw,14px)/1 var(--f);color:#bdbdbd}
+.alt nav a:hover,.alt__sosyal a:hover{color:#fff}
+.alt__sosyal{display:flex;gap:min(1.5vw,22px);margin-left:auto}
+.alt__sosyal a{color:#bdbdbd}
+.alt__sosyal svg{width:min(1.3vw,18px);height:min(1.3vw,18px)}
+.alt__telif{color:#8d8d8d;margin-left:min(4.5vw,65px)}
+
+@media (max-width:900px){
+  .ust{height:76px;padding-top:0}
+  .ust__logo img{height:54px}
+  .ust__nav,.ust__sag{display:none}
+  .menu-btn{display:block}
+  .ust.acik .ust__nav{display:flex;position:absolute;top:100%;left:calc(var(--kenar) * -1);right:calc(var(--kenar) * -1);flex-direction:column;gap:0;margin:0;background:var(--kagit);border-bottom:1px solid #dcd8cf;padding:8px var(--kenar) 20px}
+  .ust.acik .ust__nav a{padding:14px 0;font-size:1.05rem;border-bottom:1px solid #dcd8cf}
+  .sinema{height:380vh;margin-top:-76px}
+  .sinema__metin{justify-content:flex-start;padding-top:96px}
+  .sinema__metin > div{max-width:none}
+  .urun-logo{height:36px}
+  .sinema h1{margin-top:16px;font-size:clamp(2rem,8.6vw,3.2rem)}
+  .giris-p__alt{font-size:1rem}
+  .giris-p__eylem{gap:14px 22px;margin-top:22px}
+  .metin-link{font-size:1rem}
+  .sinema__cep{width:min(46vw,220px)}
+  .sinema__etiket{font-size:12.5px;padding:7px 10px}
+  .sinema__alt{left:0;right:0;top:auto;bottom:0;max-width:none;padding:72px 20px 30px;text-align:center;background:linear-gradient(rgba(11,12,14,0),#0B0C0E 45%);transform:none}
+  .sinema__alt p{font-size:1.5rem}
+  .sinema__alt span{font-size:.95rem}
+  .izgara{-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 75%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 90% 60% at 50% 75%,#000 30%,transparent 75%)}
+  .cep{padding:7px;border-radius:34px}
+  .cep__ekran{border-radius:28px}
+  .magaza a{height:52px}
+  .bilgiler{grid-template-columns:1fr 1fr;gap:24px 20px;padding:32px 0}
+  .bilgiler h3{font-size:15px}
+  .bilgiler p{font-size:14px}
+  .bolum{padding-top:64px;padding-bottom:64px}
+  .bolum__bas h2{font-size:1.9rem}
+  .bolum__bas p{font-size:1rem}
+  .ozellik{grid-template-columns:1fr;gap:32px;margin-top:64px}
+  .ozellik--ters .ozellik__gorsel{order:0}
+  .ozellik__ad{font-size:14px}
+  .ozellik h3{font-size:1.6rem}
+  .ozellik p,.ozellik ul{font-size:1rem}
+  .ozellik__gorsel .cep{width:min(62vw,280px)}
+  .ikili .cep{width:min(42vw,200px)}
+  .yakin{width:100%}
+  .etiket{font-size:12.5px;padding:6px 10px}
+  .adimlar{grid-template-columns:1fr;margin-top:32px}
+  .adim{padding:26px}
+  .adim__sira{font-size:13px}
+  .adim h3{font-size:1.25rem}
+  .adim p{font-size:1rem}
+  .ekosistem{flex-direction:column;align-items:flex-start;gap:16px;padding:36px 0}
+  .ekosistem img{height:32px}
+  .ekosistem p{font-size:1.05rem}
+  .kapanis{margin-top:64px}
+  .kapanis .kap{flex-direction:column;align-items:flex-start;padding-top:56px;min-height:0}
+  .kapanis h2{font-size:2rem}
+  .kapanis p{font-size:1rem}
+  .kapanis .cep{align-self:center;width:62vw;margin-bottom:-60vw}
+  .alt__ic{flex-wrap:wrap;height:auto;padding-top:36px;padding-bottom:36px;gap:22px 28px}
+  .alt__ic > img{height:40px}
+  .alt nav{flex-wrap:wrap;gap:14px 24px;margin:0;width:100%}
+  .alt nav a,.alt__telif{font-size:14px}
+  .alt__sosyal{margin-left:0}
+  .alt__sosyal svg{width:20px;height:20px}
+  .alt__telif{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+<header class="kap ust" id="ust">
+  <a class="ust__logo" href="kroki-web.html" aria-label="Kroki ana sayfa"><img src="assets/kroki-firma.png" alt="Kroki — mimari yazılımlar" width="768" height="353"></a>
+  <nav class="ust__nav" id="menu" aria-label="Ana menü">
+    <a href="kroki-web.html#urunler">Ürünler</a>
+    <a href="#">Çözümler</a>
+    <a href="kroki-web.html#paketler">Fiyatlandırma</a>
+    <a href="#">Kaynaklar</a>
+  </nav>
+  <div class="ust__sag">
+    <a class="btn" href="kroki-web.html#urunler">Hemen Başla
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11 5l5 5-5 5"/></svg></a>
+  </div>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menüyü aç">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="sinema" aria-label="pafta. tanıtımı">
+    <div class="sinema__sahne">
+      <div class="izgara" aria-hidden="true"></div>
+      <div class="sinema__karanlik" aria-hidden="true"></div>
+      <div class="kap sinema__metin">
+        <div>
+          <img class="urun-logo" src="assets/pafta-logo.svg" alt="pafta." width="640" height="206">
+          <h1>Ölçü sahada, plan elinde.</h1>
+          <p class="giris-p__alt">Duvarı çizin, ölçüler kendiliğinden yazılsın. Kirişler, kapılar, pencereler ve toplam alan; hepsi müşterinin dosyasında, bulutta.</p>
+          <div class="giris-p__eylem">
+            <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+        <div class="magaza">
+          <a href="#" data-bag="paftaAppStore" aria-label="pafta. uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
+          <a href="#" data-bag="paftaGooglePlay" aria-label="pafta. uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>
+        </div>
+            <a class="metin-link" href="#nasil">Nasıl çalışır</a>
+          </div>
+        </div>
+      </div>
+      <div class="sinema__cep">
+        <div class="cep"><div class="cep__ekran">
+          <div class="sinema__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. ana ekranı: Röleve başlığı, 3 müşteri 4 plan, Buluta kaydedildi, Yeni Müşteri düğmesi ve müşteri listesi">
+  <defs>
+    <pattern id="s1-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#DCE7F3" stroke-width="2"/></pattern>
+    <linearGradient id="s1-sol" x1="0" y1="0" x2="0" y2="1"><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="s1-maske"><rect width="924" height="730" fill="url(#s1-sol)"/></mask>
+  </defs>
+  <rect width="924" height="2000" fill="#F3F3F1"/>
+  <g mask="url(#s1-maske)">
+    <rect width="924" height="730" fill="url(#s1-izgara)"/>
+    <g fill="none" stroke="#8DB9EC" stroke-width="5">
+      <path d="M396 390V74H845V390H924M845 390H396"/><path d="M475 64H608M475 84H608" stroke-width="3"/>
+      <path d="M396 232H530M615 232H640" stroke-dasharray="26 16"/>
+      <path d="M370 74V390M355 74H385M355 390H385" stroke-width="3"/>
+      <path d="M607 390V730"/><rect x="591" y="376" width="32" height="32"/><rect x="828" y="62" width="32" height="30"/>
+      <path d="M625 525Q650 500 688 497" stroke-width="3"/><path d="M860 62L880 30" stroke-width="3"/>
+    </g>
+    <text x="327" y="215" font-size="30" font-weight="600" fill="#A9C8EE" transform="rotate(-90 327 215)" text-anchor="middle">320</text>
+  </g>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#151515">9:41</text>
+  <g fill="#151515"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#151515" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#151515"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#151515" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#151515"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#151515" opacity=".5"/>
+  <image href="assets/pafta-logo.svg" x="40" y="166" width="172" height="74"/>
+  <circle cx="566" cy="197" r="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>
+  <g transform="translate(566 197)" fill="none" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"><circle r="10"/><path d="M0-21v-5M0 21v5M-21 0h-5M21 0h5M-15-15l-3-3M15 15l3 3M-15 15l-3 3M15-15l3-3"/></g>
+  <rect x="640" y="146" width="244" height="102" rx="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>
+  <g transform="translate(694 197)" fill="none" stroke="#1A1A1A" stroke-width="3.5"><circle r="8"/><circle r="17" stroke-dasharray="7 4.6"/></g>
+  <text x="732" y="209" font-size="32" fill="#1A1A1A">Ayarlar</text>
+  <text x="44" y="405" font-size="92" font-weight="800" fill="#151515" letter-spacing="-4">Röleve</text>
+  <text class="sayi-eski" x="44" y="473" font-size="34" fill="#6E6E6E">3 müşteri · 4 plan</text>
+  <text class="sayi-yeni" x="44" y="473" font-size="34" fill="#6E6E6E">4 müşteri · 4 plan</text>
+  <rect x="44" y="546" width="359" height="82" rx="41" fill="#ECECEA" stroke="#DDDDDB" stroke-width="2"/>
+  <path d="M80 602h28a10 10 0 0 0 0-20 14 14 0 0 0-27-3 9 9 0 0 0-1 23z" fill="#fff" stroke="#C9C9C7" stroke-width="2"/>
+  <text class="kayit-tamam" x="122" y="599" font-size="30" font-weight="500" fill="#5B9BE3">Buluta kaydedildi</text>
+  <text class="kayit-suruyor" x="122" y="599" font-size="30" font-weight="500" fill="#8E8E8C">Kaydediliyor…</text>
+  <g class="basilan"><rect x="415" y="527" width="341" height="117" rx="58" fill="#1C86EE"/>
+  <text x="586" y="599" text-anchor="middle" font-size="36" font-weight="700" fill="#fff" letter-spacing="-1">+ Yeni Müşteri</text></g>
+  <text x="44" y="802" font-size="42" font-weight="800" fill="#151515" letter-spacing="-1.5">Müşteriler</text>
+  <text x="880" y="798" text-anchor="end" font-size="30" fill="#6E6E6E">son değişen üstte</text>
+  <rect class="kart-zemin" x="40" y="846" width="844" height="646" rx="54" fill="#fff" stroke="#E2E2E0" stroke-width="2"/>
+  <g class="satirlar"><path d="M40 1061H884M40 1276H884" stroke="#E8E8E6" stroke-width="2"/><rect x="75" y="899" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="964" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">EH</text>
+  <text x="212" y="920" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Ece hanım</text>
+  <text x="212" y="970" font-size="31" fill="#1C79DF">1 plan</text>
+  <text x="212" y="1017" font-size="30" fill="#707070">bugün 09:41</text>
+  <path d="M820 936l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="75" y="1114" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="1179" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">KB</text>
+  <text x="212" y="1135" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Kaan bey</text>
+  <text x="212" y="1185" font-size="31" fill="#1C79DF">1 plan</text>
+  <text x="212" y="1232" font-size="30" fill="#707070">dün</text>
+  <path d="M820 1151l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="75" y="1329" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="1394" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">SH</text>
+  <text x="212" y="1350" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Selin hanım</text>
+  <text x="212" y="1400" font-size="31" fill="#1C79DF">2 plan</text>
+  <text x="212" y="1447" font-size="30" fill="#707070">dün</text>
+  <path d="M820 1366l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  
+</svg></div>
+          <div class="sinema__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. müşteri ekranı: Ece hanım, 1 plan, Yeni Plan düğmesi ve Salon planı">
+  <defs>
+    <pattern id="s2-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1A1D22" stroke-width="2"/></pattern>
+    <linearGradient id="s2-sol" x1="0" y1="0" x2="0" y2="1"><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="s2-maske"><rect width="924" height="705" fill="url(#s2-sol)"/></mask>
+  </defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/>
+  <g mask="url(#s2-maske)">
+    <rect width="924" height="705" fill="url(#s2-izgara)"/>
+    <g fill="none" stroke="#1F4E86" stroke-width="5">
+      <path d="M924 38H448V432H924"/><path d="M686 40V430" stroke-dasharray="20 14" stroke-width="3"/>
+      <path d="M452 380H554M554 380A102 102 0 0 0 452 278" stroke-width="3"/>
+      <path d="M448 470H924M448 456V484" stroke-width="3"/><rect x="433" y="22" width="32" height="30"/>
+    </g>
+    <text x="727" y="517" text-anchor="middle" font-size="32" font-weight="600" fill="#3B6FAF">525</text>
+  </g>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="39" y="146" width="284" height="102" rx="51" fill="#1A1D21"/>
+  <path d="M94 180l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="117" y="209" font-size="32" fill="#fff">Müşteriler</text>
+  <text x="44" y="405" font-size="88" font-weight="800" fill="#fff" letter-spacing="-4">Ece hanım</text>
+  <text class="sayi-eski" x="44" y="473" font-size="34" fill="#8A8F96">1 plan</text>
+  <text class="sayi-yeni" x="44" y="473" font-size="34" fill="#8A8F96">2 plan</text>
+  <g class="basilan"><rect x="44" y="527" width="284" height="117" rx="58" fill="#1C86EE"/>
+  <text x="186" y="599" text-anchor="middle" font-size="36" font-weight="700" fill="#fff" letter-spacing="-1">+ Yeni Plan</text></g>
+  <text x="44" y="778" font-size="42" font-weight="800" fill="#fff" letter-spacing="-1.5">Planlar</text>
+  <rect x="40" y="822" width="844" height="218" rx="54" fill="#14171A" stroke="#262A2F" stroke-width="2"/>
+  <rect x="75" y="856" width="148" height="148" rx="28" fill="#0B0C0E" stroke="#2A2E33" stroke-width="2"/>
+  <path d="M98 876H200V988H178V940H98Z" fill="none" stroke="#1C86EE" stroke-width="6"/><path d="M104 884H194" stroke="#1C86EE" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="254" y="921" font-size="38" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <text x="254" y="972" font-size="30" fill="#8A8F96">dün</text>
+  <circle cx="803" cy="931" r="51" fill="#1E2226"/><g fill="#fff"><circle cx="785" cy="931" r="5"/><circle cx="803" cy="931" r="5"/><circle cx="821" cy="931" r="5"/></g>
+  
+  <g class="satirlar"><text x="462" y="1150" text-anchor="middle" font-size="32" fill="#F06A6A">Müşteriyi sil</text></g>
+</svg></div>
+          <div class="sinema__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. plan ekranı: ölçüleri yazılmış L biçimli salon planı, kiriş, kapı ve pencereler; altta Duvar, Kiriş, Kaydır, Ekle araçları">
+  <defs><pattern id="s3-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1D2026" stroke-width="2"/></pattern></defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/><rect width="924" height="1900" fill="url(#s3-izgara)"/>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="30" y="137" width="250" height="100" rx="50" fill="#1A1D21"/>
+  <path d="M84 170l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="104" y="199" font-size="34" fill="#fff">Ece hanım</text>
+  <rect x="294" y="137" width="162" height="100" rx="50" fill="#1A1D21"/><text x="375" y="199" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <circle cx="843" cy="187" r="51" fill="#1A1D21"/><g fill="#fff"><circle cx="825" cy="187" r="5"/><circle cx="843" cy="187" r="5"/><circle cx="861" cy="187" r="5"/></g>
+  <text x="34" y="291" font-size="30" fill="#8C9096">Bir kare = 50 cm</text>
+  <g class="ciz-olcu" style="animation-delay:3.3s">
+    <rect x="527" y="260" width="367" height="165" rx="26" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+    <text x="558" y="316" font-size="30" font-weight="600" fill="#fff">Toplam ≈29,71 m²</text><path d="M850 300l7 9 7-9z" fill="#fff"/>
+    <text x="558" y="381" font-size="32" font-weight="500" fill="#F26B6B">h 80 cm</text>
+  </g>
+  <g class="ciz-duvar-grup">
+    <g fill="none" stroke="#F4F4F4" stroke-width="20" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+    <g fill="none" stroke="#0B0C0E" stroke-width="9" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.5s">
+    <rect x="338" y="656" width="109" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M338 668.0H447" stroke="#F4F4F4" stroke-width="2"/><rect x="452" y="1021" width="108" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M452 1033.0H560" stroke="#F4F4F4" stroke-width="2"/><rect x="173" y="700" width="25" height="105" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M185.5 700V805" stroke="#F4F4F4" stroke-width="2"/>
+    <rect x="628" y="1008" width="27" height="27" fill="#F4F4F4"/>
+    <path d="M185 810H265M265 810A80 80 0 0 1 185 890" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+    <path d="M645 1300V1382M645 1382A83 83 0 0 0 728 1300" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.8s">
+    <g class="kiris-ciz"><path d="M225 692H720" stroke="#F4F4F4" stroke-width="4" stroke-dasharray="22 14"/></g>
+    <text class="kiris-yazi" x="466" y="752" text-anchor="middle" font-size="32" font-weight="600" fill="#3CCB7F">6,27 m</text>
+    <text x="312" y="850" text-anchor="middle" font-size="30" font-weight="600" fill="#F4F4F4" transform="rotate(90 312 850)">90/210</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 560L750 560"/><path d="M176 569L194 551"/><path d="M741 569L759 551"/><path d="M185 546V574M750 546V574"/></g>
+    <g><rect x="399.5" y="540.0" width="136" height="40" fill="#0B0C0E"/><text x="467.5" y="571.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,27 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 617L750 617"/><path d="M176 626L194 608"/><path d="M741 626L759 608"/><path d="M185 603V631M750 603V631"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s" stroke="#8E949B" stroke-width="2" fill="none"><path d="M329 626L347 608M438 626L456 608"/></g>
+  <g class="ciz-olcu" style="animation-delay:2.15s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <rect x="232" y="597" width="96" height="40" fill="#0B0C0E"/><text x="280" y="628">≈140</text>
+    <rect x="345" y="597" width="94" height="40" fill="#0B0C0E"/><text x="392" y="628">≈120</text>
+    <rect x="534" y="597" width="96" height="40" fill="#0B0C0E"/><text x="582" y="628">≈307</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.3s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M92 668L92 1033"/><path d="M83 677L101 659"/><path d="M83 1042L101 1024"/><path d="M78 668H106M78 1033H106"/></g>
+    <g transform="rotate(90 92.0 850.5)"><rect x="-28.5" y="830.5" width="241" height="40" fill="#0B0C0E"/><text x="92.0" y="861.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 4,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.4s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M150 700L150 1033"/><path d="M141 709L159 691"/><path d="M141 1042L159 1024"/><path d="M136 700H164M136 1033H164"/></g>
+    <g transform="rotate(90 150.0 866.5)"><rect x="82.0" y="846.5" width="136" height="40" fill="#0B0C0E"/><text x="150.0" y="877.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.5s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M265 690L265 805"/><path d="M256 699L274 681"/><path d="M256 814L274 796"/><path d="M251 690H279M251 805H279"/></g>
+    <g transform="rotate(90 265.0 747.5)"><rect x="227.0" y="727.5" width="76" height="40" fill="#0B0C0E"/><text x="265.0" y="758.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈120</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.6s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 983L635 983"/><path d="M176 992L194 974"/><path d="M626 992L644 974"/><path d="M185 969V997M635 969V997"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.65s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <g stroke="#8E949B" stroke-width="2"><path d="M443 992L461 974"/></g>
+    <rect x="270" y="963" width="96" height="40" fill="#0B0C0E"/><text x="318" y="994">≈297</text>
+    <rect x="458" y="963" width="94" height="40" fill="#0B0C0E"/><text x="505" y="994">≈120</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.8s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 1090L628 1090"/><path d="M176 1099L194 1081"/><path d="M619 1099L637 1081"/><path d="M185 1076V1104M628 1076V1104"/></g>
+    <g><rect x="338.5" y="1070.0" width="136" height="40" fill="#0B0C0E"/><text x="406.5" y="1101.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 4,94 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.9s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M775 668L775 1300"/><path d="M766 677L784 659"/><path d="M766 1309L784 1291"/><path d="M761 668H789M761 1300H789"/></g>
+    <g transform="rotate(90 775.0 984.0)"><rect x="707.0" y="964.0" width="136" height="40" fill="#0B0C0E"/><text x="775.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M840 668L840 1300"/><path d="M831 677L849 659"/><path d="M831 1309L849 1291"/><path d="M826 668H854M826 1300H854"/></g>
+    <g transform="rotate(90 840.0 984.0)"><rect x="719.5" y="964.0" width="241" height="40" fill="#0B0C0E"/><text x="840.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 7,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M700 1040L700 1295"/><path d="M691 1049L709 1031"/><path d="M691 1304L709 1286"/><path d="M686 1040H714M686 1295H714"/></g>
+    <g transform="rotate(90 700.0 1167.5)"><rect x="632.0" y="1147.5" width="136" height="40" fill="#0B0C0E"/><text x="700.0" y="1178.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,00 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M628 1250L750 1250"/><path d="M619 1259L637 1241"/><path d="M741 1259L759 1241"/><path d="M628 1236V1264M750 1236V1264"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s"><text x="687" y="1434" text-anchor="middle" font-size="32" font-weight="600" fill="#F26B6B">≈ 1,33 m</text></g>
+  <rect x="30" y="1617" width="863" height="160" rx="80" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+  <rect x="45" y="1632" width="96" height="130" rx="48" fill="#1C86EE"/>
+  <g transform="translate(93 1675)" color="#fff"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-14 14l4-12 18-18 8 8-18 18zM4-12l8 8"/></g><text x="93" y="1737" text-anchor="middle" font-size="26" font-weight="600" fill="#fff">Duvar</text>
+  <path d="M361 1650v110" stroke="#2F343A" stroke-width="2"/>
+  <g transform="translate(194 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-20 0h6M-6 0h6M8 0h6M20 0h0"/></g><text x="194" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kiriş</text><g transform="translate(296 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-20v40M-20 0h40M0-20l-6 6M0-20l6 6M0 20l-6-6M0 20l6-6M-20 0l6-6M-20 0l6 6M20 0l-6-6M20 0l-6 6"/></g><text x="296" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kaydır</text><g transform="translate(424 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-18v36M-18 0h36"/></g><text x="424" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Ekle</text><g transform="translate(525 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-8-14l-10 10 10 10M-18-4h20a14 14 0 0 1 0 28h-8"/></g><text x="525" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Geri al</text><g transform="translate(627 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-18-8v-10h10M8-18h10v10M18 8v10H8M-8 18h-10V8"/></g><text x="627" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Sığdır</text><g transform="translate(729 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-16-12h32M-6-12v-6h12v6M-12-12l2 30h20l2-30M-4-4v14M4-4v14"/></g><text x="729" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Temizle</text><g transform="translate(831 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-22 0s8-14 22-14S22 0 22 0 14 14 0 14-22 0-22 0z"/><circle cx="0" cy="0" r="6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="831" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">İncele</text>
+</svg></div>
+          <span class="cep__ada" aria-hidden="true"></span><span class="cep__parilti" aria-hidden="true"></span>
+        </div></div>
+      </div>
+      <!-- etiketler planın noktalarına iliştirilir (ekran görüntüsünün 924×2000 koordinatları) -->
+      <span class="sinema__etiket" data-x="470" data-y="706" data-yon="alt" aria-hidden="true"><b>Kiriş</b> 6,27 m, h 80 cm</span>
+      <span class="sinema__etiket" data-x="225" data-y="872" data-yon="alt" aria-hidden="true"><b>Kapı</b> 90/210</span>
+      <span class="sinema__etiket" data-x="420" data-y="1200" data-yon="alt" aria-hidden="true"><b>Ölçüler</b> kendiliğinden</span>
+      <div class="sinema__alt"><p>Duvarı çizin, ölçü yazılsın.</p><span>Toplamlar ve alan siz çizdikçe hazır.</span></div>
+    </div>
+  </section>
+
+  <section class="kap" aria-label="Kısaca pafta.">
+    <div class="bilgiler">
+      <div><h3>Ölçekli ızgara</h3><p>Bir kare 50 cm. Çizdiğiniz her duvar ölçekte.</p></div>
+      <div><h3>Ölçüler kendiliğinden</h3><p>Duvar boyları, ara ölçüler, toplamlar ve alan.</p></div>
+      <div><h3>Buluta kayıt</h3><p>Planlar müşterinin dosyasında saklanır.</p></div>
+      <div><h3>Açık ve koyu tema</h3><p>Sahada güneşte de, akşam ofiste de rahat okunur.</p></div>
+    </div>
+  </section>
+
+  <section class="kap bolum" aria-labelledby="ozellik-baslik">
+    <div class="bolum__bas">
+      <h2 id="ozellik-baslik">Röleve için gereken her şey, tek ekranda.</h2>
+      <p>Metre, kâğıt ve kalemle sahada yaptığınız işi telefonda yapın; ofise döndüğünüzde plan hazır olsun.</p>
+    </div>
+
+    <div class="ozellik">
+      <div>
+        <p class="ozellik__ad">Duvar</p>
+        <h3>Duvarı çizin, ölçü yazılsın.</h3>
+        <p>Duvar aracıyla çizdiğiniz her duvarın uzunluğu plana kendiliğinden yazılır. Ara ölçüler zincir hâlinde dizilir, toplamlar ve toplam alan köşede hazır bekler.</p>
+        <ul><li>Bir kare 50 cm olan ölçekli ızgara</li><li>Ara ölçüler, toplam ölçüler ve m²</li><li>Geri al, Sığdır ve İncele ile rahat düzenleme</li></ul>
+      </div>
+      <div class="ozellik__gorsel"><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. plan ekranı: ölçüleri yazılmış L biçimli salon planı, kiriş, kapı ve pencereler; altta Duvar, Kiriş, Kaydır, Ekle araçları">
+  <defs><pattern id="o1-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1D2026" stroke-width="2"/></pattern></defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/><rect width="924" height="1900" fill="url(#o1-izgara)"/>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="30" y="137" width="250" height="100" rx="50" fill="#1A1D21"/>
+  <path d="M84 170l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="104" y="199" font-size="34" fill="#fff">Ece hanım</text>
+  <rect x="294" y="137" width="162" height="100" rx="50" fill="#1A1D21"/><text x="375" y="199" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <circle cx="843" cy="187" r="51" fill="#1A1D21"/><g fill="#fff"><circle cx="825" cy="187" r="5"/><circle cx="843" cy="187" r="5"/><circle cx="861" cy="187" r="5"/></g>
+  <text x="34" y="291" font-size="30" fill="#8C9096">Bir kare = 50 cm</text>
+  <g class="ciz-olcu" style="animation-delay:3.3s">
+    <rect x="527" y="260" width="367" height="165" rx="26" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+    <text x="558" y="316" font-size="30" font-weight="600" fill="#fff">Toplam ≈29,71 m²</text><path d="M850 300l7 9 7-9z" fill="#fff"/>
+    <text x="558" y="381" font-size="32" font-weight="500" fill="#F26B6B">h 80 cm</text>
+  </g>
+  <g class="ciz-duvar-grup">
+    <g fill="none" stroke="#F4F4F4" stroke-width="20" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+    <g fill="none" stroke="#0B0C0E" stroke-width="9" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.5s">
+    <rect x="338" y="656" width="109" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M338 668.0H447" stroke="#F4F4F4" stroke-width="2"/><rect x="452" y="1021" width="108" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M452 1033.0H560" stroke="#F4F4F4" stroke-width="2"/><rect x="173" y="700" width="25" height="105" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M185.5 700V805" stroke="#F4F4F4" stroke-width="2"/>
+    <rect x="628" y="1008" width="27" height="27" fill="#F4F4F4"/>
+    <path d="M185 810H265M265 810A80 80 0 0 1 185 890" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+    <path d="M645 1300V1382M645 1382A83 83 0 0 0 728 1300" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.8s">
+    <g class="kiris-ciz"><path d="M225 692H720" stroke="#F4F4F4" stroke-width="4" stroke-dasharray="22 14"/></g>
+    <text class="kiris-yazi" x="466" y="752" text-anchor="middle" font-size="32" font-weight="600" fill="#3CCB7F">6,27 m</text>
+    <text x="312" y="850" text-anchor="middle" font-size="30" font-weight="600" fill="#F4F4F4" transform="rotate(90 312 850)">90/210</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 560L750 560"/><path d="M176 569L194 551"/><path d="M741 569L759 551"/><path d="M185 546V574M750 546V574"/></g>
+    <g><rect x="399.5" y="540.0" width="136" height="40" fill="#0B0C0E"/><text x="467.5" y="571.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,27 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 617L750 617"/><path d="M176 626L194 608"/><path d="M741 626L759 608"/><path d="M185 603V631M750 603V631"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s" stroke="#8E949B" stroke-width="2" fill="none"><path d="M329 626L347 608M438 626L456 608"/></g>
+  <g class="ciz-olcu" style="animation-delay:2.15s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <rect x="232" y="597" width="96" height="40" fill="#0B0C0E"/><text x="280" y="628">≈140</text>
+    <rect x="345" y="597" width="94" height="40" fill="#0B0C0E"/><text x="392" y="628">≈120</text>
+    <rect x="534" y="597" width="96" height="40" fill="#0B0C0E"/><text x="582" y="628">≈307</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.3s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M92 668L92 1033"/><path d="M83 677L101 659"/><path d="M83 1042L101 1024"/><path d="M78 668H106M78 1033H106"/></g>
+    <g transform="rotate(90 92.0 850.5)"><rect x="-28.5" y="830.5" width="241" height="40" fill="#0B0C0E"/><text x="92.0" y="861.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 4,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.4s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M150 700L150 1033"/><path d="M141 709L159 691"/><path d="M141 1042L159 1024"/><path d="M136 700H164M136 1033H164"/></g>
+    <g transform="rotate(90 150.0 866.5)"><rect x="82.0" y="846.5" width="136" height="40" fill="#0B0C0E"/><text x="150.0" y="877.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.5s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M265 690L265 805"/><path d="M256 699L274 681"/><path d="M256 814L274 796"/><path d="M251 690H279M251 805H279"/></g>
+    <g transform="rotate(90 265.0 747.5)"><rect x="227.0" y="727.5" width="76" height="40" fill="#0B0C0E"/><text x="265.0" y="758.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈120</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.6s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 983L635 983"/><path d="M176 992L194 974"/><path d="M626 992L644 974"/><path d="M185 969V997M635 969V997"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.65s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <g stroke="#8E949B" stroke-width="2"><path d="M443 992L461 974"/></g>
+    <rect x="270" y="963" width="96" height="40" fill="#0B0C0E"/><text x="318" y="994">≈297</text>
+    <rect x="458" y="963" width="94" height="40" fill="#0B0C0E"/><text x="505" y="994">≈120</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.8s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 1090L628 1090"/><path d="M176 1099L194 1081"/><path d="M619 1099L637 1081"/><path d="M185 1076V1104M628 1076V1104"/></g>
+    <g><rect x="338.5" y="1070.0" width="136" height="40" fill="#0B0C0E"/><text x="406.5" y="1101.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 4,94 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.9s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M775 668L775 1300"/><path d="M766 677L784 659"/><path d="M766 1309L784 1291"/><path d="M761 668H789M761 1300H789"/></g>
+    <g transform="rotate(90 775.0 984.0)"><rect x="707.0" y="964.0" width="136" height="40" fill="#0B0C0E"/><text x="775.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M840 668L840 1300"/><path d="M831 677L849 659"/><path d="M831 1309L849 1291"/><path d="M826 668H854M826 1300H854"/></g>
+    <g transform="rotate(90 840.0 984.0)"><rect x="719.5" y="964.0" width="241" height="40" fill="#0B0C0E"/><text x="840.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 7,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M700 1040L700 1295"/><path d="M691 1049L709 1031"/><path d="M691 1304L709 1286"/><path d="M686 1040H714M686 1295H714"/></g>
+    <g transform="rotate(90 700.0 1167.5)"><rect x="632.0" y="1147.5" width="136" height="40" fill="#0B0C0E"/><text x="700.0" y="1178.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,00 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M628 1250L750 1250"/><path d="M619 1259L637 1241"/><path d="M741 1259L759 1241"/><path d="M628 1236V1264M750 1236V1264"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s"><text x="687" y="1434" text-anchor="middle" font-size="32" font-weight="600" fill="#F26B6B">≈ 1,33 m</text></g>
+  <rect x="30" y="1617" width="863" height="160" rx="80" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+  <rect x="45" y="1632" width="96" height="130" rx="48" fill="#1C86EE"/>
+  <g transform="translate(93 1675)" color="#fff"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-14 14l4-12 18-18 8 8-18 18zM4-12l8 8"/></g><text x="93" y="1737" text-anchor="middle" font-size="26" font-weight="600" fill="#fff">Duvar</text>
+  <path d="M361 1650v110" stroke="#2F343A" stroke-width="2"/>
+  <g transform="translate(194 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-20 0h6M-6 0h6M8 0h6M20 0h0"/></g><text x="194" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kiriş</text><g transform="translate(296 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-20v40M-20 0h40M0-20l-6 6M0-20l6 6M0 20l-6-6M0 20l6-6M-20 0l6-6M-20 0l6 6M20 0l-6-6M20 0l-6 6"/></g><text x="296" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kaydır</text><g transform="translate(424 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-18v36M-18 0h36"/></g><text x="424" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Ekle</text><g transform="translate(525 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-8-14l-10 10 10 10M-18-4h20a14 14 0 0 1 0 28h-8"/></g><text x="525" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Geri al</text><g transform="translate(627 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-18-8v-10h10M8-18h10v10M18 8v10H8M-8 18h-10V8"/></g><text x="627" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Sığdır</text><g transform="translate(729 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-16-12h32M-6-12v-6h12v6M-12-12l2 30h20l2-30M-4-4v14M4-4v14"/></g><text x="729" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Temizle</text><g transform="translate(831 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-22 0s8-14 22-14S22 0 22 0 14 14 0 14-22 0-22 0z"/><circle cx="0" cy="0" r="6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="831" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">İncele</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div>
+    </div>
+
+    <div class="ozellik ozellik--ters">
+      <div>
+        <p class="ozellik__ad">Kiriş, kapı, pencere</p>
+        <h3>Kirişi de ölçün, kapıyı da.</h3>
+        <p>Kiriş aracıyla kirişin yerini ve yüksekliğini işaretleyin. Kapı ve pencereleri Ekle ile duvara yerleştirin; ölçüleri planın üstünde görünür.</p>
+        <ul><li>Kiriş boyu ve yüksekliği</li><li>Kapı ölçüsü, örneğin 90/210</li><li>Pencere ve kolon</li></ul>
+      </div>
+      <div class="ozellik__gorsel yakin-alan">
+        <div class="yakin">
+          <svg class="ekran" viewBox="60 500 820 640" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. plan ekranı: ölçüleri yazılmış L biçimli salon planı, kiriş, kapı ve pencereler; altta Duvar, Kiriş, Kaydır, Ekle araçları">
+  <defs><pattern id="o2-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1D2026" stroke-width="2"/></pattern></defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/><rect width="924" height="1900" fill="url(#o2-izgara)"/>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="30" y="137" width="250" height="100" rx="50" fill="#1A1D21"/>
+  <path d="M84 170l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="104" y="199" font-size="34" fill="#fff">Ece hanım</text>
+  <rect x="294" y="137" width="162" height="100" rx="50" fill="#1A1D21"/><text x="375" y="199" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <circle cx="843" cy="187" r="51" fill="#1A1D21"/><g fill="#fff"><circle cx="825" cy="187" r="5"/><circle cx="843" cy="187" r="5"/><circle cx="861" cy="187" r="5"/></g>
+  <text x="34" y="291" font-size="30" fill="#8C9096">Bir kare = 50 cm</text>
+  <g class="ciz-olcu" style="animation-delay:3.3s">
+    <rect x="527" y="260" width="367" height="165" rx="26" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+    <text x="558" y="316" font-size="30" font-weight="600" fill="#fff">Toplam ≈29,71 m²</text><path d="M850 300l7 9 7-9z" fill="#fff"/>
+    <text x="558" y="381" font-size="32" font-weight="500" fill="#F26B6B">h 80 cm</text>
+  </g>
+  <g class="ciz-duvar-grup">
+    <g fill="none" stroke="#F4F4F4" stroke-width="20" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+    <g fill="none" stroke="#0B0C0E" stroke-width="9" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.5s">
+    <rect x="338" y="656" width="109" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M338 668.0H447" stroke="#F4F4F4" stroke-width="2"/><rect x="452" y="1021" width="108" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M452 1033.0H560" stroke="#F4F4F4" stroke-width="2"/><rect x="173" y="700" width="25" height="105" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M185.5 700V805" stroke="#F4F4F4" stroke-width="2"/>
+    <rect x="628" y="1008" width="27" height="27" fill="#F4F4F4"/>
+    <path d="M185 810H265M265 810A80 80 0 0 1 185 890" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+    <path d="M645 1300V1382M645 1382A83 83 0 0 0 728 1300" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.8s">
+    <g class="kiris-ciz"><path d="M225 692H720" stroke="#F4F4F4" stroke-width="4" stroke-dasharray="22 14"/></g>
+    <text class="kiris-yazi" x="466" y="752" text-anchor="middle" font-size="32" font-weight="600" fill="#3CCB7F">6,27 m</text>
+    <text x="312" y="850" text-anchor="middle" font-size="30" font-weight="600" fill="#F4F4F4" transform="rotate(90 312 850)">90/210</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 560L750 560"/><path d="M176 569L194 551"/><path d="M741 569L759 551"/><path d="M185 546V574M750 546V574"/></g>
+    <g><rect x="399.5" y="540.0" width="136" height="40" fill="#0B0C0E"/><text x="467.5" y="571.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,27 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 617L750 617"/><path d="M176 626L194 608"/><path d="M741 626L759 608"/><path d="M185 603V631M750 603V631"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s" stroke="#8E949B" stroke-width="2" fill="none"><path d="M329 626L347 608M438 626L456 608"/></g>
+  <g class="ciz-olcu" style="animation-delay:2.15s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <rect x="232" y="597" width="96" height="40" fill="#0B0C0E"/><text x="280" y="628">≈140</text>
+    <rect x="345" y="597" width="94" height="40" fill="#0B0C0E"/><text x="392" y="628">≈120</text>
+    <rect x="534" y="597" width="96" height="40" fill="#0B0C0E"/><text x="582" y="628">≈307</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.3s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M92 668L92 1033"/><path d="M83 677L101 659"/><path d="M83 1042L101 1024"/><path d="M78 668H106M78 1033H106"/></g>
+    <g transform="rotate(90 92.0 850.5)"><rect x="-28.5" y="830.5" width="241" height="40" fill="#0B0C0E"/><text x="92.0" y="861.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 4,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.4s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M150 700L150 1033"/><path d="M141 709L159 691"/><path d="M141 1042L159 1024"/><path d="M136 700H164M136 1033H164"/></g>
+    <g transform="rotate(90 150.0 866.5)"><rect x="82.0" y="846.5" width="136" height="40" fill="#0B0C0E"/><text x="150.0" y="877.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.5s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M265 690L265 805"/><path d="M256 699L274 681"/><path d="M256 814L274 796"/><path d="M251 690H279M251 805H279"/></g>
+    <g transform="rotate(90 265.0 747.5)"><rect x="227.0" y="727.5" width="76" height="40" fill="#0B0C0E"/><text x="265.0" y="758.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈120</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.6s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 983L635 983"/><path d="M176 992L194 974"/><path d="M626 992L644 974"/><path d="M185 969V997M635 969V997"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.65s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <g stroke="#8E949B" stroke-width="2"><path d="M443 992L461 974"/></g>
+    <rect x="270" y="963" width="96" height="40" fill="#0B0C0E"/><text x="318" y="994">≈297</text>
+    <rect x="458" y="963" width="94" height="40" fill="#0B0C0E"/><text x="505" y="994">≈120</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.8s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 1090L628 1090"/><path d="M176 1099L194 1081"/><path d="M619 1099L637 1081"/><path d="M185 1076V1104M628 1076V1104"/></g>
+    <g><rect x="338.5" y="1070.0" width="136" height="40" fill="#0B0C0E"/><text x="406.5" y="1101.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 4,94 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.9s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M775 668L775 1300"/><path d="M766 677L784 659"/><path d="M766 1309L784 1291"/><path d="M761 668H789M761 1300H789"/></g>
+    <g transform="rotate(90 775.0 984.0)"><rect x="707.0" y="964.0" width="136" height="40" fill="#0B0C0E"/><text x="775.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M840 668L840 1300"/><path d="M831 677L849 659"/><path d="M831 1309L849 1291"/><path d="M826 668H854M826 1300H854"/></g>
+    <g transform="rotate(90 840.0 984.0)"><rect x="719.5" y="964.0" width="241" height="40" fill="#0B0C0E"/><text x="840.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 7,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M700 1040L700 1295"/><path d="M691 1049L709 1031"/><path d="M691 1304L709 1286"/><path d="M686 1040H714M686 1295H714"/></g>
+    <g transform="rotate(90 700.0 1167.5)"><rect x="632.0" y="1147.5" width="136" height="40" fill="#0B0C0E"/><text x="700.0" y="1178.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,00 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M628 1250L750 1250"/><path d="M619 1259L637 1241"/><path d="M741 1259L759 1241"/><path d="M628 1236V1264M750 1236V1264"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s"><text x="687" y="1434" text-anchor="middle" font-size="32" font-weight="600" fill="#F26B6B">≈ 1,33 m</text></g>
+  <rect x="30" y="1617" width="863" height="160" rx="80" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+  <rect x="45" y="1632" width="96" height="130" rx="48" fill="#1C86EE"/>
+  <g transform="translate(93 1675)" color="#fff"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-14 14l4-12 18-18 8 8-18 18zM4-12l8 8"/></g><text x="93" y="1737" text-anchor="middle" font-size="26" font-weight="600" fill="#fff">Duvar</text>
+  <path d="M361 1650v110" stroke="#2F343A" stroke-width="2"/>
+  <g transform="translate(194 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-20 0h6M-6 0h6M8 0h6M20 0h0"/></g><text x="194" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kiriş</text><g transform="translate(296 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-20v40M-20 0h40M0-20l-6 6M0-20l6 6M0 20l-6-6M0 20l6-6M-20 0l6-6M-20 0l6 6M20 0l-6-6M20 0l-6 6"/></g><text x="296" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kaydır</text><g transform="translate(424 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-18v36M-18 0h36"/></g><text x="424" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Ekle</text><g transform="translate(525 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-8-14l-10 10 10 10M-18-4h20a14 14 0 0 1 0 28h-8"/></g><text x="525" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Geri al</text><g transform="translate(627 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-18-8v-10h10M8-18h10v10M18 8v10H8M-8 18h-10V8"/></g><text x="627" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Sığdır</text><g transform="translate(729 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-16-12h32M-6-12v-6h12v6M-12-12l2 30h20l2-30M-4-4v14M4-4v14"/></g><text x="729" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Temizle</text><g transform="translate(831 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-22 0s8-14 22-14S22 0 22 0 14 14 0 14-22 0-22 0z"/><circle cx="0" cy="0" r="6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="831" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">İncele</text>
+</svg>
+          <span class="etiket etiket--kiris" aria-hidden="true"><b>Kiriş</b> 6,27 m, h 80 cm</span>
+          <span class="etiket etiket--kapi" aria-hidden="true"><b>Kapı</b> 90/210</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ozellik">
+      <div>
+        <p class="ozellik__ad">Müşteriler</p>
+        <h3>Her müşterinin planları kendi dosyasında.</h3>
+        <p>Müşteri ekleyin, altına odaların planlarını açın. Son değişen en üstte durur, her şey buluta kaydedilir.</p>
+        <ul><li>Müşteri ve plan sayısı bir bakışta</li><li>Buluta otomatik kayıt</li><li>Açık ve koyu tema</li></ul>
+      </div>
+      <div class="ozellik__gorsel ikili"><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. ana ekranı: Röleve başlığı, 3 müşteri 4 plan, Buluta kaydedildi, Yeni Müşteri düğmesi ve müşteri listesi">
+  <defs>
+    <pattern id="o3-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#DCE7F3" stroke-width="2"/></pattern>
+    <linearGradient id="o3-sol" x1="0" y1="0" x2="0" y2="1"><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="o3-maske"><rect width="924" height="730" fill="url(#o3-sol)"/></mask>
+  </defs>
+  <rect width="924" height="2000" fill="#F3F3F1"/>
+  <g mask="url(#o3-maske)">
+    <rect width="924" height="730" fill="url(#o3-izgara)"/>
+    <g fill="none" stroke="#8DB9EC" stroke-width="5">
+      <path d="M396 390V74H845V390H924M845 390H396"/><path d="M475 64H608M475 84H608" stroke-width="3"/>
+      <path d="M396 232H530M615 232H640" stroke-dasharray="26 16"/>
+      <path d="M370 74V390M355 74H385M355 390H385" stroke-width="3"/>
+      <path d="M607 390V730"/><rect x="591" y="376" width="32" height="32"/><rect x="828" y="62" width="32" height="30"/>
+      <path d="M625 525Q650 500 688 497" stroke-width="3"/><path d="M860 62L880 30" stroke-width="3"/>
+    </g>
+    <text x="327" y="215" font-size="30" font-weight="600" fill="#A9C8EE" transform="rotate(-90 327 215)" text-anchor="middle">320</text>
+  </g>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#151515">9:41</text>
+  <g fill="#151515"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#151515" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#151515"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#151515" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#151515"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#151515" opacity=".5"/>
+  <image href="assets/pafta-logo.svg" x="40" y="166" width="172" height="74"/>
+  <circle cx="566" cy="197" r="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>
+  <g transform="translate(566 197)" fill="none" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"><circle r="10"/><path d="M0-21v-5M0 21v5M-21 0h-5M21 0h5M-15-15l-3-3M15 15l3 3M-15 15l-3 3M15-15l3-3"/></g>
+  <rect x="640" y="146" width="244" height="102" rx="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>
+  <g transform="translate(694 197)" fill="none" stroke="#1A1A1A" stroke-width="3.5"><circle r="8"/><circle r="17" stroke-dasharray="7 4.6"/></g>
+  <text x="732" y="209" font-size="32" fill="#1A1A1A">Ayarlar</text>
+  <text x="44" y="405" font-size="92" font-weight="800" fill="#151515" letter-spacing="-4">Röleve</text>
+  <text class="sayi-eski" x="44" y="473" font-size="34" fill="#6E6E6E">3 müşteri · 4 plan</text>
+  <text class="sayi-yeni" x="44" y="473" font-size="34" fill="#6E6E6E">4 müşteri · 4 plan</text>
+  <rect x="44" y="546" width="359" height="82" rx="41" fill="#ECECEA" stroke="#DDDDDB" stroke-width="2"/>
+  <path d="M80 602h28a10 10 0 0 0 0-20 14 14 0 0 0-27-3 9 9 0 0 0-1 23z" fill="#fff" stroke="#C9C9C7" stroke-width="2"/>
+  <text class="kayit-tamam" x="122" y="599" font-size="30" font-weight="500" fill="#5B9BE3">Buluta kaydedildi</text>
+  <text class="kayit-suruyor" x="122" y="599" font-size="30" font-weight="500" fill="#8E8E8C">Kaydediliyor…</text>
+  <g class="basilan"><rect x="415" y="527" width="341" height="117" rx="58" fill="#1C86EE"/>
+  <text x="586" y="599" text-anchor="middle" font-size="36" font-weight="700" fill="#fff" letter-spacing="-1">+ Yeni Müşteri</text></g>
+  <text x="44" y="802" font-size="42" font-weight="800" fill="#151515" letter-spacing="-1.5">Müşteriler</text>
+  <text x="880" y="798" text-anchor="end" font-size="30" fill="#6E6E6E">son değişen üstte</text>
+  <rect class="kart-zemin" x="40" y="846" width="844" height="646" rx="54" fill="#fff" stroke="#E2E2E0" stroke-width="2"/>
+  <g class="satirlar"><path d="M40 1061H884M40 1276H884" stroke="#E8E8E6" stroke-width="2"/><rect x="75" y="899" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="964" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">EH</text>
+  <text x="212" y="920" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Ece hanım</text>
+  <text x="212" y="970" font-size="31" fill="#1C79DF">1 plan</text>
+  <text x="212" y="1017" font-size="30" fill="#707070">bugün 09:41</text>
+  <path d="M820 936l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="75" y="1114" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="1179" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">KB</text>
+  <text x="212" y="1135" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Kaan bey</text>
+  <text x="212" y="1185" font-size="31" fill="#1C79DF">1 plan</text>
+  <text x="212" y="1232" font-size="30" fill="#707070">dün</text>
+  <path d="M820 1151l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="75" y="1329" width="106" height="106" rx="26" fill="#E5F0FC" stroke="#B9D5F4" stroke-width="2"/>
+  <text x="128" y="1394" text-anchor="middle" font-size="34" font-weight="700" fill="#1C6FCF">SH</text>
+  <text x="212" y="1350" font-size="38" font-weight="800" fill="#151515" letter-spacing="-1.2">Selin hanım</text>
+  <text x="212" y="1400" font-size="31" fill="#1C79DF">2 plan</text>
+  <text x="212" y="1447" font-size="30" fill="#707070">dün</text>
+  <path d="M820 1366l16 17-16 17" fill="none" stroke="#2F86E6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div><div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. müşteri ekranı: Ece hanım, 1 plan, Yeni Plan düğmesi ve Salon planı">
+  <defs>
+    <pattern id="o4-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1A1D22" stroke-width="2"/></pattern>
+    <linearGradient id="o4-sol" x1="0" y1="0" x2="0" y2="1"><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <mask id="o4-maske"><rect width="924" height="705" fill="url(#o4-sol)"/></mask>
+  </defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/>
+  <g mask="url(#o4-maske)">
+    <rect width="924" height="705" fill="url(#o4-izgara)"/>
+    <g fill="none" stroke="#1F4E86" stroke-width="5">
+      <path d="M924 38H448V432H924"/><path d="M686 40V430" stroke-dasharray="20 14" stroke-width="3"/>
+      <path d="M452 380H554M554 380A102 102 0 0 0 452 278" stroke-width="3"/>
+      <path d="M448 470H924M448 456V484" stroke-width="3"/><rect x="433" y="22" width="32" height="30"/>
+    </g>
+    <text x="727" y="517" text-anchor="middle" font-size="32" font-weight="600" fill="#3B6FAF">525</text>
+  </g>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="39" y="146" width="284" height="102" rx="51" fill="#1A1D21"/>
+  <path d="M94 180l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="117" y="209" font-size="32" fill="#fff">Müşteriler</text>
+  <text x="44" y="405" font-size="88" font-weight="800" fill="#fff" letter-spacing="-4">Ece hanım</text>
+  <text class="sayi-eski" x="44" y="473" font-size="34" fill="#8A8F96">1 plan</text>
+  <text class="sayi-yeni" x="44" y="473" font-size="34" fill="#8A8F96">2 plan</text>
+  <g class="basilan"><rect x="44" y="527" width="284" height="117" rx="58" fill="#1C86EE"/>
+  <text x="186" y="599" text-anchor="middle" font-size="36" font-weight="700" fill="#fff" letter-spacing="-1">+ Yeni Plan</text></g>
+  <text x="44" y="778" font-size="42" font-weight="800" fill="#fff" letter-spacing="-1.5">Planlar</text>
+  <rect x="40" y="822" width="844" height="218" rx="54" fill="#14171A" stroke="#262A2F" stroke-width="2"/>
+  <rect x="75" y="856" width="148" height="148" rx="28" fill="#0B0C0E" stroke="#2A2E33" stroke-width="2"/>
+  <path d="M98 876H200V988H178V940H98Z" fill="none" stroke="#1C86EE" stroke-width="6"/><path d="M104 884H194" stroke="#1C86EE" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="254" y="921" font-size="38" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <text x="254" y="972" font-size="30" fill="#8A8F96">dün</text>
+  <circle cx="803" cy="931" r="51" fill="#1E2226"/><g fill="#fff"><circle cx="785" cy="931" r="5"/><circle cx="803" cy="931" r="5"/><circle cx="821" cy="931" r="5"/></g>
+  
+  <g class="satirlar"><text x="462" y="1150" text-anchor="middle" font-size="32" fill="#F06A6A">Müşteriyi sil</text></g>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div></div>
+    </div>
+  </section>
+
+  <section class="kap bolum" id="nasil" aria-labelledby="nasil-baslik">
+    <div class="bolum__bas">
+      <h2 id="nasil-baslik">Üç adımda röleve.</h2>
+      <p>Sahaya vardığınızda uygulamayı açın; gerisi duvar duvar ilerler.</p>
+    </div>
+    <ol class="adimlar">
+      <li class="adim">
+        <span class="adim__sira">1. adım</span>
+        <h3>Müşteriyi ekleyin.</h3>
+        <p>Ana ekrandan yeni müşteri açın. Bütün planları onun dosyasında toplanır.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="hap">+ Yeni Müşteri</span></div>
+      </li>
+      <li class="adim">
+        <span class="adim__sira">2. adım</span>
+        <h3>Odanın planını açın.</h3>
+        <p>Salon, mutfak, banyo; her oda için ayrı bir plan.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="hap">+ Yeni Plan</span></div>
+      </li>
+      <li class="adim">
+        <span class="adim__sira">3. adım</span>
+        <h3>Duvarları ve kirişleri çizin.</h3>
+        <p>Ölçüler, toplamlar ve alan siz çizdikçe plana yazılır.</p>
+        <div class="adim__ui" aria-hidden="true"><span class="mini-arac"><span><svg viewBox="-26 -26 52 52"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-14 14l4-12 18-18 8 8-18 18zM4-12l8 8"/></svg>Duvar</span><span><svg viewBox="-26 -26 52 52"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-20 0h6M-6 0h6M8 0h6M20 0h0"/></svg>Kiriş</span><span><svg viewBox="-26 -26 52 52"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-18v36M-18 0h36"/></svg>Ekle</span></span></div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="kap">
+    <div class="ekosistem">
+      <img src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278" loading="lazy">
+      <p>Ölçüden sonrası için kroki crm. Müşteriyi, şantiyeyi ve tahsilatı aynı ekosistemde yönetin.</p>
+      <a class="metin-link" href="kroki-crm.html">kroki crm’i tanıyın</a>
+    </div>
+  </section>
+
+  <section class="kapanis" id="indir" aria-labelledby="indir-baslik">
+    <div class="izgara" aria-hidden="true"></div>
+    <div class="kap">
+      <div>
+        <h2 id="indir-baslik">pafta.’yı indirin.</h2>
+        <p>iPhone ve Android telefonlar için.</p>
+        <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+        <div class="magaza magaza--acik">
+          <a href="#" data-bag="paftaAppStore" aria-label="pafta. uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
+          <a href="#" data-bag="paftaGooglePlay" aria-label="pafta. uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>
+        </div>
+      </div>
+      <div class="cep"><div class="cep__ekran"><svg class="ekran" viewBox="0 0 924 2000" font-family="Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif" role="img" aria-label="pafta. plan ekranı: ölçüleri yazılmış L biçimli salon planı, kiriş, kapı ve pencereler; altta Duvar, Kiriş, Kaydır, Ekle araçları">
+  <defs><pattern id="k1-izgara" width="52" height="52" patternUnits="userSpaceOnUse"><path d="M52 0H0V52" fill="none" stroke="#1D2026" stroke-width="2"/></pattern></defs>
+  <rect width="924" height="2000" fill="#0B0C0E"/><rect width="924" height="1900" fill="url(#k1-izgara)"/>
+  <text x="150" y="77" text-anchor="middle" font-size="34" font-weight="600" fill="#fff">9:41</text>
+  <g fill="#fff"><rect x="676" y="62" width="8" height="14" rx="2"/><rect x="689" y="56" width="8" height="20" rx="2"/><rect x="702" y="50" width="8" height="26" rx="2"/><rect x="715" y="44" width="8" height="32" rx="2"/></g>
+  <path d="M742 56a26 26 0 0 1 36 0M749 64a16 16 0 0 1 22 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/><circle cx="760" cy="72" r="4" fill="#fff"/>
+  <rect x="797" y="47" width="56" height="30" rx="9" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="801" y="51" width="40" height="22" rx="6" fill="#fff"/><rect x="856" y="56" width="4" height="12" rx="2" fill="#fff" opacity=".5"/>
+  <rect x="30" y="137" width="250" height="100" rx="50" fill="#1A1D21"/>
+  <path d="M84 170l-17 17 17 17" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="104" y="199" font-size="34" fill="#fff">Ece hanım</text>
+  <rect x="294" y="137" width="162" height="100" rx="50" fill="#1A1D21"/><text x="375" y="199" text-anchor="middle" font-size="34" font-weight="700" fill="#fff" letter-spacing="-1">Salon</text>
+  <circle cx="843" cy="187" r="51" fill="#1A1D21"/><g fill="#fff"><circle cx="825" cy="187" r="5"/><circle cx="843" cy="187" r="5"/><circle cx="861" cy="187" r="5"/></g>
+  <text x="34" y="291" font-size="30" fill="#8C9096">Bir kare = 50 cm</text>
+  <g class="ciz-olcu" style="animation-delay:3.3s">
+    <rect x="527" y="260" width="367" height="165" rx="26" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+    <text x="558" y="316" font-size="30" font-weight="600" fill="#fff">Toplam ≈29,71 m²</text><path d="M850 300l7 9 7-9z" fill="#fff"/>
+    <text x="558" y="381" font-size="32" font-weight="500" fill="#F26B6B">h 80 cm</text>
+  </g>
+  <g class="ciz-duvar-grup">
+    <g fill="none" stroke="#F4F4F4" stroke-width="20" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+    <g fill="none" stroke="#0B0C0E" stroke-width="9" stroke-linejoin="miter" class="ciz-duvar"><path d="M338 668H185V700" pathLength="1"/><path d="M447 668H745V1300H728" pathLength="1"/><path d="M645 1300H628V1033H560" pathLength="1"/><path d="M452 1033H185V890" pathLength="1"/><path d="M185 805V810" pathLength="1"/></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.5s">
+    <rect x="338" y="656" width="109" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M338 668.0H447" stroke="#F4F4F4" stroke-width="2"/><rect x="452" y="1021" width="108" height="24" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M452 1033.0H560" stroke="#F4F4F4" stroke-width="2"/><rect x="173" y="700" width="25" height="105" rx="3" fill="#0B0C0E" stroke="#F4F4F4" stroke-width="3"/><path d="M185.5 700V805" stroke="#F4F4F4" stroke-width="2"/>
+    <rect x="628" y="1008" width="27" height="27" fill="#F4F4F4"/>
+    <path d="M185 810H265M265 810A80 80 0 0 1 185 890" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+    <path d="M645 1300V1382M645 1382A83 83 0 0 0 728 1300" fill="none" stroke="#F4F4F4" stroke-width="4"/>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:1.8s">
+    <g class="kiris-ciz"><path d="M225 692H720" stroke="#F4F4F4" stroke-width="4" stroke-dasharray="22 14"/></g>
+    <text class="kiris-yazi" x="466" y="752" text-anchor="middle" font-size="32" font-weight="600" fill="#3CCB7F">6,27 m</text>
+    <text x="312" y="850" text-anchor="middle" font-size="30" font-weight="600" fill="#F4F4F4" transform="rotate(90 312 850)">90/210</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 560L750 560"/><path d="M176 569L194 551"/><path d="M741 569L759 551"/><path d="M185 546V574M750 546V574"/></g>
+    <g><rect x="399.5" y="540.0" width="136" height="40" fill="#0B0C0E"/><text x="467.5" y="571.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,27 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 617L750 617"/><path d="M176 626L194 608"/><path d="M741 626L759 608"/><path d="M185 603V631M750 603V631"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.1s" stroke="#8E949B" stroke-width="2" fill="none"><path d="M329 626L347 608M438 626L456 608"/></g>
+  <g class="ciz-olcu" style="animation-delay:2.15s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <rect x="232" y="597" width="96" height="40" fill="#0B0C0E"/><text x="280" y="628">≈140</text>
+    <rect x="345" y="597" width="94" height="40" fill="#0B0C0E"/><text x="392" y="628">≈120</text>
+    <rect x="534" y="597" width="96" height="40" fill="#0B0C0E"/><text x="582" y="628">≈307</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.3s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M92 668L92 1033"/><path d="M83 677L101 659"/><path d="M83 1042L101 1024"/><path d="M78 668H106M78 1033H106"/></g>
+    <g transform="rotate(90 92.0 850.5)"><rect x="-28.5" y="830.5" width="241" height="40" fill="#0B0C0E"/><text x="92.0" y="861.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 4,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.4s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M150 700L150 1033"/><path d="M141 709L159 691"/><path d="M141 1042L159 1024"/><path d="M136 700H164M136 1033H164"/></g>
+    <g transform="rotate(90 150.0 866.5)"><rect x="82.0" y="846.5" width="136" height="40" fill="#0B0C0E"/><text x="150.0" y="877.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.5s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M265 690L265 805"/><path d="M256 699L274 681"/><path d="M256 814L274 796"/><path d="M251 690H279M251 805H279"/></g>
+    <g transform="rotate(90 265.0 747.5)"><rect x="227.0" y="727.5" width="76" height="40" fill="#0B0C0E"/><text x="265.0" y="758.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈120</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.6s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 983L635 983"/><path d="M176 992L194 974"/><path d="M626 992L644 974"/><path d="M185 969V997M635 969V997"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.65s" font-size="30" font-weight="600" fill="#F26B6B" text-anchor="middle">
+    <g stroke="#8E949B" stroke-width="2"><path d="M443 992L461 974"/></g>
+    <rect x="270" y="963" width="96" height="40" fill="#0B0C0E"/><text x="318" y="994">≈297</text>
+    <rect x="458" y="963" width="94" height="40" fill="#0B0C0E"/><text x="505" y="994">≈120</text>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.8s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M185 1090L628 1090"/><path d="M176 1099L194 1081"/><path d="M619 1099L637 1081"/><path d="M185 1076V1104M628 1076V1104"/></g>
+    <g><rect x="338.5" y="1070.0" width="136" height="40" fill="#0B0C0E"/><text x="406.5" y="1101.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 4,94 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:2.9s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M775 668L775 1300"/><path d="M766 677L784 659"/><path d="M766 1309L784 1291"/><path d="M761 668H789M761 1300H789"/></g>
+    <g transform="rotate(90 775.0 984.0)"><rect x="707.0" y="964.0" width="136" height="40" fill="#0B0C0E"/><text x="775.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 6,80 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.0s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M840 668L840 1300"/><path d="M831 677L849 659"/><path d="M831 1309L849 1291"/><path d="M826 668H854M826 1300H854"/></g>
+    <g transform="rotate(90 840.0 984.0)"><rect x="719.5" y="964.0" width="241" height="40" fill="#0B0C0E"/><text x="840.0" y="995.0" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ Toplam 7,10 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.1s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M700 1040L700 1295"/><path d="M691 1049L709 1031"/><path d="M691 1304L709 1286"/><path d="M686 1040H714M686 1295H714"/></g>
+    <g transform="rotate(90 700.0 1167.5)"><rect x="632.0" y="1147.5" width="136" height="40" fill="#0B0C0E"/><text x="700.0" y="1178.5" text-anchor="middle" font-size="30" font-weight="600" fill="#F26B6B">≈ 3,00 m</text></g>
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s">
+    <g stroke="#8E949B" stroke-width="2" fill="none"><path d="M628 1250L750 1250"/><path d="M619 1259L637 1241"/><path d="M741 1259L759 1241"/><path d="M628 1236V1264M750 1236V1264"/></g>
+    
+  </g>
+  <g class="ciz-olcu" style="animation-delay:3.2s"><text x="687" y="1434" text-anchor="middle" font-size="32" font-weight="600" fill="#F26B6B">≈ 1,33 m</text></g>
+  <rect x="30" y="1617" width="863" height="160" rx="80" fill="#15181B" stroke="#2A2E33" stroke-width="2"/>
+  <rect x="45" y="1632" width="96" height="130" rx="48" fill="#1C86EE"/>
+  <g transform="translate(93 1675)" color="#fff"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-14 14l4-12 18-18 8 8-18 18zM4-12l8 8"/></g><text x="93" y="1737" text-anchor="middle" font-size="26" font-weight="600" fill="#fff">Duvar</text>
+  <path d="M361 1650v110" stroke="#2F343A" stroke-width="2"/>
+  <g transform="translate(194 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-20 0h6M-6 0h6M8 0h6M20 0h0"/></g><text x="194" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kiriş</text><g transform="translate(296 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-20v40M-20 0h40M0-20l-6 6M0-20l6 6M0 20l-6-6M0 20l6-6M-20 0l6-6M-20 0l6 6M20 0l-6-6M20 0l-6 6"/></g><text x="296" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Kaydır</text><g transform="translate(424 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M0-18v36M-18 0h36"/></g><text x="424" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Ekle</text><g transform="translate(525 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-8-14l-10 10 10 10M-18-4h20a14 14 0 0 1 0 28h-8"/></g><text x="525" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Geri al</text><g transform="translate(627 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-18-8v-10h10M8-18h10v10M18 8v10H8M-8 18h-10V8"/></g><text x="627" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Sığdır</text><g transform="translate(729 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-16-12h32M-6-12v-6h12v6M-12-12l2 30h20l2-30M-4-4v14M4-4v14"/></g><text x="729" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">Temizle</text><g transform="translate(831 1675)" color="#E6E8EB"><path fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M-22 0s8-14 22-14S22 0 22 0 14 14 0 14-22 0-22 0z"/><circle cx="0" cy="0" r="6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g><text x="831" y="1737" text-anchor="middle" font-size="26" fill="#C5C9CE">İncele</text>
+</svg><span class="cep__ada" aria-hidden="true"></span></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="alt">
+  <div class="kap alt__ic">
+    <img src="assets/kroki-firma-acik.png" alt="Kroki" width="768" height="353" loading="lazy">
+    <nav aria-label="Alt menü">
+      <a href="kroki-crm.html">kroki crm</a>
+      <a href="pafta.html">pafta.</a>
+      <a href="kroki-web.html#paketler">Fiyatlandırma</a>
+      <a href="#">Hakkımızda</a>
+      <a href="kroki-web.html#iletisim">İletişim</a>
+    </nav>
+    <div class="alt__sosyal">
+      <a href="#" data-bag="instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+      <a href="#" data-bag="linkedin" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+      <a href="#" data-bag="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+    </div>
+    <p class="alt__telif">© 2026 Kroki. Tüm hakları saklıdır.</p>
+  </div>
+</footer>
+
+<script src="assets/firebase-ayar.js"></script>
+<script src="assets/site-icerik.js"></script>
+<script src="assets/site-veri.js"></script>
+<script>
+
+  // giriş: kaydırma ilerlemesine göre telefonun duruşu, ekranı ve planın çizimi
+  (function () {
+    const bolum = document.querySelector('.sinema'), sahne = bolum.querySelector('.sinema__sahne');
+    const cep = bolum.querySelector('.sinema__cep'), metin = bolum.querySelector('.sinema__metin');
+    const karanlik = bolum.querySelector('.sinema__karanlik'), alt = bolum.querySelector('.sinema__alt');
+    const ekranlar = [...bolum.querySelectorAll('.sinema__ekran')], plan = ekranlar[2].querySelector('svg');
+    const duvarlar = [...plan.querySelectorAll('.ciz-duvar path')];
+    // ölçü grupları sırasıyla belirir: sıraları çizimdeki gecikmelerinden okunur (1,5–3,3 sn)
+    const olculer = [...plan.querySelectorAll('.ciz-olcu')].map(g => ({ g, sira: (parseFloat(g.style.animationDelay) - 1.5) / 1.8 }));
+    const etiketler = [...bolum.querySelectorAll('.sinema__etiket')];
+    const hareket = matchMedia('(prefers-reduced-motion: reduce)');
+    duvarlar.forEach(y => { y.style.strokeDasharray = 1; });
+    const sinir = v => Math.max(0, Math.min(1, v));
+    const yumusak = t => t * t * (3 - 2 * t);
+    const ara = (a, b, p) => yumusak(sinir((p - a) / (b - a)));
+    const kar = (a, b, t) => a + (b - a) * t;
+    let bekliyor = false;
+
+    function ciz() {
+      bekliyor = false;
+      const W = innerWidth, H = sahne.clientHeight, dar = W < 900;
+      const r = bolum.getBoundingClientRect();
+      const p = hareket.matches ? 0 : sinir(-r.top / (r.height - H));
+      const don = ara(.08, .4, p), yak = ara(.47, .76, p);
+      // ekranın içine girerken plan kutusu (924×2000 ekranında 820×940) görünüme sığar
+      const ew = cep.offsetWidth * .93, eh = ew * 2000 / 924;
+      const S = Math.min(W * .92 / (ew * 820 / 924), H * .64 / (eh * 940 / 2000));
+      const x0 = dar ? 0 : W * .22, y0 = dar ? H * .3 : H * .04;
+      const olcek = kar(kar(1, 1.1, don), S, yak);
+      cep.style.transform = `translate(-50%,-50%) translate3d(${kar(x0, 0, don) + (dar ? 0 : W * .14) * yak}px,${kar(y0, 0, don) - (dar ? H * .07 : 0) * yak}px,0) ` +
+        `rotateX(${kar(14, 0, don)}deg) rotateY(${kar(-32, 0, don)}deg) rotateZ(${kar(6, 0, don)}deg) scale(${olcek})`;
+      cep.style.setProperty('--parilti', ((1 - don) * .6).toFixed(3));
+      const m = 1 - ara(.06, .2, p);
+      metin.style.opacity = m; metin.style.transform = `translateY(${(1 - m) * -40}px)`; metin.style.visibility = m ? '' : 'hidden';
+      ekranlar[1].style.opacity = ara(.25, .31, p);
+      ekranlar[2].style.opacity = ara(.38, .44, p);
+      karanlik.style.opacity = ara(.6, .74, p);
+      const u = ara(.5, .7, p);
+      duvarlar.forEach(y => { y.style.strokeDashoffset = 1 - u; });
+      olculer.forEach(o => { o.g.style.opacity = sinir((p - (.62 + o.sira * .2)) / .03); });
+      const e = ara(.84, .9, p), k = plan.getBoundingClientRect();
+      etiketler.forEach((el, i) => {
+        const g = ara(.84 + i * .025, .9 + i * .025, p);
+        el.style.opacity = g;
+        el.style.transform = `translate(${k.left + el.dataset.x / 924 * k.width}px,${k.top + el.dataset.y / 2000 * k.height}px) translate(-50%,${el.dataset.yon === 'alt' ? '30%' : '-130%'}) translateY(${(1 - g) * 10}px)`;
+      });
+      alt.style.opacity = ara(.88, .95, p);
+    }
+    const iste = () => { if (!bekliyor) { bekliyor = true; requestAnimationFrame(ciz); } };
+    addEventListener('scroll', iste, { passive: true });
+    addEventListener('resize', iste);
+    hareket.addEventListener('change', iste);
+    ciz();
+  })();
+
+  // mobil menü
+  const ust = document.getElementById('ust'), menuBtn = ust.querySelector('.menu-btn');
+  menuBtn.addEventListener('click', () => {
+    const acik = ust.classList.toggle('acik');
+    menuBtn.setAttribute('aria-expanded', acik);
+    menuBtn.setAttribute('aria-label', acik ? 'Menüyü kapat' : 'Menüyü aç');
+  });
+</script>
+</body>
+</html>

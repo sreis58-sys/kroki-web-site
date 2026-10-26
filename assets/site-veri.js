@@ -1,0 +1,120 @@
+/* Admin panelinden yönetilen içeriği siteye uygular ve iletişim formunu gönderir.
+   Firebase ayarı varsa içerik Firestore'dan okunur (küçük kalsın diye SDK yerine REST ile); yoksa admin panelinin
+   deneme modunda bu tarayıcıya kaydettiği içerik kullanılır. İkisi de yoksa sayfadaki gömülü içerik olduğu gibi kalır. */
+(function () {
+  const ayar = window.FIREBASE_AYAR;
+  const DEMO_ICERIK = 'kroki-demo-icerik', DEMO_BASVURU = 'kroki-demo-basvurular', DEMO_ACIK = 'kroki-demo';
+  const kok = ayar && `https://firestore.googleapis.com/v1/projects/${ayar.projectId}/databases/(default)/documents`;
+  const yerel = {
+    oku(a) { try { return JSON.parse(localStorage.getItem(a)); } catch (e) { return null; } },
+    yaz(a, v) { try { localStorage.setItem(a, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  };
+
+  // Firestore REST değerleri → düz JavaScript
+  const deger = v => 'stringValue' in v ? v.stringValue : 'booleanValue' in v ? v.booleanValue
+    : 'integerValue' in v ? Number(v.integerValue) : 'doubleValue' in v ? v.doubleValue
+    : 'arrayValue' in v ? (v.arrayValue.values || []).map(deger) : 'mapValue' in v ? alanlar(v.mapValue.fields || {}) : null;
+  const alanlar = f => Object.fromEntries(Object.entries(f).map(([k, v]) => [k, deger(v)]));
+
+  async function icerikGetir() {
+    if (!ayar) return yerel.oku(DEMO_ICERIK);
+    const yanit = await fetch(`${kok}/site/icerik?key=${ayar.apiKey}`);
+    if (!yanit.ok) return null;                                    // içerik henüz kaydedilmemiş: gömülü hâl kalır
+    return alanlar((await yanit.json()).fields || {});
+  }
+
+  /* ---------- uygulama ---------- */
+  const el = (ad, sinif, metin) => { const e = document.createElement(ad); if (sinif) e.className = sinif; if (metin != null) e.textContent = metin; return e; };
+
+  function paketleriYaz(paketler) {
+    document.querySelectorAll('[data-paketler]').forEach(izgara => {
+      const hedef = izgara.dataset.hedef || '#';
+      izgara.replaceChildren(...paketler.map(p => {
+        const kart = el('article', 'paket');
+        if (p.onerilen) { kart.setAttribute('data-onerilen', ''); kart.append(el('span', 'paket__etiket', 'Önerilen')); }
+        kart.append(el('h3', null, p.ad), el('p', 'paket__kim', p.kim));
+        const fiyat = el('p', 'paket__fiyat');
+        if (/^\d[\d.,]*$/.test(String(p.fiyat).trim())) fiyat.append(`${String(p.fiyat).trim()} TL `, el('small', null, '/ ay'));
+        else fiyat.textContent = p.fiyat;                          // ör. "Görüşelim"
+        const liste = el('ul');
+        (p.ozellikler || []).filter(Boolean).forEach(o => liste.append(el('li', null, o)));
+        const dugme = el('a', 'paket__btn', 'Ücretsiz dene'); dugme.href = hedef;
+        kart.append(fiyat, liste, dugme);
+        return kart;
+      }));
+    });
+  }
+
+  // WhatsApp numarası ve e-posta adrese çevrilir; boş bağlantı bir yere gitmez
+  const adres = (ad, v) => {
+    v = String(v || '').trim();
+    if (!v) return '';
+    if (ad === 'whatsapp') { let n = v.replace(/\D/g, ''); if (n.startsWith('0')) n = '90' + n.slice(1); return n ? `https://wa.me/${n}` : ''; }
+    if (ad === 'eposta') return v.includes('@') ? `mailto:${v}` : '';
+    return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+  };
+  function baglantilariYaz(b) {
+    document.querySelectorAll('[data-bag]').forEach(a => {
+      const href = adres(a.dataset.bag, b[a.dataset.bag]);
+      a.href = href || '#';
+      if (a.hasAttribute('data-bos-gizle')) a.hidden = !href;
+      if (href && /^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+    });
+    document.querySelectorAll('[data-bag-metin]').forEach(s => { s.textContent = String(b[s.dataset.bagMetin] || '').trim(); });
+  }
+
+  function uygula(icerik) {
+    if (!icerik) return;
+    if (Array.isArray(icerik.paketler) && icerik.paketler.length) paketleriYaz(icerik.paketler);
+    if (Array.isArray(icerik.yorumlar) && window.yorumlariYukle) window.yorumlariYukle(icerik.yorumlar);
+    baglantilariYaz({ ...window.SITE_VARSAYILAN.baglantilar, ...(icerik.baglantilar || {}) });
+    dispatchEvent(new Event('site-verisi'));                       // ana sayfa: paket çerçevelerini çizen noktalar yeniden ölçer
+  }
+  // gömülü içerik bile olsa bağlantılar varsayılanla doldurulur (WhatsApp/e-posta boşsa gizlenir)
+  baglantilariYaz(window.SITE_VARSAYILAN.baglantilar);
+  icerikGetir().then(uygula).catch(() => {});
+
+  /* ---------- iletişim formu ---------- */
+  const rastgele = () => Array.from(crypto.getRandomValues(new Uint8Array(15)), b => 'abcdefghijklmnopqrstuvwxyz0123456789'[b % 36]).join('');
+  async function gonder(b) {
+    if (ayar) {
+      const ad = `projects/${ayar.projectId}/databases/(default)/documents/basvurular/${rastgele()}`;
+      const s = v => ({ stringValue: v });
+      const yanit = await fetch(`${kok}:commit?key=${ayar.apiKey}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ writes: [{
+          update: { name: ad, fields: { ad: s(b.ad), iletisim: s(b.iletisim), studyo: s(b.studyo), urun: s(b.urun), mesaj: s(b.mesaj), kvkk: { booleanValue: true }, durum: s('yeni') } },
+          updateTransforms: [{ fieldPath: 'tarih', setToServerValue: 'REQUEST_TIME' }],
+          currentDocument: { exists: false },
+        }] }),
+      });
+      if (!yanit.ok) throw new Error('gönderilemedi');
+      return;
+    }
+    // Firebase bağlı değil: yalnızca admin panelinin deneme modu açıksa bu tarayıcıya kaydedilir
+    if (!yerel.oku(DEMO_ACIK)) throw new Error('form bağlı değil');
+    const liste = yerel.oku(DEMO_BASVURU) || [];
+    liste.unshift({ id: rastgele(), ...b, kvkk: true, durum: 'yeni', tarih: Date.now() });
+    if (!yerel.yaz(DEMO_BASVURU, liste)) throw new Error('kaydedilemedi');
+  }
+
+  document.querySelectorAll('form[data-basvuru]').forEach(form => {
+    const durum = form.querySelector('.form__durum'), dugme = form.querySelector('button[type=submit]');
+    const yaz = (metin, tur) => { durum.textContent = metin; durum.dataset.tur = tur; };
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const v = Object.fromEntries(new FormData(form));
+      if (v.web) return;                                           // gizli alan doluysa bot: sessizce geç
+      const b = { ad: v.ad.trim(), iletisim: v.iletisim.trim(), studyo: (v.studyo || '').trim(), urun: v.urun, mesaj: (v.mesaj || '').trim() };
+      dugme.disabled = true; yaz('Gönderiliyor…', 'bekle');
+      try {
+        await gonder(b);
+        form.reset();
+        yaz('Teşekkürler, mesajınız bize ulaştı. En kısa sürede dönüş yapacağız.', 'tamam');
+      } catch (err) {
+        yaz('Mesaj şu an gönderilemedi. Lütfen biraz sonra tekrar deneyin ya da WhatsApp ve e-postadan yazın.', 'hata');
+      } finally { dugme.disabled = false; }
+    });
+  });
+})();
