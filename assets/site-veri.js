@@ -53,15 +53,26 @@
     if (ad === 'eposta') return v.includes('@') ? `mailto:${v}` : '';
     return /^https?:\/\//i.test(v) ? v : `https://${v}`;
   };
+  // mağaza adresi henüz girilmemiş düğme "Yakında" olur ve bir yere gitmez
+  const MAGAZA = /AppStore$|GooglePlay$/;
   function baglantilariYaz(b) {
     document.querySelectorAll('[data-bag]').forEach(a => {
       const href = adres(a.dataset.bag, b[a.dataset.bag]);
       a.href = href || '#';
       if (a.hasAttribute('data-bos-gizle')) a.hidden = !href;
-      if (href && /^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; }
+      if (MAGAZA.test(a.dataset.bag)) {
+        a.toggleAttribute('data-yakinda', !href);
+        if (href) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
+      }
+      if (href && /^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); }
     });
-    document.querySelectorAll('[data-bag-metin]').forEach(s => { s.textContent = String(b[s.dataset.bagMetin] || '').trim(); });
+    // boş bilgi yerine sayfadaki yer tutucu kalır (ör. KVKK sayfasında şirket unvanı)
+    document.querySelectorAll('[data-bag-metin]').forEach(s => {
+      if (!('yerTutucu' in s.dataset)) s.dataset.yerTutucu = s.textContent;
+      s.textContent = String(b[s.dataset.bagMetin] || '').trim() || s.dataset.yerTutucu;
+    });
   }
+  addEventListener('click', e => { const a = e.target.closest('a[data-yakinda]'); if (a) e.preventDefault(); });
 
   function uygula(icerik) {
     if (!icerik) return;
@@ -99,6 +110,9 @@
   }
 
   document.querySelectorAll('form[data-basvuru]').forEach(form => {
+    // ürün sayfalarından gelen bağlantı ürünü seçili getirir: kroki-web.html?urun=pafta.#iletisim
+    const urun = new URLSearchParams(location.search).get('urun');
+    if (urun && [...form.urun.options].some(o => o.value === urun)) form.urun.value = urun;
     const durum = form.querySelector('.form__durum'), dugme = form.querySelector('button[type=submit]');
     const yaz = (metin, tur) => { durum.textContent = metin; durum.dataset.tur = tur; };
     form.addEventListener('submit', async e => {

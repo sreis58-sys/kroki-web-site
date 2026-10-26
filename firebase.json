@@ -12,7 +12,8 @@
       "*.md",
       "referans/**",
       "inceleme/**",
-      "assets/kaynak/**"
+      "assets/kaynak/**",
+      "araclar/**"
     ],
     "rewrites": [
       { "source": "/", "destination": "/kroki-web.html" }

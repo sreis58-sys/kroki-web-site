@@ -170,7 +170,7 @@ main{padding-bottom:40px}
       <button role="tab" aria-selected="true" data-sekme="basvurular">Başvurular <span class="sayac" id="yeni-sayac" hidden>0</span></button>
       <button role="tab" aria-selected="false" data-sekme="paketler">Paketler</button>
       <button role="tab" aria-selected="false" data-sekme="yorumlar">Yorumlar</button>
-      <button role="tab" aria-selected="false" data-sekme="baglantilar">Bağlantılar</button>
+      <button role="tab" aria-selected="false" data-sekme="baglantilar">Bağlantılar ve şirket</button>
     </nav>
 
     <section data-bolum="basvurular" role="tabpanel">
@@ -198,7 +198,7 @@ main{padding-bottom:40px}
     </section>
 
     <section data-bolum="baglantilar" role="tabpanel" hidden>
-      <div class="bolum-bas"><div><h2>Bağlantılar ve iletişim</h2><p>Mağaza düğmeleri, sosyal medya, WhatsApp ve e-posta. Boş bırakılan bağlantı sitede bir yere gitmez.</p></div></div>
+      <div class="bolum-bas"><div><h2>Bağlantılar ve şirket bilgileri</h2><p>Mağaza düğmeleri, sosyal medya, WhatsApp, e-posta ve KVKK sayfasındaki şirket bilgileri. Mağaza adresi boşsa düğmede “Yakında” yazar; boş sosyal medya bağlantısı görünmez.</p></div></div>
       <div class="baglantilar" id="baglantilar"></div>
     </section>
   </div>
@@ -413,10 +413,11 @@ main{padding-bottom:40px}
   }
   $('#yorum-ekle').addEventListener('click', () => { icerik.yorumlar.push({ metin: '', ad: '', unvan: '' }); yorumlariCiz(); durumGuncelle(); });
 
+  const yazi = ad => window.YAZI_ALANLARI.includes(ad);
   function baglantilariCiz() {
     const b = icerik.baglantilar;
     $('#baglantilar').replaceChildren(...window.BAGLANTI_ALANLARI.map(([ad, etiket]) =>
-      giris(etiket, b[ad] || '', v => { b[ad] = v.trim(); }, 'input', { type: ad === 'eposta' ? 'email' : ad === 'whatsapp' ? 'tel' : 'url', maxlength: 300, placeholder: ad === 'whatsapp' || ad === 'eposta' ? '' : 'https://…' })));
+      giris(etiket, b[ad] || '', v => { b[ad] = v.trim(); }, 'input', { type: ad === 'eposta' ? 'email' : ad === 'whatsapp' ? 'tel' : yazi(ad) ? 'text' : 'url', maxlength: 300, placeholder: ad === 'whatsapp' || ad === 'eposta' || yazi(ad) ? '' : 'https://…' })));
   }
 
   const hepsiniCiz = () => { paketleriCiz(); yorumlariCiz(); baglantilariCiz(); };

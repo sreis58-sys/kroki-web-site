@@ -18,6 +18,8 @@ window.SITE_VARSAYILAN = {
     crmAppStore: '', crmGooglePlay: '', paftaAppStore: '', paftaGooglePlay: '',
     crmWeb: 'https://studyo-crm.web.app/',
     whatsapp: '', eposta: '', instagram: '', linkedin: '', youtube: '',
+    // KVKK sayfasındaki veri sorumlusu bilgileri; boşken sayfada köşeli parantezli yer tutucu görünür
+    sirketUnvan: '', sirketAdres: '', mersis: '', kep: '',
   },
 };
 
@@ -28,4 +30,7 @@ window.BAGLANTI_ALANLARI = [
   ['crmWeb', 'kroki crm · web uygulaması'],
   ['whatsapp', 'WhatsApp numarası (ör. 0532 000 00 00)'], ['eposta', 'E-posta adresi'],
   ['instagram', 'Instagram adresi'], ['linkedin', 'LinkedIn adresi'], ['youtube', 'YouTube adresi'],
+  ['sirketUnvan', 'Şirket unvanı (KVKK sayfası)'], ['sirketAdres', 'Şirket adresi'], ['mersis', 'MERSİS numarası'], ['kep', 'KEP adresi'],
 ];
+// adres değil düz yazı olan alanlar
+window.YAZI_ALANLARI = ['sirketUnvan', 'sirketAdres', 'mersis', 'kep'];

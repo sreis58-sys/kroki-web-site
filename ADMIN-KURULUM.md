@@ -49,7 +49,13 @@ firebase deploy
 2. **Belge kimliği:** 2. adımda kopyaladığınız UID. Alan eklemeniz gerekmez; boş bırakıp kaydedin. Konsol bir alan isterse `ad` = adınız yazın.
 3. `https://<proje-kimliği>.web.app/admin.html` adresine gidip e-posta ve şifrenizle girin.
 
+Sonra panelde **Bağlantılar ve şirket** sekmesinden şirket unvanını, adresi, MERSİS numarasını, KEP adresini ve iletişim e-postasını girin. Bunlar KVKK sayfasında görünür; boş kaldıkça sayfada köşeli parantezli yer tutucu çıkar.
+
 Panelde ilk **Kaydet**'e basıldığında paketler, yorumlar ve bağlantılar Firebase'e yazılır. O andan sonra site içeriği oradan okur.
+
+## Alan adı bağlandıktan sonra
+
+`araclar/son_dokunus.py` içindeki `SITE` değişkenine alan adını yazın (ör. `https://kroki.com.tr/`) ve `araclar/OKUBENI.md`'deki sırayla sayfaları yeniden üretin. Böylece paylaşım görselleri tam adresle verilir. İsterseniz bir site haritası (`sitemap.xml`) da eklenir.
 
 ## Bilmeniz gerekenler
 

@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>kroki crm — Kroki</title>
 <meta name="description" content="İç mimarlık stüdyoları için müşteri, satış hattı, şantiye, takvim ve tahsilat yönetimi.">
+<!-- paylaşım önizlemesi -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kroki">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="kroki crm — Dağınık işler, tek planda">
+<meta property="og:description" content="İç mimarlık stüdyoları için müşteri, şantiye, takvim, sözleşme ve tahsilat yönetimi.">
+<meta property="og:image" content="assets/og-crm.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F8F5EE">
+<!-- /paylaşım önizlemesi -->
 <link rel="icon" href="assets/kroki-crm-ikon.svg">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -153,6 +165,10 @@ main{position:relative}
 .magaza--acik a{background:#fff;color:#111}
 .magaza--acik a:hover{background:#e9e9e9}
 .magaza--acik small{color:#6a6a6a}
+.magaza a[data-yakinda]{position:relative;cursor:default;opacity:.6}
+.magaza a[data-yakinda]:hover{background:#111}
+.magaza--acik a[data-yakinda]:hover{background:#fff}
+.magaza a[data-yakinda]::after{content:"Yakında";position:absolute;top:-9px;right:-8px;padding:4px 8px;border-radius:99px;background:var(--mavi);font:600 10.5px/1 var(--f);color:#fff}
 
 /* ---------- kısa bilgiler: mavi kare pafta.'nın noktası ---------- */
 .bilgiler{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(2.6vw,38px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
@@ -201,6 +217,16 @@ main{position:relative}
 .mini-arac span:first-child{background:var(--mavi);color:#fff}
 .mini-arac svg{width:20px;height:20px}
 
+/* ---------- sık sorulan sorular ---------- */
+.sss__liste{max-width:860px;margin-top:min(3vw,40px);border-top:1px solid #dcd7cc}
+.sss details{border-bottom:1px solid #dcd7cc}
+.sss summary{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;font:600 min(1.4vw,20px)/1.35 var(--f);cursor:pointer;list-style:none}
+.sss summary::-webkit-details-marker{display:none}
+.sss summary::after{content:"";flex:none;width:12px;height:12px;background:var(--mavi);transition:transform .2s}
+.sss details[open] summary::after{transform:rotate(45deg)}
+.sss details p{max-width:44em;margin:-6px 0 22px;font-size:min(1.2vw,17px);line-height:1.65;color:var(--kursun)}
+@media (prefers-reduced-motion:reduce){.sss summary::after{transition:none}}
+
 /* ---------- ekosistem bandı ---------- */
 .ekosistem{display:flex;align-items:center;gap:min(3vw,44px);padding:min(3.4vw,48px) 0;border-top:1px solid #dcd7cc;border-bottom:1px solid #dcd7cc}
 .ekosistem img{height:min(2.8vw,40px);width:auto;flex:none}
@@ -213,6 +239,8 @@ main{position:relative}
 .kapanis .kap{position:relative;display:flex;align-items:center;justify-content:space-between;gap:40px;min-height:min(30vw,430px)}
 .kapanis h2{margin:0;font:600 min(3.6vw,52px)/1.1 var(--f);letter-spacing:-0.025em}
 .kapanis p{margin:14px 0 30px;font-size:min(1.25vw,18px);color:#a9adb3}
+.kapanis .metin-link{color:#fff}
+.kapanis__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
 .kapanis .cep{align-self:flex-end;width:min(18vw,260px);margin-bottom:max(-24vw,-340px);transform:rotate(6deg)}
 .not{position:absolute;z-index:2;left:35.6%;top:10%;font:400 min(1.32vw,19px)/1.3 var(--el);letter-spacing:.18em;text-transform:uppercase;color:#4a4a48;padding-left:min(1.7vw,24px)}
 .not::before{content:"";position:absolute;left:0;top:-.5em;bottom:.3em;border-left:1px dashed #8a8984}
@@ -303,6 +331,8 @@ main{position:relative}
   .adim__sira{font-size:13px}
   .adim h3{font-size:1.25rem}
   .adim p{font-size:1rem}
+  .sss summary{font-size:1.05rem;padding:18px 0}
+  .sss details p{font-size:1rem}
   .ekosistem{flex-direction:column;align-items:flex-start;gap:16px;padding:36px 0}
   .ekosistem img{height:32px}
   .ekosistem p{font-size:1.05rem}
@@ -328,9 +358,9 @@ main{position:relative}
   <a class="ust__logo" href="kroki-web.html" aria-label="Kroki ana sayfa"><img src="assets/kroki-firma.png" alt="Kroki — mimari yazılımlar" width="768" height="353"></a>
   <nav class="ust__nav" id="menu" aria-label="Ana menü">
     <a href="kroki-web.html#urunler">Ürünler</a>
-    <a href="#">Çözümler</a>
     <a href="kroki-web.html#paketler">Fiyatlandırma</a>
-    <a href="#">Kaynaklar</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="kroki-web.html#iletisim">İletişim</a>
   </nav>
   <div class="ust__sag">
     <a class="btn" href="kroki-web.html#urunler">Hemen Başla
@@ -964,6 +994,18 @@ main{position:relative}
     <p class="paketler__not">Fiyatlar aylıktır. 14 gün boyunca Stüdyo paketi ücretsiz. Abonelik App Store ve Google Play üzerinden.</p>
   </section>
 
+  <section class="kap bolum sss" id="sss" aria-labelledby="sss-baslik">
+    <div class="bolum__bas"><h2 id="sss-baslik">Sık sorulan sorular</h2></div>
+    <div class="sss__liste">
+      <details><summary>Deneme süresinde neler açık?</summary><p>14 gün boyunca Stüdyo paketinin tamamı açık. Siz ve üç çalışanınız, dört kişiye kadar birlikte deneyebilirsiniz.</p></details>
+      <details><summary>Paket değiştirince verilerim silinir mi?</summary><p>Hayır. Paket ya da yetki değişikliği veriyi silmez; yalnızca açık bölümler değişir.</p></details>
+      <details><summary>Ekibimi nasıl eklerim?</summary><p>Stüdyo paketinde 3, Ofis paketinde 10 çalışan davet edebilirsiniz. Muhasebe izni kapalı çalışan sözleşmeleri görür, diğer finans verilerini görmez.</p></details>
+      <details><summary>Bilgisayarda da kullanabilir miyim?</summary><p>Evet. Aynı hesapla telefonda uygulamadan, bilgisayarda tarayıcıdan girersiniz; müşteriler, takvim ve muhasebe ikisinde de aynıdır.</p></details>
+      <details><summary>Verilerim güvende mi?</summary><p>Veriler Google’ın Firebase altyapısında saklanır. Her stüdyo yalnızca kendi verisini görür; başka bir stüdyonun bilgisine erişemez.</p></details>
+      <details><summary>Ödeme nasıl yapılır?</summary><p>Abonelik aylıktır ve App Store ya da Google Play üzerinden alınır.</p></details>
+    </div>
+  </section>
+
   <section class="kap">
     <div class="ekosistem">
       <img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206" loading="lazy">
@@ -1048,13 +1090,14 @@ main{position:relative}
       <a href="kroki-crm.html">kroki crm</a>
       <a href="pafta.html">pafta.</a>
       <a href="kroki-web.html#paketler">Fiyatlandırma</a>
-      <a href="#">Hakkımızda</a>
+      <a href="hakkimizda.html">Hakkımızda</a>
       <a href="kroki-web.html#iletisim">İletişim</a>
+      <a href="kvkk.html">KVKK ve gizlilik</a>
     </nav>
     <div class="alt__sosyal">
-      <a href="#" data-bag="instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
-      <a href="#" data-bag="linkedin" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
-      <a href="#" data-bag="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
+      <a href="#" data-bag="instagram" data-bos-gizle aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg></a>
+      <a href="#" data-bag="linkedin" data-bos-gizle aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13V21h-4v-5.1c0-1.22-.02-2.79-1.7-2.79-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+      <a href="#" data-bag="youtube" data-bos-gizle aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.4-1.6.5-4.8.5-4.8s0-3.2-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg></a>
     </div>
     <p class="alt__telif">© 2026 Kroki. Tüm hakları saklıdır.</p>
   </div>
