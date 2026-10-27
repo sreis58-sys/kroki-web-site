@@ -389,7 +389,9 @@ SINEMA_JS = r'''
 '''
 
 if __name__ == '__main__':
-    O.sayfa('kroki-crm.html', 'kroki crm — Kroki', 'İç mimarlık stüdyoları için müşteri, satış hattı, şantiye, takvim ve tahsilat yönetimi.',
+    ACIKLAMA = 'İç mimarlık stüdyoları için müşteri takibi, satış hattı, şantiye, takvim, teklif ve sözleşme, tahsilat tek uygulamada. 14 gün ücretsiz deneyin.'
+    O.sayfa('kroki-crm.html', 'kroki crm — İç mimarlık stüdyoları için CRM ve proje yönetimi', ACIKLAMA,
             css=CSS.strip() + '\n' + ORTAK_CSS.strip() + '\n' + ANA_CSS.strip(),
             mobil=MOBIL.strip('\n') + '\n' + ORTAK_MOBIL.rstrip() + '\n' + ANA_MOBIL.rstrip(),
-            govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n')
+            govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n',
+            veriler=[O.uygulama('kroki crm', ACIKLAMA, 'kroki-crm.html', 'iOS, Android, Web', O.paket_teklifi()), O.sss(GOVDE)])

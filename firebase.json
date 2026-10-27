@@ -15,6 +15,9 @@
       "assets/kaynak/**",
       "araclar/**"
     ],
+    "redirects": [
+      { "source": "/kroki-web.html", "destination": "/", "type": 301 }
+    ],
     "rewrites": [
       { "source": "/", "destination": "/kroki-web.html" }
     ],

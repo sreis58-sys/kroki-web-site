@@ -420,7 +420,9 @@ SINEMA_JS = r'''
 '''
 
 if __name__ == '__main__':
-    O.sayfa('pafta.html', 'pafta. — Kroki', 'Röleveyi telefonda çizin: duvarlar, kirişler, kapılar, pencereler ve ölçüler kendiliğinden plana yazılır.',
+    ACIKLAMA = 'Röleveyi telefonda çizin: duvarlar, kirişler, kapılar, pencereler ve ölçüler plana kendiliğinden yazılsın. Ücretsiz röleve ve ölçü uygulaması.'
+    O.sayfa('pafta.html', 'pafta. — Ücretsiz röleve ve ölçü alma uygulaması', ACIKLAMA,
             css=CSS.strip() + '\n' + ANA_CSS.strip(), mobil=MOBIL.strip('\n') + '\n' + ANA_MOBIL.rstrip(),
             govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n', ikon='assets/pafta-ikon.svg',
-            css_notu=O.ORTAK_NOT + ' Uygulama ekranları Inter ile yazılır.')
+            css_notu=O.ORTAK_NOT + ' Uygulama ekranları Inter ile yazılır.',
+            veriler=[O.uygulama('pafta.', ACIKLAMA, 'pafta.html', 'iOS, Android', {'@type': 'Offer', 'price': 0, 'priceCurrency': 'TRY'}), O.sss(GOVDE)])

@@ -39,9 +39,10 @@ MOBIL = '''  .metin-sayfa{padding:40px 0 64px}
   .urun-satir{grid-template-columns:1fr}
 '''
 
-def metin_sayfasi(dosya, baslik, aciklama, govde, taban=None):
+def metin_sayfasi(dosya, baslik, aciklama, govde, taban=None, veriler=()):
     O.sayfa(dosya, baslik, aciklama, css=CSS.strip(), mobil=MOBIL.rstrip(),
-            govde=f'<main class="metin-sayfa">\n  <div class="kap">\n{govde}\n  </div>\n</main>', yazi_tipi='metin', taban=taban)
+            govde=f'<main class="metin-sayfa">\n  <div class="kap">\n{govde}\n  </div>\n</main>', yazi_tipi='metin',
+            taban=taban, veriler=veriler, dizinle=taban is None)
 
 
 YER = lambda ad, metin: f'<span data-bag-metin="{ad}">{metin}</span>'
@@ -122,7 +123,7 @@ HAKKIMIZDA = '''    <p class="ust-not">Hakkımızda</p>
     <a class="btn" href="kroki-web.html#iletisim">Bize yazın</a>'''
 
 metin_sayfasi('kvkk.html', 'KVKK ve gizlilik — Kroki', 'Kroki web sitesinde ve iletişim formunda kişisel verilerin işlenmesine ilişkin aydınlatma metni, gizlilik ve çerezler.', KVKK)
-metin_sayfasi('hakkimizda.html', 'Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir: kroki crm, pafta. ve yakında scroll.', HAKKIMIZDA)
+metin_sayfasi('hakkimizda.html', 'Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir: kroki crm, pafta. ve yakında scroll.', HAKKIMIZDA, veriler=[O.kurulus()])
 YOK = """    <p class="ust-not">404</p>
     <h1>Bu sayfa henüz çizilmedi.</h1>
     <p class="giris-metni">Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Buradan devam edebilirsiniz:</p>

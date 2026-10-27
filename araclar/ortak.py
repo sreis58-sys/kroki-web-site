@@ -87,7 +87,7 @@ ARA_JS = '''    const sinir = v => Math.max(0, Math.min(1, v));
 
 
 # ---------- paylaşım önizlemesi (Open Graph) ----------
-SITE = ''          # alan adı belli olunca, ör. 'https://kroki.com.tr/'; boşken göreli adres kullanılır
+SITE = 'https://kroki-site.web.app/'   # alan adı alınınca yalnızca burası değişir, ör. 'https://kroki.com.tr/'
 ONIZLEME = {
     'kroki-web.html': ('Kroki — Mimari yazılımlar', 'Mimarların ihtiyaçları için tasarlanmış, birbirine bağlı yazılımlar: kroki crm ve pafta.', 'og-kroki.jpg'),
     'kroki-crm.html': ('kroki crm — Dağınık işler, tek planda', 'İç mimarlık stüdyoları için müşteri, şantiye, takvim, sözleşme ve tahsilat yönetimi.', 'og-crm.jpg'),
@@ -115,6 +115,54 @@ def onizleme(dosya):
 '''
 
 
+# ---------- arama motorları: asıl adres ve yapılandırılmış veri ----------
+SAYFA_HARITASI = ['kroki-web.html', 'kroki-crm.html', 'pafta.html', 'hakkimizda.html', 'kvkk.html']
+
+
+def adres(dosya):
+    """sayfanın asıl adresi; ana sayfa kök adreste yayınlanır"""
+    return SITE if dosya == 'kroki-web.html' else SITE + dosya
+
+
+def kurulus():
+    return {'@context': 'https://schema.org', '@type': 'Organization', 'name': 'Kroki', 'url': SITE,
+            'logo': SITE + 'assets/kroki-firma.png', 'description': 'İç mimarlık ve mimarlık stüdyoları için yazılım.'}
+
+
+def uygulama(ad, aciklama, dosya, sistem, teklif):
+    return {'@context': 'https://schema.org', '@type': 'SoftwareApplication', 'name': ad, 'description': aciklama,
+            'url': adres(dosya), 'applicationCategory': 'BusinessApplication', 'operatingSystem': sistem, 'inLanguage': 'tr',
+            'offers': teklif, 'publisher': {'@type': 'Organization', 'name': 'Kroki', 'url': SITE}}
+
+
+def paket_teklifi():
+    """kroki crm paketlerinin fiyat aralığı (site-icerik.js'den)"""
+    fiyatlar = [int(p['fiyat'].replace('.', '')) for p in site_icerik()['paketler'] if p['fiyat'].replace('.', '').isdigit()]
+    return {'@type': 'AggregateOffer', 'priceCurrency': 'TRY', 'lowPrice': min(fiyatlar), 'highPrice': max(fiyatlar), 'offerCount': len(fiyatlar)}
+
+
+def sss(govde):
+    """sayfadaki sık sorulan sorular (<details><summary>soru</summary><p>yanıt</p>) → FAQPage"""
+    import re
+    sorular = re.findall(r'<details><summary>(.*?)</summary><p>(.*?)</p></details>', govde)
+    return {'@context': 'https://schema.org', '@type': 'FAQPage', 'mainEntity': [
+        {'@type': 'Question', 'name': s, 'acceptedAnswer': {'@type': 'Answer', 'text': c}} for s, c in sorular]}
+
+
+def arama(dosya, veriler=()):
+    """asıl adres etiketi ve JSON-LD blokları"""
+    ld = ''.join(f'<script type="application/ld+json">{json.dumps(v, ensure_ascii=False)}</script>\n' for v in veriler)
+    return f'<!-- arama motorları -->\n<link rel="canonical" href="{adres(dosya)}">\n{ld}<!-- /arama motorları -->\n'
+
+
+def site_haritasi():
+    from datetime import date
+    gun = date.today().isoformat()
+    satirlar = ''.join(f'  <url><loc>{adres(d)}</loc><lastmod>{gun}</lastmod></url>\n' for d in SAYFA_HARITASI)
+    (kok / 'sitemap.xml').write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{satirlar}</urlset>\n', encoding='utf-8')
+    (kok / 'robots.txt').write_text(f'User-agent: *\nDisallow: /admin.html\n\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
+
+
 # ---------- sayfa iskeleti ----------
 YAZI_TIPLERI = {
     'urun': 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap',
@@ -124,9 +172,10 @@ ORTAK_NOT = 'Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortakt
 
 
 def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/kroki-crm-ikon.svg',
-          yazi_tipi='urun', css_notu=ORTAK_NOT, taban=None):
+          yazi_tipi='urun', css_notu=ORTAK_NOT, taban=None, veriler=(), dizinle=True):
     """Sayfayı yazar. css/mobil: temel stil ile alt bilgi stili arasına girenler; govde: menü ile alt bilgi arası;
-    js: mobil menüden önce çalışan betik; taban: <base href> (404 gibi her adreste açılan sayfalar için)."""
+    js: mobil menüden önce çalışan betik; taban: <base href> (404 gibi her adreste açılan sayfalar için);
+    veriler: JSON-LD nesneleri; dizinle=False: asıl adres verilmez (404)."""
     metin = f'''<!doctype html>
 <html lang="tr">
 <head>
@@ -134,7 +183,7 @@ def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/kroki-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{baslik}</title>
 <meta name="description" content="{aciklama}">
-{onizleme(dosya)}<link rel="icon" href="{ikon}">
+{onizleme(dosya)}{arama(dosya, veriler) if dizinle else ""}<link rel="icon" href="{ikon}">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
