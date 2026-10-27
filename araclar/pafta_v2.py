@@ -374,13 +374,17 @@ SINEMA_JS = r'''
     const etiketler = [...bolum.querySelectorAll('.sinema__etiket')];
     const hareket = matchMedia('(prefers-reduced-motion: reduce)');
     duvarlar.forEach(y => { y.style.strokeDasharray = 1; });
-''' + O.ARA_JS + r'''    let bekliyor = false;
+''' + O.ARA_JS + r'''    let bekliyor = false, sonCizim = '';
 
     function ciz() {
       bekliyor = false;
       const W = innerWidth, H = sahne.clientHeight, dar = W < 900;
       const r = bolum.getBoundingClientRect();
       const p = hareket.matches ? 0 : sinir(-r.top / (r.height - H));
+      // sahne geçildikten sonra (p sabit) her kaydırmada aynı değerler yeniden yazılmaz
+      const imza = `${p}|${W}|${H}`;
+      if (imza === sonCizim) return;
+      sonCizim = imza;
       const don = ara(.08, .4, p), yak = ara(.47, .76, p);
       // ekranın içine girerken plan kutusu (924×2000 ekranında 820×940) görünüme sığar
       const ew = cep.offsetWidth * .93, eh = ew * 2000 / 924;

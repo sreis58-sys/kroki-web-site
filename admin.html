@@ -260,12 +260,12 @@ main{padding-bottom:40px}
   };
 
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
-  const betik = src => new Promise((ok, hata) => document.head.append(el('script', { src, onload: ok, onerror: hata })));
+  // async=false: dosyalar birlikte iner ama eklendikleri sırayla çalışır
+  const betik = src => new Promise((ok, hata) => { const s = el('script', { src, onload: ok, onerror: hata }); s.async = false; document.head.append(s); });
   let auth, db;
   const firebaseVeri = {
     async baslat() {
-      await betik(SDK + 'firebase-app-compat.js');                 // giriş ve veritabanı modülleri çekirdeğe eklenir: önce o yüklenir
-      await Promise.all(['firebase-auth-compat.js', 'firebase-firestore-compat.js'].map(p => betik(SDK + p)));
+      await Promise.all(['firebase-app-compat.js', 'firebase-auth-compat.js', 'firebase-firestore-compat.js'].map(p => betik(SDK + p)));
       firebase.initializeApp(ayar); auth = firebase.auth(); db = firebase.firestore();
     },
     oturum(cb) { auth.onAuthStateChanged(cb); },
@@ -277,7 +277,7 @@ main{padding-bottom:40px}
     icerikYaz(o) { return db.collection('site').doc('icerik').set({ ...o, guncellendi: firebase.firestore.FieldValue.serverTimestamp() }); },
     basvurulariDinle(cb, hata) {
       return db.collection('basvurular').orderBy('tarih', 'desc').limit(500).onSnapshot(
-        q => cb(q.docs.map(d => ({ id: d.id, ...d.data(), tarih: d.data().tarih ? d.data().tarih.toDate() : null }))), hata);
+        q => cb(q.docs.map(d => { const v = d.data(); return { id: d.id, ...v, tarih: v.tarih ? v.tarih.toDate() : null }; })), hata);
     },
     basvuruGuncelle(id, alanlar) { return db.collection('basvurular').doc(id).update(alanlar); },
     basvuruSil(id) { return db.collection('basvurular').doc(id).delete(); },
@@ -323,7 +323,8 @@ main{padding-bottom:40px}
   const DURUMLAR = { yeni: 'Yeni', arandi: 'Dönüş yapıldı', tamam: 'Tamamlandı' };
   const URUNLER = { 'kroki crm': 'kroki crm', 'pafta.': 'pafta.', ikisi: 'İkisi de' };
   let basvurular = [], suz = 'hepsi';
-  const tarihYaz = t => t ? t.toLocaleString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+  const TARIH = new Intl.DateTimeFormat('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const tarihYaz = t => t ? TARIH.format(t) : '';
   function iletisimBaglantilari(v) {
     v = String(v || '').trim();
     if (v.includes('@')) return [el('a', { href: 'mailto:' + v, metin: v })];
@@ -453,13 +454,13 @@ main{padding-bottom:40px}
     $('#cikis').hidden = DEMO;
     ekran('panel');
     sekmeAc(['basvurular', 'paketler', 'yorumlar', 'baglantilar'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'basvurular');
-    try { kayitli = icerikHazirla(await veri.icerikOku()); } catch (e) { kayitli = icerikHazirla(null); }
-    icerik = kopya(kayitli); hepsiniCiz(); durumGuncelle();
     if (!dinleniyor) {
       dinleniyor = true;
       veri.basvurulariDinle(l => { basvurular = l; basvurulariCiz(); },
         () => { $('#basvurular').replaceChildren(el('p', { sinif: 'bos', metin: 'Başvurular okunamadı. Sayfayı yenileyin.' })); });
     }
+    try { kayitli = icerikHazirla(await veri.icerikOku()); } catch (e) { kayitli = icerikHazirla(null); }
+    icerik = kopya(kayitli); hepsiniCiz(); durumGuncelle();
   }
 
   $('#demo-rozet').hidden = !DEMO;

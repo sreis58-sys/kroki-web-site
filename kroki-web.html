@@ -21,6 +21,7 @@
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>   <!-- içerik ve form: site-veri.js -->
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* Ölçüler taslağın 1440 px genişliğindeki hâlinden alındı; vw ile ekrana göre ölçeklenir. */
@@ -593,6 +594,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
     let SX = [], SY = [], SA = [];                    // her şeklin yerel koordinatları ve koyuluğu
     let gecikme, px, py, oncekiX, oncekiY;          // oncekiX/Y: noktanın bir önceki karedeki hedefi                              // nokta başına dalga gecikmesi ve anlık konum
     let giris = azHareket ? 1 : 0, baslangic = 0, raf = 0, kullaniciGeldi = false;
+    let onKirli = true;                               // ön tuvalde (koyu bölümlerin beyaz noktaları, kapı ışığı) çizim var mı
     const lens = { x: 0, y: 0, hx: 0, hy: 0, r: 0, hr: 0, acik: false };
 
     const icinde = (x, y, p) => {
@@ -789,7 +791,8 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
       ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx2.clearRect(0, 0, W, H);
+      if (onKirli) ctx2.clearRect(0, 0, W, H);
+      let onCizildi = false;
       const st = asama(), a = Math.min(KUTU.length - 2, Math.floor(st)), f = st - a, b = a + 1;
       const koyuUst = koyuBolum.getBoundingClientRect().top;     // bu çizginin altındaki noktalar beyaz
       const bant = (a === 3 || b === 3) ? cagriBolum.getBoundingClientRect() : null; // perspektif çizimi fotoğraf bandının dışına taşmasın
@@ -800,11 +803,12 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
       const yayKatsayi = azHareket ? 1 : dokunmatik ? .5 : .32;
       let sonRenk1 = '', sonRenk2 = '';
       let hareket = false;
+      const XA = SX[a], XB = SX[b], YA = SY[a], YB = SY[b], AA = SA[a], AB = SA[b];
       for (let i = 0; i < N; i++) {
         // dalga: her nokta kendi gecikmesiyle akar
         const t = azHareket ? (f < .5 ? 0 : 1) : yumusak(Math.max(0, Math.min(1, (f - gecikme[i] * .35) / .65)));
-        const tx = kA.x + SX[a][i] * kA.s + (kB.x + SX[b][i] * kB.s - kA.x - SX[a][i] * kA.s) * t;
-        const ty = kA.y + SY[a][i] * kA.s + (kB.y + SY[b][i] * kB.s - kA.y - SY[a][i] * kA.s) * t;
+        const xA = kA.x + XA[i] * kA.s, yA = kA.y + YA[i] * kA.s;
+        const tx = xA + (kB.x + XB[i] * kB.s - xA) * t, ty = yA + (kB.y + YB[i] * kB.s - yA) * t;
         // telefonda noktalar sayfanın kaymasını anında izler (parmakla hızlı kaydırınca geride kalmasınlar);
         // yay yalnızca şekil değişirken kalan farkı kapatır
         if (dokunmatik && oncekiX[i] === oncekiX[i]) { px[i] += tx - oncekiX[i]; py[i] += ty - oncekiY[i]; }
@@ -830,7 +834,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
         const yol = 1 - .65 * Math.sin(t * Math.PI);
         // bandın dışındaki perspektif noktaları görünmez: banda gelirken söner, banttan ayrılırken yanar
         const tasma = bant && (y < bant.top || y > bant.bottom) ? (b === 3 ? 1 - t : t) : 1;
-        const alfa = (mavi ? .95 : SA[a][i] + (SA[b][i] - SA[a][i]) * t) * (sA + (sB - sA) * t) * gor * yol * tasma;
+        const alfa = (mavi ? .95 : AA[i] + (AB[i] - AA[i]) * t) * (sA + (sB - sA) * t) * gor * yol * tasma;
         const beyaz = Math.max(0, Math.min(1, (y - koyuUst) / 40));   // koyu bölüme girerken 40 px'lik geçiş
         if (beyaz < 1) {
           ctx.globalAlpha = alfa * (1 - beyaz);
@@ -843,6 +847,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
           const renk = mavi ? '#4FA3FF' : '#FFFFFF';
           if (renk !== sonRenk2) { ctx2.fillStyle = renk; sonRenk2 = renk; }
           ctx2.fillRect(x - boy / 2, y - boy / 2, boy, boy);
+          onCizildi = true;
         }
       }
       ctx.globalAlpha = 1; ctx2.globalAlpha = 1;
@@ -856,6 +861,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
         ctx2.globalAlpha = yumusak(isik); ctx2.fillStyle = gr;
         ctx2.fillRect(cx - r, cy - r, 2 * r, 2 * r);
         ctx2.globalAlpha = 1;
+        onCizildi = true;
       }
       if (buyutec && R > 1) {
         const k = binaKutusu();
@@ -872,6 +878,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
         ctx.beginPath(); ctx.arc(lens.x, lens.y, R, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(20,20,20,.14)'; ctx.lineWidth = 1; ctx.stroke();
       }
+      onKirli = onCizildi;
       return hareket;
     }
 
@@ -985,6 +992,7 @@ document.documentElement.classList.add('acilis');setTimeout(function(){document.
     function acilisCiz(t) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
       ctx2.setTransform(dpr, 0, 0, dpr, 0, 0); ctx2.clearRect(0, 0, W, H);
+      onKirli = true;
       const u = t - acilis.bas, { AX, AY, AV, atla } = acilis;
       const k = binaKutusu(), boy = hucre * .62, nN = N - B;
       // aşama: 0 dağınık, 1 kroki, 2 pafta, 3 scroll, 4 bina

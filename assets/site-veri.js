@@ -63,10 +63,12 @@
 
   function uygula(icerik) {
     if (!icerik) return;
-    if (Array.isArray(icerik.paketler) && icerik.paketler.length) paketleriYaz(icerik.paketler);
+    // paketler sayfaya gömülü başlangıç hâliyle aynıysa dokunulmaz (ana sayfada noktaların yeniden kurulmasına gerek kalmaz)
+    const yeniPaket = Array.isArray(icerik.paketler) && icerik.paketler.length && JSON.stringify(icerik.paketler) !== JSON.stringify(window.SITE_VARSAYILAN.paketler);
+    if (yeniPaket) paketleriYaz(icerik.paketler);
     if (Array.isArray(icerik.yorumlar) && window.yorumlariYukle) window.yorumlariYukle(icerik.yorumlar);
     baglantilariYaz({ ...window.SITE_VARSAYILAN.baglantilar, ...(icerik.baglantilar || {}) });
-    dispatchEvent(new Event('site-verisi'));                       // ana sayfa: paket çerçevelerini çizen noktalar yeniden ölçer
+    if (yeniPaket) dispatchEvent(new Event('site-verisi'));        // ana sayfa: paket çerçevelerini çizen noktalar yeniden ölçer
   }
   // gömülü içerik bile olsa bağlantılar varsayılanla doldurulur (WhatsApp/e-posta boşsa gizlenir)
   baglantilariYaz(window.SITE_VARSAYILAN.baglantilar);

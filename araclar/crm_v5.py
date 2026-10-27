@@ -341,7 +341,7 @@ SINEMA_JS = r'''
     const yazilar = [...bolum.querySelectorAll('.sinema-c__yazi')];
     const hareket = matchMedia('(prefers-reduced-motion: reduce)');
 ''' + O.ARA_JS + r'''    const EKRAN_BAS = .24, EKRAN_UZ = .19;                        // telefon yerine oturunca dört ekran sırayla, her biri uzun süre kalır
-    let raf = 0, gorunen = -1;
+    let raf = 0, gorunen = -1, sonCizim = '';
 
     function ciz() {
       raf = 0;
@@ -353,6 +353,10 @@ SINEMA_JS = r'''
       const p = gorunen;
       const sr = sahne.getBoundingClientRect(), yr = yer.getBoundingClientRect();
       const cw = cep.offsetWidth, ch = cep.offsetHeight;
+      // değerler değişmediyse (sahne geçildi, telefon yerine oturdu) yeniden yazılmaz; eskiz yüklenip yer değişirse çizilir
+      const imza = `${p}|${W}|${H}|${yr.left - sr.left}|${yr.top - sr.top}|${yr.width}|${cw}`;
+      if (imza === sonCizim) { if (Math.abs(hedef - gorunen) > .0004) iste(); return; }
+      sonCizim = imza;
       // masadaki yerden ekranın sağ yarısının ortasına (telefonda: ortaya, yazıların üstüne)
       const x0 = yr.left - sr.left + yr.width / 2, y0 = yr.top - sr.top + yr.height / 2, o0 = yr.width / cw;
       const x1 = dar ? W / 2 : W * .66, y1 = dar ? H * .42 : H / 2;

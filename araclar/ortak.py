@@ -138,6 +138,7 @@ def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/kroki-
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link href="{YAZI_TIPLERI[yazi_tipi]}" rel="stylesheet">
 <style>
 /* {css_notu} */
