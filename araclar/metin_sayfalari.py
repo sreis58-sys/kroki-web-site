@@ -105,22 +105,22 @@ HAKKIMIZDA = '''    <p class="ust-not">Hakkımızda</p>
     <p class="giris-metni">Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir. Sahada alınan ölçüden ofisteki teklife, şantiyeden tahsilata kadar her gün yapılan işleri aynı planda topluyoruz.</p>
 
     <div class="urun-satir">
-      <a href="kroki-crm.html"><img src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278"><span>Müşteriler, şantiyeler, takvim ve tahsilat. Stüdyonun bütün işi tek uygulamada.</span></a>
-      <a href="pafta.html"><img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206"><span>Röleveyi telefonla alın; duvarlar, kirişler ve ölçüler plana kendiliğinden yazılsın.</span></a>
+      <a href="kroki-crm.html"><img src="assets/logolar/kroki-crm.png" alt="kroki crm" width="900" height="278"><span>Müşteriler, şantiyeler, takvim ve tahsilat. Stüdyonun bütün işi tek uygulamada.</span></a>
+      <a href="pafta.html"><img src="assets/logolar/pafta-logo.svg" alt="pafta." width="640" height="206"><span>Röleveyi telefonla alın; duvarlar, kirişler ve ölçüler plana kendiliğinden yazılsın.</span></a>
       <a class="yakinda" aria-disabled="true"><b>scroll.</b><span>Yakında. Ekosistemin üçüncü parçası üzerinde çalışıyoruz.</span></a>
     </div>
 
     <h2>Aynı plan, farklı araçlar</h2>
     <p>Bir projede müşteri, ölçü, çizim, şantiye ve para ayrı ayrı yerlerde tutulunca işler dağılır. Kroki’nin her ürünü bu işin bir parçasını üstlenir; hepsi aynı mantıkla, aynı dille çalışır.</p>
 
-    <figure class="metin-eskiz"><img src="assets/bant-eskiz.webp" alt="Kalemle çizilmiş modern bir bina eskizi" width="1536" height="360" loading="lazy"></figure>
+    <figure class="metin-eskiz"><img src="assets/gorseller/bant-eskiz.webp" alt="Kalemle çizilmiş modern bir bina eskizi" width="1536" height="360" loading="lazy"></figure>
 
     <h2>Nasıl çalışıyoruz</h2>
     <p>Ürünlerimizi stüdyoların gündelik işinden yola çıkarak tasarlıyoruz: önce sahada ve ofiste ne yapıldığına bakıyor, sonra o işi kısaltan en sade aracı yapıyoruz. Her yeni özellik, onu kullanacak iç mimarlarla birlikte deneniyor.</p>
 
     <h2>Bize ulaşın</h2>
     <p>Demo, işbirliği ya da sorularınız için yazın; en kısa sürede dönüş yapalım.</p>
-    <a class="btn" href="kroki-web.html#iletisim">Bize yazın</a>'''
+    <a class="btn" href="index.html#iletisim">Bize yazın</a>'''
 
 metin_sayfasi('kvkk.html', 'KVKK ve gizlilik — Kroki', 'Kroki web sitesinde ve iletişim formunda kişisel verilerin işlenmesine ilişkin aydınlatma metni, gizlilik ve çerezler.', KVKK)
 metin_sayfasi('hakkimizda.html', 'Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir: kroki crm, pafta. ve yakında scroll.', HAKKIMIZDA, veriler=[O.kurulus()])
@@ -128,9 +128,9 @@ YOK = """    <p class="ust-not">404</p>
     <h1>Bu sayfa henüz çizilmedi.</h1>
     <p class="giris-metni">Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Buradan devam edebilirsiniz:</p>
     <div class="urun-satir">
-      <a href="kroki-web.html"><b>Kroki</b><span>Ana sayfa</span></a>
-      <a href="kroki-crm.html"><img src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278"><span>Stüdyo yönetimi</span></a>
-      <a href="pafta.html"><img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206"><span>Röleve ve ölçü</span></a>
+      <a href="index.html"><b>Kroki</b><span>Ana sayfa</span></a>
+      <a href="kroki-crm.html"><img src="assets/logolar/kroki-crm.png" alt="kroki crm" width="900" height="278"><span>Stüdyo yönetimi</span></a>
+      <a href="pafta.html"><img src="assets/logolar/pafta-logo.svg" alt="pafta." width="640" height="206"><span>Röleve ve ölçü</span></a>
     </div>"""
 # Firebase Hosting bilinmeyen adreslerde 404.html'i gösterir; adres derinse göreli bağlantılar bozulmasın diye kök adres
 metin_sayfasi('404.html', 'Sayfa bulunamadı — Kroki', 'Aradığınız sayfa bulunamadı.', YOK, taban='/')

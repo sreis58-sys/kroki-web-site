@@ -1,17 +1,17 @@
 """kroki-crm.html: uygulama tanıtım sayfası, pafta.html ile aynı temel. Girişte karakalem stüdyo eskizi; kaydırınca masadaki
 telefon kalkar ve ekranları sırayla gösterir. Ardından bilgisayar ve telefon ekranlarıyla özellikler, adımlar, bant, paketler,
-SSS, pafta bandı ve kapanış. Ürün sayfalarının ortak stilleri pafta_v2.py'den alınır."""
+SSS, pafta bandı ve kapanış. Ürün sayfalarının ortak stilleri pafta_sayfasi.py'den alınır."""
 import ortak as O
-import pafta_v2 as P
+import pafta_sayfasi as P
 import pafta_ekranlar as E
 import crm_ekranlar as C
 from ortak import ANA_CSS, ANA_MOBIL, magaza
 
-# ürün sayfalarının ortak stilleri pafta_v2.py'den: ızgara zemini, telefon çerçevesi … nasıl çalışır, ekosistem … sonu
+# ürün sayfalarının ortak stilleri pafta_sayfasi.py'den: ızgara zemini, telefon çerçevesi … nasıl çalışır, ekosistem … sonu
 ORTAK_CSS = (O.kes(P.CSS, '.izgara{', '\n') + '\n' + O.kes(P.CSS, '/* ---------- telefon çerçevesi', '/* ---------- ekosistem bandı')
              + O.kes(P.CSS, '/* ---------- ekosistem bandı'))
 ORTAK_MOBIL = O.kes(P.MOBIL, '  .cep{padding:7px;')
-LOGO_ACIK = 'assets/kroki-crm-acik.png'
+LOGO_ACIK = 'assets/logolar/kroki-crm-acik.png'
 
 CSS = r'''
 main{position:relative}
@@ -145,7 +145,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
   <div class="sinema-c__sahne">
   <div class="giris-c">
     <div class="giris-c__eskiz">
-      <img src="assets/crm-eskiz.webp" width="1536" height="1024" alt="Kalemle çizilmiş bir iç mimarlık stüdyosu: çizim masası, malzeme örnekleri, raf ve duvarda iki pafta">
+      <img src="assets/gorseller/crm-eskiz.webp" width="1536" height="1024" alt="Kalemle çizilmiş bir iç mimarlık stüdyosu: çizim masası, malzeme örnekleri, raf ve duvarda iki pafta">
       <!-- mavi düzlemler görselin piksel koordinatlarında: duvardaki iki paftada ve masadaki planda birer oda -->
       <svg viewBox="0 0 1536 1024" aria-hidden="true">
           <polygon class="duzlem" points="1232,310 1264,310 1264,372 1232,372"/>
@@ -157,7 +157,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
     </div>
     <div class="kap giris-c__metin">
       <div>
-        <img class="giris-c__logo" src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278">
+        <img class="giris-c__logo" src="assets/logolar/kroki-crm.png" alt="kroki crm" width="900" height="278">
         <h1 id="giris-baslik">Dağınık işler, tek planda.</h1>
         <p class="giris-c__alt">Müşteri, şantiye, takvim ve tahsilat. İç mimarlık stüdyoları için tek uygulamada.</p>
         <div class="giris-c__eylem">
@@ -197,7 +197,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Sıradaki iş, günün listesi, müşteri ve şantiye sayıları, satış hattı; ofiste bilgisayarda, şantiyede telefonda aynı panel.</p>
         <ul><li>Sıradaki iş ve bugünkü işler</li><li>Bir bakışta müşteri, satış ve şantiye</li><li>Tek tıkla yeni müşteri ve randevu</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Sıradaki iş</span><span>hep önde.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-panel.webp" alt="kroki crm Panel ekranı bilgisayarda: sıradaki iş, bugünkü işler, bir bakışta sayılar ve satış hattı" width="1919" height="868" loading="lazy"></div>{E.telefon(C.panel('o1', LOGO_ACIK))}</div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Sıradaki iş</span><span>hep önde.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-panel.webp" alt="kroki crm Panel ekranı bilgisayarda: sıradaki iş, bugünkü işler, bir bakışta sayılar ve satış hattı" width="1919" height="868" loading="lazy"></div>{E.telefon(C.panel('o1', LOGO_ACIK))}</div></div>
     </div>
     <div class="ozellik ozellik--genis ozellik--ters">
       <div>
@@ -206,7 +206,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Müşterileri aşamasına göre süzün, adına ya da proje tipine göre arayın; telefonla veya WhatsApp’tan tek dokunuşla ulaşın. Ustalarınız da ayrı bir listede.</p>
         <ul><li>Aşamaya göre süzme ve arama</li><li>Arama ve WhatsApp kısayolu</li><li>Ustalar listesi</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek dokunuşla</span><span>WhatsApp.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-musteriler.webp" alt="kroki crm Müşteriler ekranı bilgisayarda: aşamalarıyla müşteri listesi, arama ve WhatsApp düğmeleri" width="1919" height="743" loading="lazy"></div>{E.telefon(C.musteriler('o2', LOGO_ACIK))}</div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek dokunuşla</span><span>WhatsApp.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-musteriler.webp" alt="kroki crm Müşteriler ekranı bilgisayarda: aşamalarıyla müşteri listesi, arama ve WhatsApp düğmeleri" width="1919" height="743" loading="lazy"></div>{E.telefon(C.musteriler('o2', LOGO_ACIK))}</div></div>
     </div>
     <div class="ozellik ozellik--genis">
       <div>
@@ -215,7 +215,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Tasarımdan uygulamaya, son rötuşlardan teslime; her şantiyenin süreci, kontrol listesi, notları ve parası kendi kartında.</p>
         <ul><li>Tasarım & Proje, Uygulama, Son Rötuşlar, Teslim</li><li>Kontrol listesi ve şantiye notları</li><li>Tahsil edilen, ustalara ödenen, kalan</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Kontrol listesi</span><span>hep elinde.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/crm-pc-santiye.webp" alt="kroki crm şantiye kartı: şantiye süreci, kontrol listesi, tahsil edilen ve ustalara ödenen tutarlar, şantiye notları" width="918" height="1028" loading="lazy"></div></div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Kontrol listesi</span><span>hep elinde.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-santiye.webp" alt="kroki crm şantiye kartı: şantiye süreci, kontrol listesi, tahsil edilen ve ustalara ödenen tutarlar, şantiye notları" width="918" height="1028" loading="lazy"></div></div></div>
     </div>
     <div class="ozellik ozellik--genis ozellik--ters">
       <div>
@@ -224,7 +224,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Ölçü, sunum, teklif ve şantiye ziyaretleri gün, hafta ve ay görünümünde. Biten işlerin üstü çizilir; randevu, şantiye ve ödeme kendi renginde.</p>
         <ul><li>Gün, hafta ve ay görünümü</li><li>Randevu, şantiye ve ödeme renkleri</li><li>Seçili günün işleri yanda</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Biten işin</span><span>üstü çizilir.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-takvim.webp" alt="kroki crm Takvim ekranı bilgisayarda: ekim ayı, renkli işler ve seçili günün listesi" width="1919" height="978" loading="lazy"></div>{E.telefon(C.takvim('o3', LOGO_ACIK))}</div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Biten işin</span><span>üstü çizilir.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-takvim.webp" alt="kroki crm Takvim ekranı bilgisayarda: ekim ayı, renkli işler ve seçili günün listesi" width="1919" height="978" loading="lazy"></div>{E.telefon(C.takvim('o3', LOGO_ACIK))}</div></div>
     </div>
     <div class="ozellik ozellik--genis">
       <div>
@@ -233,7 +233,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Anahtar teslim ya da tasarım teklifi seçin, iş kalemlerini ve ödeme planını girin. Belge özeti siz yazdıkça hazırlanır, sözleşme metni tek tuşla oluşur.</p>
         <ul><li>Anahtar teslim ve tasarım teklifi</li><li>İş kalemleri ve ödeme planı</li><li>Sözleşme metni tek tuşla</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek tuşla</span><span>sözleşme.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/crm-pc-sozlesme.webp" alt="kroki crm sözleşme formu: anahtar teslim teklif, ödeme planı, iç mimar ve belge özeti" width="918" height="1028" loading="lazy"></div></div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Tek tuşla</span><span>sözleşme.</span></p><div class="cift cift--dar"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-sozlesme.webp" alt="kroki crm sözleşme formu: anahtar teslim teklif, ödeme planı, iç mimar ve belge özeti" width="918" height="1028" loading="lazy"></div></div></div>
     </div>
     <div class="ozellik ozellik--genis ozellik--ters">
       <div>
@@ -242,7 +242,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <p>Müşterilerden beklenen ve ustalara kalan borç en üstte; ay ay gelen, giden ve net. Bütün hareketler tek listede, tek tıkla Excel’e.</p>
         <ul><li>Müşterilerden beklenen, ustalara kalan borç</li><li>Aylık gelen, giden ve net</li><li>Excel’e aktarma</li></ul>
       </div>
-      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Ay sonu</span><span>sürpriz yok.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/crm-pc-muhasebe.webp" alt="kroki crm Muhasebe ekranı bilgisayarda: genel durum, aylık gelen, giden ve net, hareketler" width="1919" height="888" loading="lazy"></div>{E.telefon(C.muhasebe('o4', LOGO_ACIK))}</div></div>
+      <div class="ozellik__gorsel"><p class="not" aria-hidden="true"><span>Ay sonu</span><span>sürpriz yok.</span></p><div class="cift"><div class="ekran-pc"><img src="assets/gorseller/crm-pc-muhasebe.webp" alt="kroki crm Muhasebe ekranı bilgisayarda: genel durum, aylık gelen, giden ve net, hareketler" width="1919" height="888" loading="lazy"></div>{E.telefon(C.muhasebe('o4', LOGO_ACIK))}</div></div>
     </div>
   </section>
 
@@ -277,7 +277,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
     <div class="bant__ic">
       <p class="bant__metin">Her iş<br>yerli<br>yerinde.</p>
       <div class="bant__eskiz" aria-hidden="true">
-        <img src="assets/crm-bant.webp" alt="" width="1536" height="350" loading="lazy">
+        <img src="assets/gorseller/crm-bant.webp" alt="" width="1536" height="350" loading="lazy">
         <svg viewBox="0 0 1536 350"><polygon class="mavi" points="1237,78 1287,68 1287,263 1237,255"/><polygon class="mavi" points="1296,66 1354,54 1354,274 1296,264"/></svg>
       </div>
     </div>
@@ -288,7 +288,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
       <h2 id="paketler-baslik">Stüdyonuza uygun paketi seçin.</h2>
       <p>Paket değiştirdiğinizde verileriniz silinmez; yalnızca açık bölümler değişir.</p>
     </div>
-    <!-- paketler admin panelinden yönetilir; bu hâl başlangıç içeriğidir: assets/site-icerik.js -->
+    <!-- paketler admin panelinden yönetilir; bu hâl başlangıç içeriğidir: assets/js/site-icerik.js -->
     <div class="paketler__izgara" data-paketler data-hedef="#indir">
 {O.paketler_html('#indir')}
     </div>
@@ -309,7 +309,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
 
   <section class="kap">
     <div class="ekosistem">
-      <img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206" loading="lazy">
+      <img src="assets/logolar/pafta-logo.svg" alt="pafta." width="640" height="206" loading="lazy">
       <p>Sahadaki ölçü ve röleve için pafta. Aynı ekosistemin öteki parçası.</p>
       <a class="metin-link" href="pafta.html">pafta.’yı tanıyın</a>
     </div>

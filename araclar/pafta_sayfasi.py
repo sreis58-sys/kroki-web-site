@@ -1,6 +1,6 @@
 """pafta.html: uygulama tanıtım sayfası. Menü, alt bilgi ve temel stil ana sayfadan gelir (ortak.py); ekranlar
 pafta_ekranlar.py'de uygulamanın ekran görüntülerinden vektör olarak çizilir. Ürün sayfalarının ortak stilleri (telefon,
-mağaza, bilgiler, özellikler, adımlar, SSS, ekosistem, kapanış) bu dosyanın CSS/MOBIL bölümlerindedir; crm_v5.py de alır."""
+mağaza, bilgiler, özellikler, adımlar, SSS, ekosistem, kapanış) bu dosyanın CSS/MOBIL bölümlerindedir; crm_sayfasi.py de alır."""
 import ortak as O
 import pafta_ekranlar as E
 from ortak import ANA_CSS, ANA_MOBIL, magaza
@@ -202,7 +202,7 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
     <div class="sinema__sahne">
       <div class="izgara" aria-hidden="true"></div>
       <div class="sinema__eskiz" aria-hidden="true">
-        <img src="assets/pafta-eskiz.webp" width="1536" height="1024" alt="">
+        <img src="assets/gorseller/pafta-eskiz.webp" width="1536" height="1024" alt="">
         <!-- mavi düzlem görselin piksel koordinatlarında: sağdaki kapı açıklığı (logodaki kapı) -->
         <svg viewBox="0 0 1536 1024"><polygon class="duzlem" points="1392,332 1478,318 1478,718 1392,693"/></svg>
         <p class="not"><span>Duvar duvar,</span><span>kiriş</span><span>kiriş.</span></p>
@@ -210,7 +210,7 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
       <div class="sinema__karanlik" aria-hidden="true"></div>
       <div class="kap sinema__metin">
         <div>
-          <img class="urun-logo" src="assets/pafta-logo.svg" alt="pafta." width="640" height="206">
+          <img class="urun-logo" src="assets/logolar/pafta-logo.svg" alt="pafta." width="640" height="206">
           <h1>Ölçü sahada, plan elinde.</h1>
           <p class="giris-p__alt">Duvarı çizin, ölçüler kendiliğinden yazılsın. Kirişler, kapılar, pencereler ve toplam alan; hepsi müşterinin dosyasında, bulutta.</p>
           <div class="giris-p__eylem">
@@ -293,7 +293,7 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
     <div class="bant__ic">
       <p class="bant__metin">Ölçü<br>bir kez<br>alınır.</p>
       <div class="bant__eskiz" aria-hidden="true">
-        <img src="assets/pafta-bant.webp" alt="" width="1536" height="400" loading="lazy">
+        <img src="assets/gorseller/pafta-bant.webp" alt="" width="1536" height="400" loading="lazy">
         <svg viewBox="0 0 1536 400"><polygon class="mavi" points="832,170 918,170 918,318 832,318"/></svg>
       </div>
     </div>
@@ -338,7 +338,7 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
 
   <section class="kap">
     <div class="ekosistem">
-      <img src="assets/kroki-crm.png" alt="kroki crm" width="900" height="278" loading="lazy">
+      <img src="assets/logolar/kroki-crm.png" alt="kroki crm" width="900" height="278" loading="lazy">
       <p>Ölçüden sonrası için kroki crm. Müşteriyi, şantiyeyi ve tahsilatı aynı ekosistemde yönetin.</p>
       <a class="metin-link" href="kroki-crm.html">kroki crm’i tanıyın</a>
     </div>
@@ -352,7 +352,7 @@ GOVDE = f'''  <section class="sinema" aria-label="pafta. tanıtımı">
         <p>İndirin, hemen kullanmaya başlayın. Mağazalara çıktığında haber vermemizi isterseniz bize yazın.</p>
         <div class="kapanis__eylem">
           {magaza(ek=' magaza--acik')}
-          <a class="metin-link" href="kroki-web.html?urun=pafta.#iletisim">Çıkınca haber ver</a>
+          <a class="metin-link" href="index.html?urun=pafta.#iletisim">Çıkınca haber ver</a>
         </div>
       </div>
       {E.telefon(E.plan_ekrani('k1'))}
@@ -423,6 +423,6 @@ if __name__ == '__main__':
     ACIKLAMA = 'Röleveyi telefonda çizin: duvarlar, kirişler, kapılar, pencereler ve ölçüler plana kendiliğinden yazılsın. Ücretsiz röleve ve ölçü uygulaması.'
     O.sayfa('pafta.html', 'pafta. — Ücretsiz röleve ve ölçü alma uygulaması', ACIKLAMA,
             css=CSS.strip() + '\n' + ANA_CSS.strip(), mobil=MOBIL.strip('\n') + '\n' + ANA_MOBIL.rstrip(),
-            govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n', ikon='assets/pafta-ikon.svg',
+            govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n', ikon='assets/logolar/pafta-ikon.svg',
             css_notu=O.ORTAK_NOT + ' Uygulama ekranları Inter ile yazılır.',
             veriler=[O.uygulama('pafta.', ACIKLAMA, 'pafta.html', 'iOS, Android', {'@type': 'Offer', 'price': 0, 'priceCurrency': 'TRY'}), O.sss(GOVDE)])

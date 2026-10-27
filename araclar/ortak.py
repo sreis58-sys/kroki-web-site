@@ -1,13 +1,13 @@
 """Sayfa üreticilerinin ortak parçaları. İçe aktarılınca hiçbir dosyaya yazmaz.
 
-Menü, alt bilgi, temel stil ve el yazısı not/bant stilleri ana sayfadan (kroki-web.html) alınır; böylece ana sayfada
+Menü, alt bilgi, temel stil ve el yazısı not/bant stilleri ana sayfadan (index.html) alınır; böylece ana sayfada
 yapılan bir değişiklik, üreticiler yeniden çalıştırılınca bütün sayfalara geçer."""
 import json
 import subprocess
 from pathlib import Path
 
 kok = Path(__file__).resolve().parent.parent
-ana = (kok / 'kroki-web.html').read_text(encoding='utf-8')
+ana = (kok / 'index.html').read_text(encoding='utf-8')
 
 
 def kes(metin, bas, son=None, dahil=False):
@@ -38,11 +38,11 @@ ANA_CSS = satir_sonuna(ana, '.not{position:absolute;', '.not span:last-child::be
 ANA_MOBIL = kes(ana, '  .bant{height:auto}', '\n  .bant__eskiz{') + satir_sonuna(ana, '  .bant__eskiz{position:relative;', '  .bant__eskiz{position:relative;')
 
 
-# ---------- içerik: sitenin başlangıç içeriği tek kaynaktan, assets/site-icerik.js ----------
+# ---------- içerik: sitenin başlangıç içeriği tek kaynaktan, assets/js/site-icerik.js ----------
 def site_icerik():
     """site-icerik.js'deki window.SITE_VARSAYILAN; dosya JavaScript olduğu için node ile okunur."""
     betik = 'global.window = {}; require(process.argv[1]); process.stdout.write(JSON.stringify(window.SITE_VARSAYILAN));'
-    cikti = subprocess.run(['node', '-e', betik, str(kok / 'assets' / 'site-icerik.js')],
+    cikti = subprocess.run(['node', '-e', betik, str(kok / 'assets' / 'js' / 'site-icerik.js')],
                            capture_output=True, text=True, encoding='utf-8', check=True)
     return json.loads(cikti.stdout)
 
@@ -89,7 +89,7 @@ ARA_JS = '''    const sinir = v => Math.max(0, Math.min(1, v));
 # ---------- paylaşım önizlemesi (Open Graph) ----------
 SITE = 'https://kroki-site.web.app/'   # alan adı alınınca yalnızca burası değişir, ör. 'https://kroki.com.tr/'
 ONIZLEME = {
-    'kroki-web.html': ('Kroki — Mimari yazılımlar', 'Mimarların ihtiyaçları için tasarlanmış, birbirine bağlı yazılımlar: kroki crm ve pafta.', 'og-kroki.jpg'),
+    'index.html': ('Kroki — Mimari yazılımlar', 'Mimarların ihtiyaçları için tasarlanmış, birbirine bağlı yazılımlar: kroki crm ve pafta.', 'og-kroki.jpg'),
     'kroki-crm.html': ('kroki crm — Dağınık işler, tek planda', 'İç mimarlık stüdyoları için müşteri, şantiye, takvim, sözleşme ve tahsilat yönetimi.', 'og-crm.jpg'),
     'pafta.html': ('pafta. — Ölçü sahada, plan elinde', 'Röleveyi telefonla alın: duvarlar, kirişler, kapılar ve ölçüler plana kendiliğinden yazılsın. Ücretsiz.', 'og-pafta.jpg'),
     'hakkimizda.html': ('Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir.', 'og-kroki.jpg'),
@@ -106,7 +106,7 @@ def onizleme(dosya):
 <meta property="og:locale" content="tr_TR">
 <meta property="og:title" content="{baslik}">
 <meta property="og:description" content="{aciklama}">
-<meta property="og:image" content="{SITE}assets/{gorsel}">
+<meta property="og:image" content="{SITE}assets/gorseller/{gorsel}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -116,17 +116,17 @@ def onizleme(dosya):
 
 
 # ---------- arama motorları: asıl adres ve yapılandırılmış veri ----------
-SAYFA_HARITASI = ['kroki-web.html', 'kroki-crm.html', 'pafta.html', 'hakkimizda.html', 'kvkk.html']
+SAYFA_HARITASI = ['index.html', 'kroki-crm.html', 'pafta.html', 'hakkimizda.html', 'kvkk.html']
 
 
 def adres(dosya):
     """sayfanın asıl adresi; ana sayfa kök adreste yayınlanır"""
-    return SITE if dosya == 'kroki-web.html' else SITE + dosya
+    return SITE if dosya == 'index.html' else SITE + dosya
 
 
 def kurulus():
     return {'@context': 'https://schema.org', '@type': 'Organization', 'name': 'Kroki', 'url': SITE,
-            'logo': SITE + 'assets/kroki-firma.png', 'description': 'İç mimarlık ve mimarlık stüdyoları için yazılım.'}
+            'logo': SITE + 'assets/logolar/kroki-firma.png', 'description': 'İç mimarlık ve mimarlık stüdyoları için yazılım.'}
 
 
 def uygulama(ad, aciklama, dosya, sistem, teklif):
@@ -168,10 +168,10 @@ YAZI_TIPLERI = {
     'urun': 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap',
     'metin': 'https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap',
 }
-ORTAK_NOT = 'Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortaktır.'
+ORTAK_NOT = 'Menü, alt bilgi ve temel stil ana sayfayla (index.html) ortaktır.'
 
 
-def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/kroki-crm-ikon.svg',
+def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/logolar/kroki-crm-ikon.svg',
           yazi_tipi='urun', css_notu=ORTAK_NOT, taban=None, veriler=(), dizinle=True):
     """Sayfayı yazar. css/mobil: temel stil ile alt bilgi stili arasına girenler; govde: menü ile alt bilgi arası;
     js: mobil menüden önce çalışan betik; taban: <base href> (404 gibi her adreste açılan sayfalar için);
@@ -210,9 +210,9 @@ def sayfa(dosya, baslik, aciklama, css, mobil, govde, js='', ikon='assets/kroki-
 
 {alt_html}
 
-<script src="assets/firebase-ayar.js"></script>
-<script src="assets/site-icerik.js"></script>
-<script src="assets/site-veri.js"></script>
+<script src="assets/js/firebase-ayar.js"></script>
+<script src="assets/js/site-icerik.js"></script>
+<script src="assets/js/site-veri.js"></script>
 <script>
 {js}{menu_js}
 </script>

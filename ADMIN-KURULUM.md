@@ -19,7 +19,7 @@ Bu proje kroki crm'in Firebase projesinden (`studyo-crm`) **ayrıdır**. Müşte
 ## 3. Web uygulaması ayarlarını siteye yazın
 
 1. **Proje ayarları → Genel → Uygulamalarınız → `</>` (Web)**. Takma ad olarak `site` yazın. Hosting kutusunu işaretlemeyin.
-2. Çıkan `firebaseConfig` içindeki dört değeri `assets/firebase-ayar.js` dosyasına yazın:
+2. Çıkan `firebaseConfig` içindeki dört değeri `assets/js/firebase-ayar.js` dosyasına yazın:
 
    ```js
    window.FIREBASE_AYAR = { apiKey: '…', authDomain: '….firebaseapp.com', projectId: '…', appId: '…' };

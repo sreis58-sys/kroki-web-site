@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 ARACLAR = Path(__file__).resolve().parent
 KAYNAK = str(ARACLAR.parent / 'referans' / 'kroki-crm' / 'pc') + '/Screenshot 2026-10-26 '
-HEDEF = str(ARACLAR.parent / 'assets') + '/'
+HEDEF = str(ARACLAR.parent / 'assets' / 'gorseller') + '/'
 INTER = str(ARACLAR / 'font' / 'Inter.ttf')
 
 def yazi_tipi(boy, agirlik):

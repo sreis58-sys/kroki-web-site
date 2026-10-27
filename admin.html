@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Yönetim — Kroki</title>
-<link rel="icon" href="assets/kroki-crm-ikon.svg">
+<link rel="icon" href="assets/logolar/kroki-crm-ikon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -131,7 +131,7 @@ main{padding-bottom:40px}
 <body>
 <header class="ust">
   <div class="kap">
-    <img src="assets/kroki-firma.png" alt="Kroki" width="768" height="353">
+    <img src="assets/logolar/kroki-firma.png" alt="Kroki" width="768" height="353">
     <span class="ust__ad">Yönetim</span>
     <span class="rozet" id="demo-rozet" hidden title="Firebase bağlı değil: değişiklikler yalnızca bu tarayıcıda saklanır">Deneme modu</span>
     <div class="ust__sag">
@@ -149,7 +149,7 @@ main{padding-bottom:40px}
     <label class="alan">E-posta<input type="email" name="eposta" required autocomplete="username"></label>
     <label class="alan">Şifre<input type="password" name="sifre" required autocomplete="current-password"></label>
     <button class="btn" type="submit">Giriş yap</button>
-    <div class="giris__alt"><button type="button" id="sifre-unuttum">Şifremi unuttum</button><a href="kroki-web.html">Siteye dön</a></div>
+    <div class="giris__alt"><button type="button" id="sifre-unuttum">Şifremi unuttum</button><a href="index.html">Siteye dön</a></div>
     <p class="mesaj" id="giris-mesaj" role="status"></p>
   </form>
 </section>
@@ -202,15 +202,15 @@ main{padding-bottom:40px}
   <div class="kaydet" id="kaydet-cubugu" hidden>
     <div class="kap">
       <p class="kaydet__durum" id="kaydet-durum" role="status">Değişiklik yok.</p>
-      <a class="btn btn--cizgi" href="kroki-web.html" target="_blank" rel="noopener">Siteyi aç</a>
+      <a class="btn btn--cizgi" href="index.html" target="_blank" rel="noopener">Siteyi aç</a>
       <button class="btn btn--cizgi" type="button" id="geri-al" disabled>Geri al</button>
       <button class="btn btn--mavi" type="button" id="kaydet" disabled>Kaydet</button>
     </div>
   </div>
 </main>
 
-<script src="assets/firebase-ayar.js"></script>
-<script src="assets/site-icerik.js"></script>
+<script src="assets/js/firebase-ayar.js"></script>
+<script src="assets/js/site-icerik.js"></script>
 <script>
 (function () {
   const ayar = window.FIREBASE_AYAR;

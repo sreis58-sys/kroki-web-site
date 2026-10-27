@@ -1,0 +1,8 @@
+{
+  // yan panelde sitenin parçası olmayan klasörler gizlenir (dosyalar silinmez)
+  "files.exclude": {
+    ".firebase": true,
+    ".han": true,
+    "**/__pycache__": true
+  }
+}

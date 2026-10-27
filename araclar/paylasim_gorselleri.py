@@ -2,7 +2,8 @@
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 ARACLAR = Path(__file__).resolve().parent
-A = str(ARACLAR.parent / 'assets') + '/'
+A = str(ARACLAR.parent / 'assets' / 'gorseller') + '/'
+LOGOLAR = str(ARACLAR.parent / 'assets' / 'logolar') + '/'
 KAGIT, MUREKKEP, KURSUN, MAVI = (248, 245, 238), (19, 19, 19), (85, 85, 82), (28, 134, 238)
 
 def yazi(boy, agirlik):
@@ -31,7 +32,7 @@ def gorsel(ad, eskiz, logo_yolu, satirlar, alt, kirp, mavi=None):
         f = yazi(62, 800); d.text((72, y + 56), 'pafta', font=f, fill=MUREKKEP, anchor='ls')
         w = f.getlength('pafta'); d.rectangle([72 + w + 6, y + 44, 72 + w + 20, y + 58], fill=MAVI)
     else:
-        lg = logo(A + logo_yolu, 70); im.paste(lg, (72, y), lg)
+        lg = logo(LOGOLAR + logo_yolu, 70); im.paste(lg, (72, y), lg)
     y = 250
     for s in satirlar:
         d.text((70, y), s, font=yazi(64, 650), fill=MUREKKEP, anchor='ls'); y += 76

@@ -12,14 +12,11 @@
       "*.md",
       "referans/**",
       "inceleme/**",
-      "assets/kaynak/**",
+      "kaynak/**",
       "araclar/**"
     ],
     "redirects": [
       { "source": "/kroki-web.html", "destination": "/", "type": 301 }
-    ],
-    "rewrites": [
-      { "source": "/", "destination": "/kroki-web.html" }
     ],
     "headers": [
       {
@@ -34,7 +31,7 @@
         "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
       },
       {
-        "source": "/assets/@(firebase-ayar|site-icerik|site-veri).js",
+        "source": "/assets/js/*.js",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       }
     ]

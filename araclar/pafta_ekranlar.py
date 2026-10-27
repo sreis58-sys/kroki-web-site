@@ -148,7 +148,7 @@ def ana_ekran(kimlik):
     <text x="327" y="215" font-size="30" font-weight="600" fill="#A9C8EE" transform="rotate(-90 327 215)" text-anchor="middle">320</text>
   </g>
   {durum_cubugu('#151515')}
-  <image href="assets/pafta-logo.svg" x="40" y="166" width="172" height="74"/>
+  <image href="assets/logolar/pafta-logo.svg" x="40" y="166" width="172" height="74"/>
   <circle cx="566" cy="197" r="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>
   <g transform="translate(566 197)" fill="none" stroke="#1A1A1A" stroke-width="3.5" stroke-linecap="round"><circle r="10"/><path d="M0-21v-5M0 21v5M-21 0h-5M21 0h5M-15-15l-3-3M15 15l3 3M-15 15l-3 3M15-15l3-3"/></g>
   <rect x="640" y="146" width="244" height="102" rx="51" fill="#EDEDEB" stroke="#DFDFDD" stroke-width="2"/>

@@ -99,7 +99,7 @@
   }
 
   document.querySelectorAll('form[data-basvuru]').forEach(form => {
-    // ürün sayfalarından gelen bağlantı ürünü seçili getirir: kroki-web.html?urun=pafta.#iletisim
+    // ürün sayfalarından gelen bağlantı ürünü seçili getirir: index.html?urun=pafta.#iletisim
     const urun = new URLSearchParams(location.search).get('urun');
     if (urun && [...form.urun.options].some(o => o.value === urun)) form.urun.value = urun;
     const durum = form.querySelector('.form__durum'), dugme = form.querySelector('button[type=submit]');
