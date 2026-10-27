@@ -1,23 +1,17 @@
-"""kroki-crm.html: sade uygulama tanıtım sayfası, pafta.html ile aynı temel. Girişte solda yazı, sağda Panel ekranı ve
-telefon; ardından özellikler, paketler, pafta bandı ve kapanış. Telefon, mağaza, bölüm ve kapanış stilleri pafta
-sayfasının üreticisinden (pafta_v2.py) alınır."""
-import base64
+"""kroki-crm.html: uygulama tanıtım sayfası, pafta.html ile aynı temel. Girişte karakalem stüdyo eskizi; kaydırınca masadaki
+telefon kalkar ve ekranları sırayla gösterir. Ardından bilgisayar ve telefon ekranlarıyla özellikler, adımlar, bant, paketler,
+SSS, pafta bandı ve kapanış. Ürün sayfalarının ortak stilleri pafta_v2.py'den alınır."""
+import ortak as O
 import pafta_v2 as P
 import pafta_ekranlar as E
 import crm_ekranlar as C
-kok = 'C:/Users/msali/Desktop/kroki-web-site/'
+from ortak import ANA_CSS, ANA_MOBIL, magaza
 
-def kes(metin, bas, son=None):
-    i = metin.index(bas)
-    return metin[i:metin.index(son, i)] if son else metin[i:]
-
-ORTAK_CSS = (kes(P.CSS, '.izgara{', '\n') + '\n' + kes(P.CSS, '/* ---------- telefon çerçevesi', '/* ---------- ekosistem bandı')
-             + kes(P.CSS, '/* ---------- ekosistem bandı'))
-ORTAK_MOBIL = kes(P.MOBIL, '  .cep{padding:7px;')
-ANA_CSS = kes(P.ana, '.not{position:absolute;', '\n.not span:last-child::before') + kes(P.ana, '.not span:last-child::before', '\n') + '\n' + kes(P.ana, '.bant{position:relative;', '\n.bant__eskiz .koyu')
-ANA_MOBIL = kes(P.ana, '  .bant{height:auto}', '\n  .bant__eskiz{') + kes(P.ana, '  .bant__eskiz{position:relative;', '\n')
+# ürün sayfalarının ortak stilleri pafta_v2.py'den: ızgara zemini, telefon çerçevesi … nasıl çalışır, ekosistem … sonu
+ORTAK_CSS = (O.kes(P.CSS, '.izgara{', '\n') + '\n' + O.kes(P.CSS, '/* ---------- telefon çerçevesi', '/* ---------- ekosistem bandı')
+             + O.kes(P.CSS, '/* ---------- ekosistem bandı'))
+ORTAK_MOBIL = O.kes(P.MOBIL, '  .cep{padding:7px;')
 LOGO_ACIK = 'assets/kroki-crm-acik.png'
-veri = lambda yol, tur: f'data:{tur};base64,' + base64.b64encode(open(kok + yol, 'rb').read()).decode()
 
 CSS = r'''
 main{position:relative}
@@ -76,18 +70,9 @@ main{position:relative}
 .ozellik--ters .ozellik__gorsel:has(> .not){justify-content:flex-start}
 .ozellik__gorsel .not{left:6%;top:10%;font-size:min(1.15vw,16.5px)}
 .ozellik--ters .ozellik__gorsel .not{left:auto;right:6%}
-.ozellik__gorsel .not:has(+ .kirpik){left:0;top:auto;bottom:calc(100% + 18px)}
 
 .metin-link{padding-bottom:4px;border-bottom:1.5px solid currentColor;font:500 min(1.1vw,16px)/1 var(--f);transition:color .2s}
 .metin-link:hover{color:var(--mavi)}
-
-/* ---------- uygulama ekranından kırpılmış parçalar ---------- */
-.pencere{width:100%;overflow:hidden;border:1px solid #dcd7cc;border-radius:18px;background:#EDEEEA;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
-.pencere img{display:block;width:100%;height:auto}
-.kirpik{width:100%;border-radius:18px;background:#EDEEEA url(assets/urun-crm-panel.webp) no-repeat;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
-.kirpik--sayilar{aspect-ratio:1412/364;background-size:136% auto;background-position:86.6% 25.8%}
-.kirpik--hat{aspect-ratio:808/588;background-size:237.6% auto;background-position:39.6% 100%}
-.kirpik--isler{aspect-ratio:576/588;background-size:333.3% auto;background-position:95.3% 100%}
 
 /* ---------- paketler ---------- */
 .paketler__izgara{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(1.4vw,20px);margin-top:min(4vw,56px)}
@@ -107,9 +92,6 @@ main{position:relative}
 .paket[data-onerilen] .paket__btn:hover{background:#095BC0;border-color:#095BC0}
 .paket__etiket{position:absolute;top:-11px;left:min(2.4vw,34px);padding:6px 10px;border-radius:6px;background:#0B6FE8;font:600 11px/1 var(--f);letter-spacing:.04em;color:#fff}
 .paketler__not{margin-top:22px;font-size:min(.98vw,14px);color:#86837b}
-
-.kapanis .metin-link{color:#fff}
-.kapanis__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
 '''
 MOBIL = r'''
   .sinema-c{height:750vh}
@@ -179,7 +161,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <h1 id="giris-baslik">Dağınık işler, tek planda.</h1>
         <p class="giris-c__alt">Müşteri, şantiye, takvim ve tahsilat. İç mimarlık stüdyoları için tek uygulamada.</p>
         <div class="giris-c__eylem">
-          {P.magaza().replace('pafta. uygulamasını', 'kroki crm uygulamasını').replace('data-bag="pafta', 'data-bag="crm')}
+          {magaza('crm', 'kroki crm')}
           <a class="metin-link" href="#paketler">Paketleri gör</a>
         </div>
         <p class="giris-c__not">14 gün boyunca Stüdyo paketinin tamamı ücretsiz.</p>
@@ -306,9 +288,9 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
       <h2 id="paketler-baslik">Stüdyonuza uygun paketi seçin.</h2>
       <p>Paket değiştirdiğinizde verileriniz silinmez; yalnızca açık bölümler değişir.</p>
     </div>
-    <!-- paketler: Desktop/crm app/PRODUCT-DECISIONS.md (22 Ekim 2026) -->
+    <!-- paketler admin panelinden yönetilir; bu hâl başlangıç içeriğidir: assets/site-icerik.js -->
     <div class="paketler__izgara" data-paketler data-hedef="#indir">
-{{PAKETLER_HTML}}
+{O.paketler_html('#indir')}
     </div>
     <p class="paketler__not">Fiyatlar aylıktır. 14 gün boyunca Stüdyo paketi ücretsiz. Abonelik App Store ve Google Play üzerinden.</p>
   </section>
@@ -340,7 +322,7 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
         <h2 id="indir-baslik">kroki crm’i indirin.</h2>
         <p>14 gün boyunca Stüdyo paketinin tamamı ücretsiz.</p>
         <div class="kapanis__eylem">
-          {P.magaza(' magaza--acik').replace('pafta. uygulamasını', 'kroki crm uygulamasını').replace('data-bag="pafta', 'data-bag="crm')}
+          {magaza('crm', 'kroki crm', ' magaza--acik')}
           <a class="metin-link" data-bag="crmWeb" href="https://studyo-crm.web.app/">Web’den giriş yap</a>
         </div>
       </div>
@@ -348,20 +330,6 @@ GOVDE = f'''  <section class="sinema-c" aria-labelledby="giris-baslik">
     </div>
   </section>'''
 
-PAKETLER = [
-    ('Solo', 'Tek başına çalışanlar için', '499', ['1 kullanıcı', 'Müşteriler ve ustalar', 'Şantiye takibi', 'Takvim'], False),
-    ('Solo Pro', 'Teklif ve tahsilatı da yönetenler için', '749', ['1 kullanıcı', 'Solo’daki her şey', 'Teklif ve sözleşme', 'Tahsilat, makbuz ve muhasebe'], False),
-    ('Stüdyo', 'Küçük ekipler için', '999', ['4 kullanıcı: siz ve 3 çalışan', 'Solo Pro’daki her şey', 'Ekip erişimi ve yetkiler'], True),
-    ('Ofis', 'Büyüyen ofisler için', '1.999', ['11 kullanıcı: siz ve 10 çalışan', 'Stüdyo’daki her şey', 'Öncelikli destek', 'Yeni özelliklere ilk erişim'], False),
-]
-PAKETLER_HTML = '\n'.join(f'''      <article class="paket"{' data-onerilen' if onerilen else ''}>
-        {'<span class="paket__etiket">Önerilen</span>' if onerilen else ''}<h3>{ad}</h3>
-        <p class="paket__kim">{kim}</p>
-        <p class="paket__fiyat">{fiyat} TL <small>/ ay</small></p>
-        <ul>{''.join(f'<li>{o}</li>' for o in oz)}</ul>
-        <a class="paket__btn" href="#indir">Ücretsiz dene</a>
-      </article>''' for ad, kim, fiyat, oz, onerilen in PAKETLER)
-GOVDE = GOVDE.replace('{PAKETLER_HTML}', PAKETLER_HTML)
 
 
 SINEMA_JS = r'''
@@ -372,11 +340,7 @@ SINEMA_JS = r'''
     const cep = bolum.querySelector('.sinema-c__cep'), ekranlar = [...cep.querySelectorAll('.sinema-c__ekran')];
     const yazilar = [...bolum.querySelectorAll('.sinema-c__yazi')];
     const hareket = matchMedia('(prefers-reduced-motion: reduce)');
-    const sinir = v => Math.max(0, Math.min(1, v));
-    const yumusak = t => t * t * (3 - 2 * t);
-    const ara = (a, b, p) => yumusak(sinir((p - a) / (b - a)));
-    const kar = (a, b, t) => a + (b - a) * t;
-    const EKRAN_BAS = .24, EKRAN_UZ = .19;                        // telefon yerine oturunca dört ekran sırayla, her biri uzun süre kalır
+''' + O.ARA_JS + r'''    const EKRAN_BAS = .24, EKRAN_UZ = .19;                        // telefon yerine oturunca dört ekran sırayla, her biri uzun süre kalır
     let raf = 0, gorunen = -1;
 
     function ciz() {
@@ -420,54 +384,8 @@ SINEMA_JS = r'''
   })();
 '''
 
-sayfa = f'''<!doctype html>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>kroki crm — Kroki</title>
-<meta name="description" content="İç mimarlık stüdyoları için müşteri, satış hattı, şantiye, takvim ve tahsilat yönetimi.">
-<link rel="icon" href="assets/kroki-crm-ikon.svg">
-<script>document.documentElement.classList.add('js')</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Patrick+Hand&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortaktır. */
-{P.temel_css}
-{CSS.strip()}
-{ORTAK_CSS.strip()}
-{ANA_CSS.strip()}
-
-{P.alt_css}
-
-@media (max-width:900px){{
-{P.mobil_ust}
-{MOBIL.strip(chr(10))}
-{ORTAK_MOBIL.rstrip()}
-{ANA_MOBIL.rstrip()}
-{P.mobil_alt}
-}}
-</style>
-</head>
-<body>
-{P.ust_html}
-
-<main>
-{GOVDE}
-</main>
-
-{P.alt_html}
-
-<script src="assets/firebase-ayar.js"></script>
-<script src="assets/site-icerik.js"></script>
-<script src="assets/site-veri.js"></script>
-<script>
-{SINEMA_JS}
-{P.menu_js}
-</script>
-</body>
-</html>
-'''
-open(kok + 'kroki-crm.html', 'w', encoding='utf-8').write(sayfa)
-print('kroki-crm.html yazıldı', len(sayfa))
+if __name__ == '__main__':
+    O.sayfa('kroki-crm.html', 'kroki crm — Kroki', 'İç mimarlık stüdyoları için müşteri, satış hattı, şantiye, takvim ve tahsilat yönetimi.',
+            css=CSS.strip() + '\n' + ORTAK_CSS.strip() + '\n' + ANA_CSS.strip(),
+            mobil=MOBIL.strip('\n') + '\n' + ORTAK_MOBIL.rstrip() + '\n' + ANA_MOBIL.rstrip(),
+            govde=f'<main>\n{GOVDE}\n</main>', js=SINEMA_JS + '\n')

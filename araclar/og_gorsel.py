@@ -1,14 +1,14 @@
 """Paylaşım önizleme görselleri (1200×630): kâğıt zemin, solda logo ve başlık, sağda sayfanın karakalem eskizi."""
 from PIL import Image, ImageDraw, ImageFont
-A = 'C:/Users/msali/Desktop/kroki-web-site/assets/'
+from pathlib import Path
+ARACLAR = Path(__file__).resolve().parent
+A = str(ARACLAR.parent / 'assets') + '/'
 KAGIT, MUREKKEP, KURSUN, MAVI = (248, 245, 238), (19, 19, 19), (85, 85, 82), (28, 134, 238)
 
 def yazi(boy, agirlik):
-    f = ImageFont.truetype('font/Sora.ttf', boy); f.set_variation_by_axes([agirlik]); return f
+    f = ImageFont.truetype(str(ARACLAR / 'font' / 'Sora.ttf'), boy); f.set_variation_by_axes([agirlik]); return f
 
 def logo(yol, yukseklik):
-    if yol.endswith('.svg'):
-        return None
     im = Image.open(yol).convert('RGBA'); return im.resize((int(im.width * yukseklik / im.height), yukseklik), Image.LANCZOS)
 
 def gorsel(ad, eskiz, logo_yolu, satirlar, alt, kirp, mavi=None):

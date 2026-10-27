@@ -3,9 +3,11 @@ gerçek müşteri adları, telefon, adres ve notlar örnek bilgilerle değiştir
 from collections import Counter
 from PIL import Image, ImageDraw, ImageFont
 
-KAYNAK = 'C:/Users/msali/Desktop/kroki-web-site/referans/kroki-crm/pc/Screenshot 2026-10-26 '
-HEDEF = 'C:/Users/msali/Desktop/kroki-web-site/assets/'
-INTER = 'font/Inter.ttf'
+from pathlib import Path
+ARACLAR = Path(__file__).resolve().parent
+KAYNAK = str(ARACLAR.parent / 'referans' / 'kroki-crm' / 'pc') + '/Screenshot 2026-10-26 '
+HEDEF = str(ARACLAR.parent / 'assets') + '/'
+INTER = str(ARACLAR / 'font' / 'Inter.ttf')
 
 def yazi_tipi(boy, agirlik):
     f = ImageFont.truetype(INTER, boy)

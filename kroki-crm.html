@@ -112,18 +112,9 @@ main{position:relative}
 .ozellik--ters .ozellik__gorsel:has(> .not){justify-content:flex-start}
 .ozellik__gorsel .not{left:6%;top:10%;font-size:min(1.15vw,16.5px)}
 .ozellik--ters .ozellik__gorsel .not{left:auto;right:6%}
-.ozellik__gorsel .not:has(+ .kirpik){left:0;top:auto;bottom:calc(100% + 18px)}
 
 .metin-link{padding-bottom:4px;border-bottom:1.5px solid currentColor;font:500 min(1.1vw,16px)/1 var(--f);transition:color .2s}
 .metin-link:hover{color:var(--mavi)}
-
-/* ---------- uygulama ekranından kırpılmış parçalar ---------- */
-.pencere{width:100%;overflow:hidden;border:1px solid #dcd7cc;border-radius:18px;background:#EDEEEA;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
-.pencere img{display:block;width:100%;height:auto}
-.kirpik{width:100%;border-radius:18px;background:#EDEEEA url(assets/urun-crm-panel.webp) no-repeat;box-shadow:0 30px 60px -28px rgba(20,24,30,.35)}
-.kirpik--sayilar{aspect-ratio:1412/364;background-size:136% auto;background-position:86.6% 25.8%}
-.kirpik--hat{aspect-ratio:808/588;background-size:237.6% auto;background-position:39.6% 100%}
-.kirpik--isler{aspect-ratio:576/588;background-size:333.3% auto;background-position:95.3% 100%}
 
 /* ---------- paketler ---------- */
 .paketler__izgara{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:min(1.4vw,20px);margin-top:min(4vw,56px)}
@@ -143,16 +134,12 @@ main{position:relative}
 .paket[data-onerilen] .paket__btn:hover{background:#095BC0;border-color:#095BC0}
 .paket__etiket{position:absolute;top:-11px;left:min(2.4vw,34px);padding:6px 10px;border-radius:6px;background:#0B6FE8;font:600 11px/1 var(--f);letter-spacing:.04em;color:#fff}
 .paketler__not{margin-top:22px;font-size:min(.98vw,14px);color:#86837b}
-
-.kapanis .metin-link{color:#fff}
-.kapanis__eylem{display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
 .izgara{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#dde8f4 1px,transparent 1px),linear-gradient(90deg,#dde8f4 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 75% at 72% 45%,#000 30%,transparent 75%)}
 /* ---------- telefon çerçevesi ---------- */
 .cep{padding:min(.75vw,10px);border-radius:min(3.6vw,52px);background:#121315;box-shadow:0 0 0 1.5px #2b2d31 inset,0 30px 60px -20px rgba(20,24,30,.35),0 12px 24px -12px rgba(20,24,30,.25)}
 .cep__ekran{position:relative;overflow:hidden;border-radius:min(2.9vw,42px);aspect-ratio:924/2000;background:#0B0C0E}
 .cep__ekran .ekran{display:block;width:100%;height:100%}
 .cep__ada{position:absolute;top:2.2%;left:50%;width:31%;height:3.6%;border-radius:99px;background:#000;transform:translateX(-50%)}
-.sayi-yeni,.kayit-suruyor,.yeni-satir{opacity:0}
 
 /* ---------- mağaza düğmeleri ---------- */
 .magaza{display:flex;flex-wrap:wrap;gap:12px}
@@ -244,7 +231,8 @@ main{position:relative}
 .kapanis .cep{align-self:flex-end;width:min(18vw,260px);margin-bottom:max(-24vw,-340px);transform:rotate(6deg)}
 .not{position:absolute;z-index:2;left:35.6%;top:10%;font:400 min(1.32vw,19px)/1.3 var(--el);letter-spacing:.18em;text-transform:uppercase;color:#4a4a48;padding-left:min(1.7vw,24px)}
 .not::before{content:"";position:absolute;left:0;top:-.5em;bottom:.3em;border-left:1px dashed #8a8984}
-.not span{display:block}.not span:last-child::before{content:"";position:absolute;left:-.4em;width:1.1em;margin-top:.62em;border-top:1px solid #6a6964}
+.not span{display:block}
+.not span:last-child::before{content:"";position:absolute;left:-.4em;width:1.1em;margin-top:.62em;border-top:1px solid #6a6964}
 .bant{position:relative;overflow:hidden;height:min(18.3vw,263px);background-color:rgba(229,224,216,.88);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.32 0 0 0 0 0.28 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .bant__ic{position:relative;max-width:1440px;height:100%;margin:0 auto}
@@ -392,7 +380,7 @@ main{position:relative}
         <h1 id="giris-baslik">Dağınık işler, tek planda.</h1>
         <p class="giris-c__alt">Müşteri, şantiye, takvim ve tahsilat. İç mimarlık stüdyoları için tek uygulamada.</p>
         <div class="giris-c__eylem">
-          <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+          <!-- MAĞAZA BAĞLANTILARI: adresler admin panelinden girilir; boşken düğmede "Yakında" yazar -->
         <div class="magaza">
           <a href="#" data-bag="crmAppStore" aria-label="kroki crm uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
           <a href="#" data-bag="crmGooglePlay" aria-label="kroki crm uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>
@@ -960,7 +948,7 @@ main{position:relative}
       <h2 id="paketler-baslik">Stüdyonuza uygun paketi seçin.</h2>
       <p>Paket değiştirdiğinizde verileriniz silinmez; yalnızca açık bölümler değişir.</p>
     </div>
-    <!-- paketler: Desktop/crm app/PRODUCT-DECISIONS.md (22 Ekim 2026) -->
+    <!-- paketler admin panelinden yönetilir; bu hâl başlangıç içeriğidir: assets/site-icerik.js -->
     <div class="paketler__izgara" data-paketler data-hedef="#indir">
       <article class="paket">
         <h3>Solo</h3>
@@ -1021,7 +1009,7 @@ main{position:relative}
         <h2 id="indir-baslik">kroki crm’i indirin.</h2>
         <p>14 gün boyunca Stüdyo paketinin tamamı ücretsiz.</p>
         <div class="kapanis__eylem">
-          <!-- MAĞAZA BAĞLANTILARI: uygulama yayınlanınca App Store ve Google Play adresleriyle değiştir -->
+          <!-- MAĞAZA BAĞLANTILARI: adresler admin panelinden girilir; boşken düğmede "Yakında" yazar -->
         <div class="magaza magaza--acik">
           <a href="#" data-bag="crmAppStore" aria-label="kroki crm uygulamasını App Store'dan indirin"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.74 2.98-.74 1.39 0 1.78.74 3 .72 1.24-.02 2.03-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.59-.03-.01-2.41-.92-2.44-3.69zM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.67-1.1 1.76-.96 2.8 1.02.08 2.06-.52 2.69-1.28z"/></svg><span><small>Şuradan indirin</small><b>App Store</b></span></a>
           <a href="#" data-bag="crmGooglePlay" aria-label="kroki crm uygulamasını Google Play'den indirin"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#32BBFF" d="M3.6 2.3 13 12l-9.4 9.7c-.3-.3-.4-.8-.4-1.3V3.6c0-.5.1-1 .4-1.3z"/><path fill="#00F076" d="M3.6 2.3c.4-.4 1-.4 1.7 0l11.1 6.3L13 12z"/><path fill="#FF3A44" d="M3.6 21.7 13 12l3.4 3.4-11.1 6.3c-.7.4-1.3.4-1.7 0z"/><path fill="#FFD500" d="m16.4 8.6 3.6 2c1.1.6 1.1 2.2 0 2.8l-3.6 2L13 12z"/></svg><span><small>Şuradan alın</small><b>Google Play</b></span></a>

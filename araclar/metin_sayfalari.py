@@ -1,6 +1,6 @@
-"""kvkk.html (aydınlatma metni, gizlilik ve çerezler) ve hakkimizda.html. Menü, alt bilgi ve temel stil ana sayfadan."""
-import pafta_v2 as P
-kok = 'C:/Users/msali/Desktop/kroki-web-site/'
+"""kvkk.html (aydınlatma metni, gizlilik ve çerezler), hakkimizda.html ve 404.html. Menü, alt bilgi ve temel stil
+ana sayfadan gelir (ortak.py)."""
+import ortak as O
 
 CSS = r'''
 .metin-sayfa{padding:min(5vw,72px) 0 min(8vw,116px)}
@@ -17,9 +17,9 @@ CSS = r'''
 .kunye{display:grid;grid-template-columns:auto 1fr;gap:8px 24px;margin:0 0 12px;padding:20px 22px;border:1px solid #dcd7cc;border-radius:14px;background:rgba(255,255,255,.5);font-size:min(1.1vw,16px)}
 .kunye dt{color:var(--kursun)}
 .kunye dd{margin:0;font-weight:500}
-.tarih{margin-top:min(4vw,52px) !important;font-size:14px !important;color:var(--kursun) !important}
+.metin-sayfa .tarih{margin-top:min(4vw,52px);font-size:14px;color:var(--kursun)}
 .urun-satir{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:min(3vw,40px) 0}
-.urun-satir a{display:flex;flex-direction:column;gap:14px;min-height:170px;padding:24px;border:1px solid #dcd7cc;border-radius:18px;background:rgba(255,255,255,.55);text-decoration:none !important;color:inherit !important;transition:border-color .2s}
+.urun-satir a{display:flex;flex-direction:column;gap:14px;min-height:170px;padding:24px;border:1px solid #dcd7cc;border-radius:18px;background:rgba(255,255,255,.55);text-decoration:none;color:inherit;transition:border-color .2s}
 .urun-satir a:hover{border-color:#111}
 .urun-satir img{height:34px;width:auto;align-self:flex-start}
 .urun-satir span{font-size:15px;line-height:1.55;color:var(--kursun)}
@@ -39,53 +39,10 @@ MOBIL = '''  .metin-sayfa{padding:40px 0 64px}
   .urun-satir{grid-template-columns:1fr}
 '''
 
-def sayfa(baslik, aciklama, govde):
-    return f'''<!doctype html>
-<html lang="tr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{baslik}</title>
-<meta name="description" content="{aciklama}">
-<link rel="icon" href="assets/kroki-crm-ikon.svg">
-<script>document.documentElement.classList.add('js')</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* Menü, alt bilgi ve temel stil ana sayfayla (kroki-web.html) ortaktır. */
-{P.temel_css}
-{CSS.strip()}
+def metin_sayfasi(dosya, baslik, aciklama, govde, taban=None):
+    O.sayfa(dosya, baslik, aciklama, css=CSS.strip(), mobil=MOBIL.rstrip(),
+            govde=f'<main class="metin-sayfa">\n  <div class="kap">\n{govde}\n  </div>\n</main>', yazi_tipi='metin', taban=taban)
 
-{P.alt_css}
-
-@media (max-width:900px){{
-{P.mobil_ust}
-{MOBIL.rstrip()}
-{P.mobil_alt}
-}}
-</style>
-</head>
-<body>
-{P.ust_html}
-
-<main class="metin-sayfa">
-  <div class="kap">
-{govde}
-  </div>
-</main>
-
-{P.alt_html}
-
-<script src="assets/firebase-ayar.js"></script>
-<script src="assets/site-icerik.js"></script>
-<script src="assets/site-veri.js"></script>
-<script>
-{P.menu_js}
-</script>
-</body>
-</html>
-'''
 
 YER = lambda ad, metin: f'<span data-bag-metin="{ad}">{metin}</span>'
 KVKK = f'''    <p class="ust-not">KVKK ve gizlilik</p>
@@ -164,8 +121,8 @@ HAKKIMIZDA = '''    <p class="ust-not">Hakkımızda</p>
     <p>Demo, işbirliği ya da sorularınız için yazın; en kısa sürede dönüş yapalım.</p>
     <a class="btn" href="kroki-web.html#iletisim">Bize yazın</a>'''
 
-open(kok + 'kvkk.html', 'w', encoding='utf-8').write(sayfa('KVKK ve gizlilik — Kroki', 'Kroki web sitesinde ve iletişim formunda kişisel verilerin işlenmesine ilişkin aydınlatma metni, gizlilik ve çerezler.', KVKK))
-open(kok + 'hakkimizda.html', 'w', encoding='utf-8').write(sayfa('Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir: kroki crm, pafta. ve yakında scroll.', HAKKIMIZDA))
+metin_sayfasi('kvkk.html', 'KVKK ve gizlilik — Kroki', 'Kroki web sitesinde ve iletişim formunda kişisel verilerin işlenmesine ilişkin aydınlatma metni, gizlilik ve çerezler.', KVKK)
+metin_sayfasi('hakkimizda.html', 'Hakkımızda — Kroki', 'Kroki, iç mimarlık ve mimarlık stüdyoları için yazılım geliştirir: kroki crm, pafta. ve yakında scroll.', HAKKIMIZDA)
 YOK = """    <p class="ust-not">404</p>
     <h1>Bu sayfa henüz çizilmedi.</h1>
     <p class="giris-metni">Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir. Buradan devam edebilirsiniz:</p>
@@ -175,5 +132,4 @@ YOK = """    <p class="ust-not">404</p>
       <a href="pafta.html"><img src="assets/pafta-logo.svg" alt="pafta." width="640" height="206"><span>Röleve ve ölçü</span></a>
     </div>"""
 # Firebase Hosting bilinmeyen adreslerde 404.html'i gösterir; adres derinse göreli bağlantılar bozulmasın diye kök adres
-open(kok + '404.html', 'w', encoding='utf-8').write(sayfa('Sayfa bulunamadı — Kroki', 'Aradığınız sayfa bulunamadı.', YOK).replace('<head>\n', '<head>\n<base href="/">\n', 1))
-print('kvkk.html, hakkimizda.html ve 404.html yazıldı')
+metin_sayfasi('404.html', 'Sayfa bulunamadı — Kroki', 'Aradığınız sayfa bulunamadı.', YOK, taban='/')

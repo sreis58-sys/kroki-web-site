@@ -177,10 +177,6 @@ main{padding-bottom:40px}
       <div class="bolum-bas">
         <div><h2>Gelen başvurular</h2><p>Sitedeki “Bize yazın” formundan gelenler. En yeni üstte.</p></div>
         <div class="suzgec" role="group" aria-label="Duruma göre süz">
-          <button type="button" data-suz="hepsi" aria-pressed="true">Tümü</button>
-          <button type="button" data-suz="yeni" aria-pressed="false">Yeni</button>
-          <button type="button" data-suz="arandi" aria-pressed="false">Dönüş yapıldı</button>
-          <button type="button" data-suz="tamam" aria-pressed="false">Tamamlandı</button>
         </div>
       </div>
       <div class="basvurular" id="basvurular"></div>
@@ -232,10 +228,8 @@ main{padding-bottom:40px}
   };
 
   /* ================= veri katmanı: Firebase ya da deneme modu (bu tarayıcı) ================= */
-  const yerel = {
-    oku(a) { try { return JSON.parse(localStorage.getItem(a)); } catch (e) { return null; } },
-    yaz(a, v) { localStorage.setItem(a, JSON.stringify(v)); },
-  };
+  const { DEMO: ANAHTAR, yerel } = window.KROKI;              // deneme kipinin tarayıcıdaki kayıt anahtarları
+  const yaz = (a, v) => { if (!yerel.yaz(a, v)) throw new Error('kaydedilemedi'); };
   const DEMO_ORNEK = [
     { id: 'o1', ad: 'Ece Yıldız', iletisim: '0532 000 00 00', studyo: 'Yıldız İç Mimarlık', urun: 'kroki crm', mesaj: 'Merhaba, 3 kişilik bir stüdyoyuz. Stüdyo paketi için demo görmek istiyoruz.', durum: 'yeni', tarih: Date.now() - 36e5 },
     { id: 'o2', ad: 'Deniz Arslan', iletisim: 'deniz@ornek.com', studyo: '', urun: 'pafta.', mesaj: 'pafta. ne zaman Android’e geliyor?', durum: 'arandi', tarih: Date.now() - 864e5 },
@@ -243,26 +237,26 @@ main{padding-bottom:40px}
   ];
   const demoVeri = {
     async baslat() {
-      yerel.yaz('kroki-demo', true);                               // sitedeki form deneme modunda bu tarayıcıya kaydeder
-      if (!yerel.oku('kroki-demo-basvurular')) yerel.yaz('kroki-demo-basvurular', DEMO_ORNEK);
+      yaz(ANAHTAR.acik, true);                                        // sitedeki form deneme modunda bu tarayıcıya kaydeder
+      if (!yerel.oku(ANAHTAR.basvurular)) yaz(ANAHTAR.basvurular, DEMO_ORNEK);
     },
     oturum(cb) { cb({ uid: 'deneme', email: 'deneme modu' }); },
     async yetkiliMi() { return true; },
-    async icerikOku() { return yerel.oku('kroki-demo-icerik'); },
-    async icerikYaz(o) { yerel.yaz('kroki-demo-icerik', o); },
+    async icerikOku() { return yerel.oku(ANAHTAR.icerik); },
+    async icerikYaz(o) { yaz(ANAHTAR.icerik, o); },
     basvurulariDinle(cb) {
-      const oku = () => cb((yerel.oku('kroki-demo-basvurular') || []).map(b => ({ ...b, tarih: new Date(b.tarih) })));
-      oku(); addEventListener('storage', e => { if (e.key === 'kroki-demo-basvurular') oku(); });
+      const oku = () => cb((yerel.oku(ANAHTAR.basvurular) || []).map(b => ({ ...b, tarih: new Date(b.tarih) })));
+      oku(); addEventListener('storage', e => { if (e.key === ANAHTAR.basvurular) oku(); });
     },
     async basvuruGuncelle(id, alanlar) {
-      yerel.yaz('kroki-demo-basvurular', (yerel.oku('kroki-demo-basvurular') || []).map(b => b.id === id ? { ...b, ...alanlar } : b));
+      yaz(ANAHTAR.basvurular, (yerel.oku(ANAHTAR.basvurular) || []).map(b => b.id === id ? { ...b, ...alanlar } : b));
       this._yenile();
     },
     async basvuruSil(id) {
-      yerel.yaz('kroki-demo-basvurular', (yerel.oku('kroki-demo-basvurular') || []).filter(b => b.id !== id));
+      yaz(ANAHTAR.basvurular, (yerel.oku(ANAHTAR.basvurular) || []).filter(b => b.id !== id));
       this._yenile();
     },
-    _yenile() { dispatchEvent(new StorageEvent('storage', { key: 'kroki-demo-basvurular' })); },
+    _yenile() { dispatchEvent(new StorageEvent('storage', { key: ANAHTAR.basvurular })); },
   };
 
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
@@ -270,7 +264,8 @@ main{padding-bottom:40px}
   let auth, db;
   const firebaseVeri = {
     async baslat() {
-      for (const p of ['firebase-app-compat.js', 'firebase-auth-compat.js', 'firebase-firestore-compat.js']) await betik(SDK + p);
+      await betik(SDK + 'firebase-app-compat.js');                 // giriş ve veritabanı modülleri çekirdeğe eklenir: önce o yüklenir
+      await Promise.all(['firebase-auth-compat.js', 'firebase-firestore-compat.js'].map(p => betik(SDK + p)));
       firebase.initializeApp(ayar); auth = firebase.auth(); db = firebase.firestore();
     },
     oturum(cb) { auth.onAuthStateChanged(cb); },
@@ -332,10 +327,9 @@ main{padding-bottom:40px}
   function iletisimBaglantilari(v) {
     v = String(v || '').trim();
     if (v.includes('@')) return [el('a', { href: 'mailto:' + v, metin: v })];
-    let n = v.replace(/\D/g, '');
+    const n = v.replace(/\D/g, '');
     if (n.length < 7) return [el('span', { metin: v })];
-    const wa = n.startsWith('0') ? '90' + n.slice(1) : n;
-    return [el('a', { href: 'tel:' + n, metin: v }), el('a', { href: 'https://wa.me/' + wa, target: '_blank', rel: 'noopener', metin: 'WhatsApp’tan yaz' })];
+    return [el('a', { href: 'tel:' + n, metin: v }), el('a', { href: window.KROKI.whatsapp(v), target: '_blank', rel: 'noopener', metin: 'WhatsApp’tan yaz' })];
   }
   function basvurulariCiz() {
     const kutu = $('#basvurular');
@@ -360,6 +354,8 @@ main{padding-bottom:40px}
         b.mesaj ? el('p', { sinif: 'basvuru__mesaj', metin: b.mesaj }) : null);
     }));
   }
+  document.querySelector('.suzgec').append(...[['hepsi', 'Tümü'], ...Object.entries(DURUMLAR)].map(([k, v]) =>
+    el('button', { type: 'button', 'data-suz': k, 'aria-pressed': String(k === 'hepsi'), metin: v })));
   document.querySelectorAll('[data-suz]').forEach(b => b.addEventListener('click', () => {
     suz = b.dataset.suz;
     document.querySelectorAll('[data-suz]').forEach(x => x.setAttribute('aria-pressed', x === b));
@@ -413,11 +409,11 @@ main{padding-bottom:40px}
   }
   $('#yorum-ekle').addEventListener('click', () => { icerik.yorumlar.push({ metin: '', ad: '', unvan: '' }); yorumlariCiz(); durumGuncelle(); });
 
-  const yazi = ad => window.YAZI_ALANLARI.includes(ad);
+  const KUTU = { magaza: 'url', url: 'url', tel: 'tel', eposta: 'email', yazi: 'text' };
   function baglantilariCiz() {
     const b = icerik.baglantilar;
-    $('#baglantilar').replaceChildren(...window.BAGLANTI_ALANLARI.map(([ad, etiket]) =>
-      giris(etiket, b[ad] || '', v => { b[ad] = v.trim(); }, 'input', { type: ad === 'eposta' ? 'email' : ad === 'whatsapp' ? 'tel' : yazi(ad) ? 'text' : 'url', maxlength: 300, placeholder: ad === 'whatsapp' || ad === 'eposta' || yazi(ad) ? '' : 'https://…' })));
+    $('#baglantilar').replaceChildren(...window.BAGLANTI_ALANLARI.map(([ad, etiket, tur]) =>
+      giris(etiket, b[ad] || '', v => { b[ad] = v.trim(); }, 'input', { type: KUTU[tur], maxlength: 300, placeholder: KUTU[tur] === 'url' ? 'https://…' : '' })));
   }
 
   const hepsiniCiz = () => { paketleriCiz(); yorumlariCiz(); baglantilariCiz(); };

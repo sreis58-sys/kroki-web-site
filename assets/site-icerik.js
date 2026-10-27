@@ -23,14 +23,40 @@ window.SITE_VARSAYILAN = {
   },
 };
 
-// bağlantı alanlarının panelde görünen adları ve sırası
+// bağlantı alanları: anahtar, paneldeki adı, türü. Tür, sitede adrese nasıl çevrileceğini ve paneldeki giriş kutusunu belirler:
+// magaza: boşken düğmede "Yakında" yazar · url · tel: WhatsApp numarası · eposta · yazi: adres değil, düz yazı (KVKK sayfası)
 window.BAGLANTI_ALANLARI = [
-  ['crmAppStore', 'kroki crm · App Store adresi'], ['crmGooglePlay', 'kroki crm · Google Play adresi'],
-  ['paftaAppStore', 'pafta. · App Store adresi'], ['paftaGooglePlay', 'pafta. · Google Play adresi'],
-  ['crmWeb', 'kroki crm · web uygulaması'],
-  ['whatsapp', 'WhatsApp numarası (ör. 0532 000 00 00)'], ['eposta', 'E-posta adresi'],
-  ['instagram', 'Instagram adresi'], ['linkedin', 'LinkedIn adresi'], ['youtube', 'YouTube adresi'],
-  ['sirketUnvan', 'Şirket unvanı (KVKK sayfası)'], ['sirketAdres', 'Şirket adresi'], ['mersis', 'MERSİS numarası'], ['kep', 'KEP adresi'],
+  ['crmAppStore', 'kroki crm · App Store adresi', 'magaza'], ['crmGooglePlay', 'kroki crm · Google Play adresi', 'magaza'],
+  ['paftaAppStore', 'pafta. · App Store adresi', 'magaza'], ['paftaGooglePlay', 'pafta. · Google Play adresi', 'magaza'],
+  ['crmWeb', 'kroki crm · web uygulaması', 'url'],
+  ['whatsapp', 'WhatsApp numarası (ör. 0532 000 00 00)', 'tel'], ['eposta', 'E-posta adresi', 'eposta'],
+  ['instagram', 'Instagram adresi', 'url'], ['linkedin', 'LinkedIn adresi', 'url'], ['youtube', 'YouTube adresi', 'url'],
+  ['sirketUnvan', 'Şirket unvanı (KVKK sayfası)', 'yazi'], ['sirketAdres', 'Şirket adresi', 'yazi'],
+  ['mersis', 'MERSİS numarası', 'yazi'], ['kep', 'KEP adresi', 'yazi'],
 ];
-// adres değil düz yazı olan alanlar
-window.YAZI_ALANLARI = ['sirketUnvan', 'sirketAdres', 'mersis', 'kep'];
+
+// site ve admin panelinin ortak yardımcıları
+window.KROKI = (function () {
+  const turler = Object.fromEntries(window.BAGLANTI_ALANLARI.map(([ad, , tur]) => [ad, tur]));
+  // Türkiye numarası: baştaki 0 yerine 90; rakam yoksa boş
+  const whatsapp = v => { let n = String(v || '').replace(/\D/g, ''); if (n.startsWith('0')) n = '90' + n.slice(1); return n ? `https://wa.me/${n}` : ''; };
+  return {
+    // deneme kipi (Firebase bağlı değilken): admin paneli ve sitedeki form bu tarayıcıda bu anahtarlarla buluşur
+    DEMO: { acik: 'kroki-demo', icerik: 'kroki-demo-icerik', basvurular: 'kroki-demo-basvurular' },
+    yerel: {
+      oku(a) { try { return JSON.parse(localStorage.getItem(a)); } catch (e) { return null; } },
+      yaz(a, v) { try { localStorage.setItem(a, JSON.stringify(v)); return true; } catch (e) { return false; } },
+    },
+    tur: ad => turler[ad] || 'url',
+    whatsapp,
+    // bağlantı alanının sitede gideceği adres; boş ya da geçersizse ''
+    adres(ad, v) {
+      v = String(v || '').trim();
+      const tur = turler[ad] || 'url';
+      if (!v || tur === 'yazi') return '';
+      if (tur === 'tel') return whatsapp(v);
+      if (tur === 'eposta') return v.includes('@') ? `mailto:${v}` : '';
+      return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+    },
+  };
+})();

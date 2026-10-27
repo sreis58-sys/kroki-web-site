@@ -4,3 +4,6 @@ inceleme/
 
 # çalışma kayıtları
 .han/
+
+# Firebase yayın önbelleği
+.firebase/

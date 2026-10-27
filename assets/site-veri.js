@@ -3,12 +3,8 @@
    deneme modunda bu tarayıcıya kaydettiği içerik kullanılır. İkisi de yoksa sayfadaki gömülü içerik olduğu gibi kalır. */
 (function () {
   const ayar = window.FIREBASE_AYAR;
-  const DEMO_ICERIK = 'kroki-demo-icerik', DEMO_BASVURU = 'kroki-demo-basvurular', DEMO_ACIK = 'kroki-demo';
+  const { DEMO, yerel, adres, tur } = window.KROKI;
   const kok = ayar && `https://firestore.googleapis.com/v1/projects/${ayar.projectId}/databases/(default)/documents`;
-  const yerel = {
-    oku(a) { try { return JSON.parse(localStorage.getItem(a)); } catch (e) { return null; } },
-    yaz(a, v) { try { localStorage.setItem(a, JSON.stringify(v)); return true; } catch (e) { return false; } },
-  };
 
   // Firestore REST değerleri → düz JavaScript
   const deger = v => 'stringValue' in v ? v.stringValue : 'booleanValue' in v ? v.booleanValue
@@ -17,7 +13,7 @@
   const alanlar = f => Object.fromEntries(Object.entries(f).map(([k, v]) => [k, deger(v)]));
 
   async function icerikGetir() {
-    if (!ayar) return yerel.oku(DEMO_ICERIK);
+    if (!ayar) return yerel.oku(DEMO.icerik);
     const yanit = await fetch(`${kok}/site/icerik?key=${ayar.apiKey}`);
     if (!yanit.ok) return null;                                    // içerik henüz kaydedilmemiş: gömülü hâl kalır
     return alanlar((await yanit.json()).fields || {});
@@ -45,22 +41,13 @@
     });
   }
 
-  // WhatsApp numarası ve e-posta adrese çevrilir; boş bağlantı bir yere gitmez
-  const adres = (ad, v) => {
-    v = String(v || '').trim();
-    if (!v) return '';
-    if (ad === 'whatsapp') { let n = v.replace(/\D/g, ''); if (n.startsWith('0')) n = '90' + n.slice(1); return n ? `https://wa.me/${n}` : ''; }
-    if (ad === 'eposta') return v.includes('@') ? `mailto:${v}` : '';
-    return /^https?:\/\//i.test(v) ? v : `https://${v}`;
-  };
-  // mağaza adresi henüz girilmemiş düğme "Yakında" olur ve bir yere gitmez
-  const MAGAZA = /AppStore$|GooglePlay$/;
+  // boş bağlantı bir yere gitmez; mağaza adresi henüz girilmemiş düğme "Yakında" olur
   function baglantilariYaz(b) {
     document.querySelectorAll('[data-bag]').forEach(a => {
       const href = adres(a.dataset.bag, b[a.dataset.bag]);
       a.href = href || '#';
       if (a.hasAttribute('data-bos-gizle')) a.hidden = !href;
-      if (MAGAZA.test(a.dataset.bag)) {
+      if (tur(a.dataset.bag) === 'magaza') {
         a.toggleAttribute('data-yakinda', !href);
         if (href) a.removeAttribute('aria-disabled'); else a.setAttribute('aria-disabled', 'true');
       }
@@ -103,10 +90,10 @@
       return;
     }
     // Firebase bağlı değil: yalnızca admin panelinin deneme modu açıksa bu tarayıcıya kaydedilir
-    if (!yerel.oku(DEMO_ACIK)) throw new Error('form bağlı değil');
-    const liste = yerel.oku(DEMO_BASVURU) || [];
+    if (!yerel.oku(DEMO.acik)) throw new Error('form bağlı değil');
+    const liste = yerel.oku(DEMO.basvurular) || [];
     liste.unshift({ id: rastgele(), ...b, kvkk: true, durum: 'yeni', tarih: Date.now() });
-    if (!yerel.yaz(DEMO_BASVURU, liste)) throw new Error('kaydedilemedi');
+    if (!yerel.yaz(DEMO.basvurular, liste)) throw new Error('kaydedilemedi');
   }
 
   document.querySelectorAll('form[data-basvuru]').forEach(form => {

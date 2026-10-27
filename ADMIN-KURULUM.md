@@ -55,7 +55,7 @@ Panelde ilk **Kaydet**'e basıldığında paketler, yorumlar ve bağlantılar Fi
 
 ## Alan adı bağlandıktan sonra
 
-`araclar/son_dokunus.py` içindeki `SITE` değişkenine alan adını yazın (ör. `https://kroki.com.tr/`) ve `araclar/OKUBENI.md`'deki sırayla sayfaları yeniden üretin. Böylece paylaşım görselleri tam adresle verilir. İsterseniz bir site haritası (`sitemap.xml`) da eklenir.
+`araclar/ortak.py` içindeki `SITE` değişkenine alan adını yazın (ör. `https://kroki.com.tr/`) ve `araclar/OKUBENI.md`'deki betiklerle sayfaları yeniden üretin. Böylece paylaşım görselleri tam adresle verilir. İsterseniz bir site haritası (`sitemap.xml`) da eklenir.
 
 ## Bilmeniz gerekenler
 

@@ -2,7 +2,7 @@
 yeniden çizildi. Koordinatlar ekran görüntüsünün 739×1600 hâlindeki pikselleridir; oran pafta ekranlarıyla aynı (924/2000),
 bu yüzden aynı telefon çerçevesine girer. Gerçek müşteri adları ve tutarlar örnekle değiştirildi."""
 
-YAZI = "font-family=\"Inter, 'SF Pro Display', -apple-system, 'Segoe UI', sans-serif\""
+from pafta_ekranlar import YAZI          # ekranların yazı tipi: iki uygulamada aynı
 ZEMIN, KART, CIZGI, SOLUK, MAVI_YAZI = '#0B0C0D', '#141617', '#25292C', '#A0A6AB', '#7BA4F7'
 
 def _durum():
